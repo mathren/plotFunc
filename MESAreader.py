@@ -18,20 +18,12 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program.  If not, see http://www.gnu.org/licenses/.
 
-
-# import matplotlib.pyplot as plt
-import matplotlib as mpl
 import numpy as np
 import os
 import sys
 import glob
 import time
 import math
-from matplotlib.ticker import MultipleLocator, FormatStrFormatter, FuncFormatter, MaxNLocator
-import matplotlib.gridspec as gridspec
-import matplotlib.patches as mpatch
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
-from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 ##############################
 # imports below are optional #
 ##############################
@@ -45,11 +37,6 @@ import mesaPlot as mp
 mmm=mp.MESA()
 ppp=mp.plot()
 import re
-## define some colors ----------------------------------------------------------------------
-
-Yellow = "#DDDD77"
-Green = "#88CCAA"
-Blue = "#77AADD"
 
 ## constants -------------------------------------------------------------------------------
 global secyer

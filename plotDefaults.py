@@ -17,9 +17,15 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with this program.  If not, see http://www.gnu.org/licenses/.
-
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 from matplotlib import rc
 from matplotlib import rcParams
+from matplotlib.ticker import MultipleLocator, FormatStrFormatter, FuncFormatter, MaxNLocator
+import matplotlib.gridspec as gridspec
+import matplotlib.patches as mpatch
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
+from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 
 rc('text', usetex=True)
 rc('font', serif='palatino')
@@ -38,13 +44,19 @@ rc('xtick', top=True, direction='in')
 rc('ytick', right=True, direction='in')
 rc('xtick', direction='in')
 rc('ytick', direction='in')
-rc('xtick.major', width=3, size=12, pad=5)
-rc('ytick.major', width=3, size=12, pad=5)
-rc('xtick.minor', width=3, size=6, visible=True)
-rc('ytick.minor', width=3, size=6, visible=True)
-# figsize
-rc('figure', figsize=(10.,10.))
+rc('xtick.major', width=2, size=12, pad=5)
+rc('ytick.major', width=2, size=12, pad=5)
+rc('xtick.minor', width=2, size=6, visible=True)
+rc('ytick.minor', width=2, size=6, visible=True)
+# colors
+rc('figure', figsize=(10.,10.), facecolor="white", edgecolor="white", autolayout=True, frameon=False)
+rc('axes', facecolor="white", linewidth=2)
+rc('savefig', facecolor="white")
 rc('image', cmap="viridis")
+# error bars
+rc('errorbar', capsize=2)
+# legend
+rc('legend', frameon=False)
 
 rcParams['text.latex.preamble'] = [r"\usepackage{color}"]
 rcParams['text.latex.preamble'] = [r"\usepackage{xcolor}"]
@@ -52,3 +64,8 @@ rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}"]
 
 
 
+## define some colors ----------------------------------------------------------------------
+
+Yellow = "#DDDD77"
+Green = "#88CCAA"
+Blue = "#77AADD"
