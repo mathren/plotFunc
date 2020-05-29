@@ -17,6 +17,8 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with this program.  If not, see http://www.gnu.org/licenses/.
+
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib import rc
@@ -48,24 +50,22 @@ rc('xtick.major', width=2, size=12, pad=5)
 rc('ytick.major', width=2, size=12, pad=5)
 rc('xtick.minor', width=2, size=6, visible=True)
 rc('ytick.minor', width=2, size=6, visible=True)
-# colors
-rc('figure', figsize=(10.,10.), facecolor="white", edgecolor="white", autolayout=True, frameon=False)
+rc('figure', figsize=(10.,10.), facecolor="white", edgecolor="white", autolayout=True, frameon=False) ## not working, but can be copy-pasted in cells when relevant
 rc('axes', facecolor="white", linewidth=2)
 rc('savefig', facecolor="white")
 rc('image', cmap="viridis")
-# error bars
+## error bars
 rc('errorbar', capsize=2)
-# legend
+## legend
 rc('legend', frameon=False)
 
 rcParams['text.latex.preamble'] = [r"\usepackage{color}"]
 rcParams['text.latex.preamble'] = [r"\usepackage{xcolor}"]
 rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}"]
 
-
-
-## define some colors ----------------------------------------------------------------------
-
+## define some colors 
 Yellow = "#DDDD77"
 Green = "#88CCAA"
 Blue = "#77AADD"
+
+
