@@ -38,13 +38,13 @@ rc('xtick', top=True, direction='in')
 rc('ytick', right=True, direction='in')
 rc('xtick', direction='in')
 rc('ytick', direction='in')
-rc('xtick.major', width=2, size=12, pad=5)
-rc('ytick.major', width=2, size=12, pad=5)
-rc('xtick.minor', width=2, size=6, visible=True)
-rc('ytick.minor', width=2, size=6, visible=True)
+rc('xtick.major', width=3, size=12, pad=5)
+rc('ytick.major', width=3, size=12, pad=5)
+rc('xtick.minor', width=3, size=6, visible=True)
+rc('ytick.minor', width=3, size=6, visible=True)
 # figsize
 rc('figure', figsize=(10.,10.))
-rc('image', cmap="Viridis")
+rc('image', cmap="viridis")
 
 rcParams['text.latex.preamble'] = [r"\usepackage{color}"]
 rcParams['text.latex.preamble'] = [r"\usepackage{xcolor}"]
