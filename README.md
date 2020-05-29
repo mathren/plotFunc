@@ -5,12 +5,27 @@ If you are interested in something more sofisticated, check out [mesaplot](https
 
 # How to use
 
-*Disclaimer* This should _not_ be considered an example of the way
+***Disclaimer*** This should _not_ be considered an example of the way
 things are supposed to be done. Quite the contrary, in case of doubt.
 
-Import the files that you are interested in using.
-```  import sys
-sys.path.append('/mnt/home/mrenzo/codes/python_stuff/mylib/')
+Import the files that you are interested in using. I usually have these
+files saved in a folder `path/to/folder` and use the sys module to add
+this folder to path, like:
+
+```
+import sys
+sys.path.append('path/to/folder/')
 from MESAreader import *
-import matplotlib.pyplot as plt
 from plotDefaults import *
+```
+
+To setup matplotlib the way I like it I define in `plotDefaults.py`
+that can be called to set some rcParams:
+
+```
+>>> set_plotDefaults()
+done in plotDefaults.py
+```
+
+The more appropriate way to do this would be to create a matplotlibrc
+file as explained [here](https://matplotlib.org/tutorials/introductory/customizing.html).
