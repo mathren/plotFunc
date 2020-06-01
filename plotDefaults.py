@@ -64,7 +64,7 @@ def set_plotDefaults():
     rc('figure', figsize=(8.,8.), facecolor="white",
        edgecolor="white", autolayout=True, frameon=False)
     rc('axes', facecolor="white", linewidth=2)
-    rc('savefig', facecolor="white")
+    rc('savefig', facecolor="white", bbox="tight")
     rc('image', cmap="viridis")
     ## error bars
     rc('errorbar', capsize=2)
