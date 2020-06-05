@@ -66,7 +66,7 @@ def reader(myfile, ncols, nhead):
     # Just for fun... time the routine
     start_time = time.time()
     if (not os.path.isfile(mybinfile)): # Check if .databin exists already... 
-        print("...    reading ascci file ", myfile)
+        print("...    reading ascii file ", myfile)
         print("...    and storing it for you in binary format")
         print("...    patience please, next time will be way faster ")
         print("...    I promise")
@@ -243,7 +243,9 @@ def getFinalProfileLOGS(LOGfolder):
 
 
 def getM(f):
-    # use regexp to find mass, will only work if mass is the first number in the path
-    m = re.findall("[+-]?\d+\.\d+", f)
-    return float(m[0])
+    # use regexp to find mass, will only work if
+    # the mass is the first thing in the folder name (after the / of the path)
+    m = re.findall("\/[+-]?\d+\.\d+", f)
+    MASS = m[0].lstrip('/')
+    return float(MASS)
         
