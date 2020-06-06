@@ -47,7 +47,7 @@ line-by-line diff of two inlists, ignoring comments and empty lines,
 and checking the defaults from the documentation when entries are
 missing. It *assumes you use the same MESA version* for this last task.
 
-This can be used inside of scripts or notebooks, or from command line.
+This can be used inside of scripts or notebooks, or from command line, thanks to [`click`](https://github.com/pallets/click).
 
 ```
 python compare_inlists.py --help
@@ -63,7 +63,7 @@ Options:
   --help           Show this message and exit.
 ```
 
-It uses `termcolor` to print in red entries that differ between
+It uses [`termcolor`](https://pypi.org/project/termcolor/) to print in red entries that differ between
 two inlists, and, if invoked adding `--vb=True` (for verbose) from the command
 line it will also print in green entries that are equal. If one entry
 is in one inlist but not the other, but the inlist that contains it 
