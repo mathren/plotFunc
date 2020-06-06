@@ -335,10 +335,10 @@ def diffStarControls(controls1, controls2, string1, string2, MESA_DIR="", vb=Fal
     # keys in controls1 but not controls2
     k1 = set(controls1.keys()).difference(set(controls2.keys()))
     for k in k1:
-        ## need ad-hoc fix for overshooting
-        if "overshoot" in k:
-            k_ov = k.split("(", 1)[0]
-            if controls1[k] != defaults[k_ov]:
+        ## need ad-hoc fix for arrays
+        if "(" in k:
+            k_fix = k.split("(", 1)[0]
+            if controls1[k] != defaults[k_fix]:
                 print(
                     colored(
                         "{:<45}\t{:}={:<45}".format(string1, k, str(controls1[k])),
@@ -351,7 +351,7 @@ def diffStarControls(controls1, controls2, string1, string2, MESA_DIR="", vb=Fal
                 print(
                     colored(
                         "{:<45}\t{:}={:<45}".format(
-                            "default", k_ov, str(defaults[k_ov])
+                            "default", k_fix, str(defaults[k_fix])
                         ),
                         "red",
                     )
@@ -367,7 +367,7 @@ def diffStarControls(controls1, controls2, string1, string2, MESA_DIR="", vb=Fal
                 print(
                     colored(
                         "{:<45}\t{:}={:<45}".format(
-                            "default", k_ov, str(defaults[k_ov])
+                            "default", k_fix, str(defaults[k_fix])
                         ),
                         "green",
                     )
@@ -402,10 +402,10 @@ def diffStarControls(controls1, controls2, string1, string2, MESA_DIR="", vb=Fal
     # keys in controls2 but not controls1
     k2 = set(controls2.keys()).difference(set(controls1.keys()))
     for k in k2:
-        ## need ad-hoc fix for overshooting
-        if "overshoot" in k:
-            k_ov = k.split("(", 1)[0]
-            if controls2[k] != defaults[k_ov]:
+        ## need ad-hoc fix for arrays
+        if "(" in k:
+            k_fix = k.split("(", 1)[0]
+            if controls2[k] != defaults[k_fix]:
                 print(
                     colored(
                         "{:<45}\t{:}={:<45}".format(string2, k, str(controls2[k])),
@@ -418,7 +418,7 @@ def diffStarControls(controls1, controls2, string1, string2, MESA_DIR="", vb=Fal
                 print(
                     colored(
                         "{:<45}\t{:}={:<45}".format(
-                            "default", k_ov, str(defaults[k_ov])
+                            "default", k_fix, str(defaults[k_fix])
                         ),
                         "red",
                     )
