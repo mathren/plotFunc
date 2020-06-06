@@ -35,12 +35,13 @@ file as explained [here](https://matplotlib.org/tutorials/introductory/customizi
 
 While experimenting with MESA and developing setups, I find myself
 rather often comparing inlists (for single and/or binary stars) with
-each other. A simple diff if often not very informative because of the
+each other. A simple diff is often not particularyly informative because of the
 comments, order of the entries, or missing entries in one file that
 are present in the other file but anyways set to the defaults. For
 this reason, I've written the script `compare_inlists.py` which can
 print a line-by-line diff of two inlists, ignoring comments and empty
-lines.
+lines, and checking the defaults from the documentation when entries
+are missing. It assumes you use the same MESA version for this last task.
 
 It uses `termcolor` to print in red entries that differ between
 two inlists, and, if invoked adding vb (for verbose) from the command
@@ -51,7 +52,7 @@ has the default value, it is considered as a "green" entry.
 This has been tested with MESA version 12778, and works for inlists
 for single stars and binaries (but will refuse to compare input for a single
 star and for a binary with each other). The functions it uses can also
-take a MESA_DIR as optional argument, but from command line for now it
+take a MESA_DIR as optional argument, but for now from command line it
 will use the `$MESA_DIR` environment variable.
 
 To use it from your command line:
