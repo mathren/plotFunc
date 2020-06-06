@@ -438,7 +438,7 @@ if __name__ == "__main__":
     # args[0] is the name of the script
     inlist1 = args[1]
     inlist2 = args[2]
-    MESA_DIR = os.environ["MESA_DIR"]
+    MESA_DIR = getMESA_DIR()
     # print(colored(MESA_DIR,"yellow"))
     # from command line will interpret anything beyond the 2 inlists as a request for verbosity
     # TODO: implement proper argparse
