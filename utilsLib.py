@@ -24,6 +24,7 @@ import sys
 import os
 import re # for getM
 
+
 def gitPush(description=""):
     push = input('should we push to the git repo first? [Y/n]')
     if ((push == 'Y') or (push == 'y')):
