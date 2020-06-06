@@ -53,7 +53,8 @@ This has been tested with MESA version 12778, and works for inlists
 for single stars and binaries (but will refuse to compare input for a single
 star and for a binary with each other). The functions it uses can also
 take a MESA_DIR as optional argument, but for now from command line it
-will use the `$MESA_DIR` environment variable.
+will use the `$MESA_DIR` environment variable. By default the comparison between
+pgstar namelist is disabled because I need it less.
 
 To use it from your command line:
 
@@ -70,4 +71,3 @@ python compare_inlist.py /path/to/inlist1 /path/to/inlist2 vb
 (actually right now any argument beyond the two inlists paths will be
 interpreted as a wish for verbosity).
 
-For the time being, the script performs no checks on the pgstar namelists.
