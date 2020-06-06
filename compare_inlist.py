@@ -19,159 +19,359 @@
 ## along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
-## select the Namelist to inspect
+## This has been tested with MESA version 12778
+
+import os
+import sys
+## pip install termcolor
+from termcolor import colored
+
+
+# ----- some auxiliary functions ----------------------------------
+
+def getNameVal(line):
+    optionName = line.split('=')[0].rstrip().lstrip()
+    value = line.split('=')[-1].split('!')[0].rstrip().lstrip()
+    return optionName, value
+
+# def convertBool(val):
+#     if val == ".true.":
+#         return True
+#     elif val == ".false.":
+#         return False
+#     else:
+#         return val
+
+# def convertFloat(val):    
+#     try:
+#         tmp = val.replace('d','e')
+#         new_val = float(tmp)
+#         return new_val
+#     except:
+#         return val
+
+# def cleanVal(val):
+#     val = convertFloat(val)    
+#     val = convertBool(val)    
+#     return val
+
+
+def getDefaults(namelist, MESA_DIR=""):
+    defaults = {}
+    if MESA_DIR == "":
+        # read the MESA_DIR from bashrc if not provided
+        MESA_DIR = os.environ['MESA_DIR']
+    if namelist.lower() == "star_job":
+        defaultFname = MESA_DIR+'/star/defaults/star_job.defaults'
+    elif namelist.lower() == "binary_job":
+        defaultFname = MESA_DIR+'/binary/defaults/binary_job.defaults'
+    elif namelist.lower() == "controls":
+        defaultFname = MESA_DIR+'/star/defaults/controls.defaults'
+    elif namelist == "binary_controls":
+        defaultFname = MESA_DIR+'/binary/defaults/binary_controls.defaults'
+    elif namelist == "pgstar":
+        print("pgstar stuff needs to be implemented!", "red")
+        return defaults
+    else:
+        print("Namelist: "+namelist+" not recognized, don't know what to do!", red)
+        return defaults
+    # now if we did not exit already, load a dict
+    # print(defaultFname)
+    with open(defaultFname, "r") as f:
+        for i, line in enumerate(f):
+            l = line.strip('\n\r').rstrip().lstrip() # remove \n and white spaces
+            if (l == "") or (l[0] == '!'):
+                # empty line or comment, move on
+                continue
+            else:
+                optionName, value = getNameVal(l)
+                # value = cleanVal(value)
+                defaults[optionName] = value
+    return defaults
+
+# -------------------------------------------------------------
 
 def getJobNamelist(inlist):
-    job = []
-    with open(inlist,'r') as i1:
+    """ 
+    returns a dictionary of the star_job or binary_job namelist entries and values
+    and a flag for binaries
+    """
+    job = {}
+    isBinary = False
+    with open(inlist,'r') as i1:     
         inJobNamelist=False
         for i, line in enumerate(i1):
             # print(line.strip('\n\r'))
             l = line.strip('\n\r').rstrip().lstrip() # remove \n and white spaces
-            if ("&star_job" == l) or ("&binary_job" == l):
+            if ("&star_job" == l):
                 inJobNamelist=True
+                isBinary = False
+                continue # to avoid adding the first line
+            elif ("&binary_job" == l):
+                inJobNamelist=True
+                isBinary = True
                 continue # to avoid adding the first line
             if (inJobNamelist):
-                if l != "": #skip empty lines
-                    if l[0]=='!': # skip comments
-                        pass
+                if (l == "") or (l[0] == "!"):
+                    #skip empty lines
+                    pass
+                else:
+                    if l[0]=='/': # exit
+                        inJobNamelist = False
+                        break
                     else:
-                        if l[0]=='/': # exit
-                            inJobNamelist = False
-                            break
-                        else:
-                            job.append(l)
-                            # print(l)
-                
-    return job
+                        optionName, value = getNameVal(l)
+                        # value = cleanVal(value)
+                        job[optionName] = value
+    return job, isBinary
 
 
 def getControlsNamelist(inlist):
-    controls = []
+    """ 
+    returns a dictionary of the controls or binary_controls namelist entries and values 
+    and a flag for binaries
+    """
+    controls = {}
+    isBinary = False
     with open(inlist,'r') as i1:
         inControlsNamelist=False
         for i, line in enumerate(i1):
             # print(line.strip('\n\r'))
             l = line.strip('\n\r').rstrip().lstrip() # remove \n and white spaces
-            if ("&star_controls" == l) or ("&binary_controls" == l):
-                inControlsNamelist=True
+            if ("&controls" == l):
+                inControlsNamelist = True
+                isBinary = False
+                continue # to avoid adding the first line
+            elif ("&binary_controls" == l):
+                inControlsNamelist = True
+                isBinary = True
                 continue # to avoid adding the first line
             if (inControlsNamelist):
-                if l != "": #skip empty lines
-                    if l[0]=='!': # skip comments
-                        pass
+                if (l == "") or (l[0] == "!"):
+                    #skip empty lines
+                    pass
+                else:
+                    if l[0]=='/': # exit
+                        inJobNamelist = False
+                        break
                     else:
-                        if l[0]=='/': # exit
-                            inControlsNamelist = False
-                            break
-                        else:
-                            controls.append(l)
-                            # print(l)
-                
-    return controls
-# -----------------------------------------------------------------------
-
-def getNameVal(line):
-    optionName = line.split('=')[0].rstrip().lstrip()
-    value = line.split('=')[-1].rstrip().lstrip()
-    return optionName, value
-
-def convertBool(val):
-    if val == ".true.":
-        return True
-    elif val == ".false.":
-        return False
-    else:
-        return val
-
-def convertFloat(val):
-    try:
-        new_val = float(val)
-        return new_val
-    except:
-        return val
-
-def cleanVal(val):
-    val = convertFloat(val)    
-    val = convertBool(val)    
-    return val
-
-def compareThisElement(line, other_namelist, MESA_DIR):    
-    Found = False
-    same = False
-    optionName, value = getNameVal(line)
-    value = cleanVal(value)
-    # print(line)
-    # print(optionName)
-    # print(value)
-    # print("-----")
-    for line2 in other_namelist:
-        name2, val2 = getNameVal(line2)
-        if optionName == name2:
-            Found = True
-            val2 = cleanVal(val2)
-            if value == val2:
-                # print(value, val2)
-                same = True
-    if Found == False:
-        # this assume you are comparing apples to apples!
-        # i.e. it will give a wrong result if you compare
-        # a binary_job with a star_job
-        # or a binary_controls with a controls
-        same = True
-    return same
+                        optionName, value = getNameVal(l)
+                        # value = cleanVal(value)
+                        controls[optionName] = value                
+    return controls, isBinary
 
 
-def comparePgStar(inlist1, inlist2, MESA_DIR):
+
+def diffPgStar(inlist1, inlist2, MESA_DIR="", vb=False):
+    print("in diffPgStar...please implement me")
     # TODO: implement me
     return True
 
-def compareJob(inlist1, inlist2, MESA_DIR):
-    # read the two starjobs namelists and compares them
-    same = True # initially assume they are the same
-    job1 = getJobNamelist(inlist1)
-    job2 = getJobNamelist(inlist2)
-    # loop on job1
-    for line in job1:
-        same = compareThisElement(line, job2, MESA_DIR)
-    # loop on job2:
-    for line in job2:
-        same = compareThisElement(line, job1, MESA_DIR)
-    return same
+def diffStarJob(job1, job2, string1, string2, MESA_DIR="", vb=False):
+    # check the keys appearing in both
+    for k in job1.keys() & job2.keys():
+        if job1[k] != job2[k]:
+            print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(job1[k])),"red"))
+            print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(job2[k])),"red"))
+            print("")
+        elif vb:
+            print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(job1[k])),"green"))
+            print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(job2[k])),"green"))
+            print("")
+    # check keys that are not in both and check if they are different than defaults
+    defaults = getDefaults("star_job", MESA_DIR)        
+    # keys in job1 but not job2
+    k1 =  set(job1.keys()).difference(set(job2.keys()))
+    for k in k1:
+        if job1[k] != defaults[k]:
+            print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(job1[k])),"red"))
+            print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"red"))
+            print("")
+        elif vb:
+            print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(job1[k])),"green"))
+            print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"green"))
+            print("")
+    # keys in job2 but not job1
+    k2 =  set(job2.keys()).difference(set(job1.keys()))
+    for k in k2:
+        if job2[k] != defaults[k]:
+            print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(job2[k])),"red"))
+            print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"red"))
+            print("")
+        elif vb:
+            print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(job2[k])),"green"))
+            print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"green"))
+            print("")
 
 
-def compareControls(inlist1, inlist2, MESA_DIR):
-    # read the two starjobs namelists and compares them
-    same = True # initially assume they are the same
-    controls1 = getControlsNamelist(inlist1)
-    controls2 = getControlsNamelist(inlist2)
-    # loop on job1
-    for line in controls1:
-        same = compareThisElement(line, controls2, MESA_DIR)
-    # loop on controls2:
-    for line in controls2:
-        same = compareThisElement(line, controls1, MESA_DIR)
-    return same
+def diffBinaryJob(job1, job2, string1, string2, MESA_DIR="", vb=False):
+    # check the keys appearing in both
+    for k in job1.keys() & job2.keys():
+        if job1[k] != job2[k]:
+            print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(job1[k])),"red"))
+            print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(job2[k])),"red"))
+            print("")
+        elif vb:
+            print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(job1[k])),"green"))
+            print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(job2[k])),"green"))
+            print("")
+    # check keys that are not in both and check if they are different than defaults
+    defaults = getDefaults("binary_job", MESA_DIR)        
+    # keys in job1 but not job2
+    k1 =  set(job1.keys()).difference(set(job2.keys()))
+    for k in k1:
+        if job1[k] != defaults[k]:
+            print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(job1[k])),"red"))
+            print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"red"))
+            print("")
+        elif vb:
+            print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(job1[k])),"green"))
+            print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"green"))
+            print("")
+    # keys in job2 but not job1
+    k2 =  set(job2.keys()).difference(set(job1.keys()))
+    for k in k2:
+        if job2[k] != defaults[k]:
+            print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(job2[k])),"red"))
+            print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"red"))
+            print("")
+        elif vb:
+            print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(job2[k])),"green"))
+            print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"green"))
+            print("")
 
-def compareInlists(inlist1, inlist2, MESA_DIR=""):
-    """ 
-    compare the inlists ignoring comments and order
-    if two parameters are set to the same value, does nothing
-    if they are different, print both values.
+def diffStarControls(controls1, controls2, string1, string2, MESA_DIR="", vb=False):
+    # check the keys appearing in both
+    for k in controls1.keys() & controls2.keys():
+        if controls1[k] != controls2[k]:
+            print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(controls1[k])),"red"))
+            print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(controls2[k])),"red"))
+            print("")
+        elif vb:
+            print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(controls1[k])),"green"))
+            print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(controls2[k])),"green"))
+            print("")
+    # check keys that are not in both and check if they are different than defaults
+    defaults = getDefaults("controls", MESA_DIR)        
+    # keys in controls1 but not controls2
+    k1 =  set(controls1.keys()).difference(set(controls2.keys()))
+    for k in k1:
+        if controls1[k] != defaults[k]:
+            print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(controls1[k])),"red"))
+            print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"red"))
+            print("")
+        elif vb:
+            print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(controls1[k])),"green"))
+            print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"green"))
+            print("")
+    # keys in controls2 but not controls1
+    k2 =  set(controls2.keys()).difference(set(controls1.keys()))
+    for k in k2:
+        if controls2[k] != defaults[k]:
+            print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(controls2[k])),"red"))
+            print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"red"))
+            print("")
+        elif vb:
+            print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(controls2[k])),"green"))
+            print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"green"))
+            print("")
+
+
+def diffBinaryControls(controls1, controls2, string1, string2, MESA_DIR="", vb=False):
+    # check the keys appearing in both
+    for k in controls1.keys() & controls2.keys():
+        if controls1[k] != controls2[k]:
+            print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(controls1[k])),"red"))
+            print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(controls2[k])),"red"))
+            print("")
+        elif vb:
+            print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(controls1[k])),"green"))
+            print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(controls2[k])),"green"))
+            print("")
+    # check keys that are not in both and check if they are different than defaults
+    defaults = getDefaults("binary_controls", MESA_DIR)        
+    # keys in controls1 but not controls2
+    k1 =  set(controls1.keys()).difference(set(controls2.keys()))
+    for k in k1:
+        if controls1[k] != defaults[k]:
+            print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(controls1[k])),"red"))
+            print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"red"))
+            print("")
+        elif vb:
+            print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(controls1[k])),"green"))
+            print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"green"))
+            print("")
+    # keys in controls2 but not controls1
+    k2 =  set(controls2.keys()).difference(set(controls1.keys()))
+    for k in k2:
+        if controls2[k] != defaults[k]:
+            print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(controls2[k])),"red"))
+            print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"red"))
+            print("")
+        elif vb:
+            print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(controls2[k])),"green"))
+            print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"green"))
+            print("")
+
+def diffInlists(inlist1, inlist2, MESA_DIR="", vb=False):
+    """
+    print a pretty diff of the inlists, or nothing if they are the same.
+    will ignore comments and empty lines. Works for single stars and binaries
+    TODO: implement this for pgstar
     """
     if MESA_DIR == "":
         # read the MESA_DIR from bashrc if not provided
         MESA_DIR = os.environ['MESA_DIR']
         # print(MESA_DIR)
-    same_job = compareJob(inlist1, inlist2, MESA_DIR)
-    same_controls = compareControls(inlist1, inlist2, MESA_DIR)
-    # the comparison of Pgstar is still to be implemented
-    # same_pgstar = comparePgStar(inlist1,inlist2, MESA_DIR)
-    if same_job and same_controls:
-        print(colored(inlist1+" and "+inlist2+" set the same physics, assuming you use the same MESA version","green"))
+    ## check star_job
+    job1, isBinary1 = getJobNamelist(inlist1)
+    job2, isBinary2 = getJobNamelist(inlist2)
+    if isBinary1 != isBinary2:
+        print(colored("ERROR: comparing one inlist for binaries to one for single stars!","red"))
+        return
     else:
-        print(colored(inlist1+" and "+inlist2+" are different, see the log above", "red"))
-        if same_job:
-            print(colored(inlist1+" and "+inlist2+" set the same job","green"))
-        if same_controls:
-            print(colored(inlist1+" and "+inlist2+" set the same controls","green"))
+        if isBinary1 == False:
+            # then single stars
+            diffStarJob(job1, job2, inlist1.split('/')[-1], inlist2.split('/')[-1], MESA_DIR,vb)
+        else:
+            # then binaries
+            diffBinaryJob(job1, job2, inlist1.split('/')[-1], inlist2.split('/')[-1], MESA_DIR,vb)
+    print("------end job")
+    ## check constrols
+    controls1, isBinary1 = getControlsNamelist(inlist1)
+    controls2, isBinary2 = getControlsNamelist(inlist2)
+    if isBinary1 != isBinary2:
+        print(colored("ERROR: comparing one inlist for binaries to one for single stars!","red"))
+        return
+    else:
+        if isBinary1 == False:
+            # then single stars
+            diffStarControls(controls1, controls2,inlist1.split('/')[-1],inlist2.split('/')[-1], MESA_DIR,vb)
+        else:
+            # then binaries
+            diffBinaryControls(controls1, controls2,inlist1.split('/')[-1],inlist2.split('/')[-1], MESA_DIR,vb)
+    print("------end controls")
+
+
+
+
+
+if __name__ == "__main__":
+    args = sys.argv
+    # args[0] is the name of the script
+    inlist1 = args[1]
+    inlist2 = args[2]
+    MESA_DIR = os.environ['MESA_DIR']
+    print(colored(MESA_DIR,"yellow"))
+    # from command line will interpret anything beyond the 2 inlists as a request for verbosity
+    # TODO: implement proper argparse
+    if len(sys.argv) > 3:
+        vb=True
+    else:
+        vb=False
+    # print("--------------------------------")
+    # print(args)
+    # print(inlist1, inlist2, MESA_DIR, vb)
+    # print("--------------------------------")
+    diffInlists(inlist1, inlist2, MESA_DIR, vb)
+    print("done!")
