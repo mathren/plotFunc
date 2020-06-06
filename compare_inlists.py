@@ -89,6 +89,7 @@ def getDefaults(namelist, MESA_DIR=""):
                 optionName, value = getNameVal(l)
                 value = cleanVal(value)
                 defaults[optionName] = value
+    # Note, the longest key is ~45 characters in length, hence the 45 further down in the string formatting
     return defaults
 
 # -------------------------------------------------------------
@@ -187,6 +188,7 @@ def diffStarJob(job1, job2, string1, string2, MESA_DIR="", vb=False):
     for k in k1:
         if job1[k] != defaults[k]:
             print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(job1[k])),"red"))
+            print(colored("{:<45}\t{:}{:<45}".format(string2,"","missing"),"red"))
             print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"red"))
             print("")
         elif vb:
@@ -198,6 +200,7 @@ def diffStarJob(job1, job2, string1, string2, MESA_DIR="", vb=False):
     for k in k2:
         if job2[k] != defaults[k]:
             print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(job2[k])),"red"))
+            print(colored("{:<45}\t{:}{:<45}".format(string1,"","missing"),"red"))
             print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"red"))
             print("")
         elif vb:
@@ -224,6 +227,7 @@ def diffBinaryJob(job1, job2, string1, string2, MESA_DIR="", vb=False):
     for k in k1:
         if job1[k] != defaults[k]:
             print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(job1[k])),"red"))
+            print(colored("{:<45}\t{:}{:<45}".format(string2,"","missing"),"red"))
             print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"red"))
             print("")
         elif vb:
@@ -235,6 +239,7 @@ def diffBinaryJob(job1, job2, string1, string2, MESA_DIR="", vb=False):
     for k in k2:
         if job2[k] != defaults[k]:
             print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(job2[k])),"red"))
+            print(colored("{:<45}\t{:}{:<45}".format(string1,"","missing"),"red"))
             print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"red"))
             print("")
         elif vb:
@@ -263,6 +268,7 @@ def diffStarControls(controls1, controls2, string1, string2, MESA_DIR="", vb=Fal
             k_ov = k.split('(',1)[0]
             if controls1[k] != defaults[k_ov]:
                 print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(controls1[k])),"red"))
+                print(colored("{:<45}\t{:}{:<45}".format(string2,"","missing"),"red"))
                 print(colored("{:<45}\t{:}={:<45}".format("default",k_ov,str(defaults[k_ov])),"red"))
                 print("")
             elif vb:
@@ -272,6 +278,7 @@ def diffStarControls(controls1, controls2, string1, string2, MESA_DIR="", vb=Fal
             continue # move on to next item
         if controls1[k] != defaults[k]:
             print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(controls1[k])),"red"))
+            print(colored("{:<45}\t{:}{:<45}".format(string2,"","missing"),"red"))
             print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"red"))
             print("")
         elif vb:
@@ -286,6 +293,7 @@ def diffStarControls(controls1, controls2, string1, string2, MESA_DIR="", vb=Fal
             k_ov = k.split('(',1)[0]
             if controls2[k] != defaults[k_ov]:
                 print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(controls2[k])),"red"))
+                print(colored("{:<45}\t{:}{:<45}".format(string1,"","missing"),"red"))
                 print(colored("{:<45}\t{:}={:<45}".format("default",k_ov,str(defaults[k_ov])),"red"))
                 print("")
             elif vb:
@@ -295,6 +303,7 @@ def diffStarControls(controls1, controls2, string1, string2, MESA_DIR="", vb=Fal
             continue # move on to next item
         if controls2[k] != defaults[k]:
             print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(controls2[k])),"red"))
+            print(colored("{:<45}\t{:}{:<45}".format(string1,"","missing"),"red"))
             print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"red"))
             print("")
         elif vb:
@@ -320,6 +329,7 @@ def diffBinaryControls(controls1, controls2, string1, string2, MESA_DIR="", vb=F
     for k in k1:
         if controls1[k] != defaults[k]:
             print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(controls1[k])),"red"))
+            print(colored("{:<45}\t{:}{:<45}".format(string2,"","missing"),"red"))
             print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"red"))
             print("")
         elif vb:
@@ -331,6 +341,7 @@ def diffBinaryControls(controls1, controls2, string1, string2, MESA_DIR="", vb=F
     for k in k2:
         if controls2[k] != defaults[k]:
             print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(controls2[k])),"red"))
+            print(colored("{:<45}\t{:}{:<45}".format(string1,"","missing"),"red"))
             print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"red"))
             print("")
         elif vb:
