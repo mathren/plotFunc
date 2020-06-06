@@ -18,7 +18,11 @@ sys.path.append('path/to/folder/plotFunc/')
 from MESAreader import *
 from plotDefaults import *
 from compare_inlists import *
+from compare_all_work_dir_inlists import *
 ```
+
+Of course you can and should import only what you need and not
+necessarily everything.
 
 To setup matplotlib the way I like it I define in `plotDefaults.py`
 that can be called to set some rcParams:
@@ -34,7 +38,7 @@ appropriate way to do this would be to create a matplotlibrc file as
 explained
 [here](https://matplotlib.org/tutorials/introductory/customizing.html).
 
-# How to use compare_inlists.py
+# How to use `compare_inlists.py`
 
 While experimenting with MESA and developing setups, I find myself
 rather often comparing inlists (for single and/or binary stars) with
@@ -85,3 +89,37 @@ A screenshot of an example with `--vb=True` and `$MESA_DIR` not set as
 environment variable, but passed as command line option:
 
 ![example](/examples/verbose.png?raw=true "verbose output")
+
+
+# How to use `compare_all_work_dir_inlists.py`
+
+MESA allows to nest namelists (i.e., star_job, controls, and/or
+pgstar) using `read_extra_star_job_inlist*` and
+`extra_star_job_inlist*_name`. `compare_all_work_dir_inlists.py` uses
+the function defined in `compare_inlists.py`to compare the entire MESA
+setup of two work directories. It first builds a "master" dictionary
+with of all the options MESA reads for each namelist, starting from
+`inlist` and checking if it contains nested namelists, and perform the
+comparison of the "master" dictionaries of the two folders. If the
+same `read_extra_star_job_inlist*` (i.e. same number instead of the
+`*`) appears in multiple nested inlists the last read will over-write
+the previous, which is the same behavior as in MESA.
+
+This for now works only for single stars, and is more
+experimental. *Do not trust this too much, at least not yet*. It
+can be used inside of scripts or notebooks, or from command line,
+thanks to [`click`](https://github.com/pallets/click).
+
+```
+python compare_all_work_dir_inlists.py --help
+Usage: compare_all_work_dir_inlists.py [OPTIONS] WORK_DIR1 WORK_DIR2
+
+Options:
+  --pgstar TEXT    Show also diff of pgstar namelists.
+  --mesa_dir TEXT  use customized location of $MESA_DIR. Will use environment
+                   variable if empty and return an error if empty.
+  --vb TEXT        Show also matching lines using green.
+  --help           Show this message and exit.
+```
+
+The output is similar to the example above for individual inlists.
