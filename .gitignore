@@ -133,3 +133,4 @@ dmypy.json
 
 # backup files
 *~
+test_outcome
