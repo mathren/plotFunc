@@ -720,8 +720,9 @@ def test_diffInlists(outfile="", MESA_DIR=""):
                 diffInlists(inlist1, inlist2)
             except:
                 print(colored("FAILED: " + inlist1 + " " + inlist2, "yellow"))
-                with open(outfile,"a") as F:
-                    F.writelines("FAILED: " + inlist1 + " " + inlist2+"\n")
+                if outfile != "":
+                    with open(outfile,"a") as F:
+                        F.writelines("FAILED: " + inlist1 + " " + inlist2+"\n")
                 Failed += 1
     else:
         t_start = 0
