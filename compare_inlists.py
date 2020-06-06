@@ -24,8 +24,10 @@
 import os
 import sys
 
-## pip install termcolor
+## pip install -U termcolor
 from termcolor import colored
+## pip install -U click
+import click
 
 # ----- some auxiliary functions ----------------------------------
 def getNameVal(line):
@@ -334,9 +336,10 @@ def diffBinaryControls(controls1, controls2, string1, string2, MESA_DIR="", vb=F
 # ----------- do the diff of the whole inlists ----------------------------
 def diffInlists(inlist1, inlist2, doPgstar=False, MESA_DIR="", vb=False):
     """
-    print a pretty diff of the inlists, or nothing if they are the same.
-    will ignore comments and empty lines. Works for single stars and binaries
-    TODO: implement this for pgstar
+    Takes the path of two inlists and compares them taking care of
+    comments and missing entries set to default. 
+    Prints a pretty diff of the inlists, or nothing if they are the same (unless vb=True).
+    Will ignore order, comments, and empty lines. Works for single stars and binaries
     """
     if MESA_DIR == "":
         MESA_DIR = getMESA_DIR()
@@ -432,23 +435,19 @@ def test_diffInlists(outfile="", MESA_DIR=""):
     print("...test took", t_end - t_start, "seconds")
     return Failed
 
-
-if __name__ == "__main__":
-    args = sys.argv
-    # args[0] is the name of the script
-    inlist1 = args[1]
-    inlist2 = args[2]
-    MESA_DIR = getMESA_DIR()
-    # print(colored(MESA_DIR,"yellow"))
-    # from command line will interpret anything beyond the 2 inlists as a request for verbosity
-    # TODO: implement proper argparse
-    if len(sys.argv) > 3:
-        vb = True
-    else:
-        vb = False
-    # print("--------------------------------")
-    # print(args)
-    # print(inlist1, inlist2, MESA_DIR, vb)
-    # print("--------------------------------")
-    diffInlists(inlist1, inlist2, doPgstar=False, MESA_DIR=MESA_DIR, vb=vb)
+# command line wrapper
+@click.command(context_settings={"ignore_unknown_options": True})
+@click.argument('inlist1', nargs=1, 
+                type=click.Path(exists=True))
+@click.argument('inlist2', nargs=1, 
+                type=click.Path(exists=True))
+@click.option('--pgstar', default=False, help="Show also diff of pgstar namelists.")
+@click.option("--mesa_dir", default="",
+              help="use customized location of $MESA_DIR. Will use environment variable if empty and return an error if empty.")
+@click.option("--vb", default=False, help="Show also matching lines using green.")
+def cli_wrapper(inlist1,inlist2,pgstar,mesa_dir,vb):
+    diffInlists(inlist1,inlist2,doPgstar=pgstar, MESA_DIR=mesa_dir,vb=vb)
     print("done!")
+    
+if __name__ == "__main__":
+    cli_wrapper()
