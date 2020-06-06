@@ -130,3 +130,6 @@ dmypy.json
 
 # notebooks for development
 *.ipynb
+
+# backup files
+*~
