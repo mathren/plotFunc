@@ -36,10 +36,11 @@ def getNameVal(line):
     return optionName, value
 
 def convertBool(val):
+    #fix occasional typo in the docs
     if (val == ".true.") or (val == ".true"):
-        return True
+        return ".true."
     elif (val == ".false.") or (val == ".false"):
-        return False
+        return ".false."
     else:
         return val
 
