@@ -119,7 +119,7 @@ def getDefaults(namelist, MESA_DIR=""):
 
 
 def getJobNamelist(inlist):
-    """ 
+    """
     returns a dictionary of the star_job or binary_job namelist entries and values
     and a flag for binaries
     """
@@ -294,7 +294,7 @@ def diffStarJob(job1, job2, string1, string2, MESA_DIR="", vb=False):
         compareDefaultsAndReport(k, job2, defaults, string2, string1, vb)
 
 
-def diffStarControls(controls1, controls2, string1, string2, MESA_DIR="", vb=False):
+def diffControls(controls1, controls2, string1, string2, MESA_DIR="", vb=False):
     # check the keys appearing in both
     for k in controls1.keys() & controls2.keys():
         compareAndReport(k, controls1, controls2, string1, string2, vb)
@@ -380,7 +380,7 @@ def diffInlists(inlist1, inlist2, doPgstar=False, MESA_DIR="", vb=False):
     else:
         if isBinary1 == False:
             # then single stars
-            diffStarControls(
+            diffControls(
                 controls1, controls2, name1, name2, MESA_DIR, vb,
             )
         else:
