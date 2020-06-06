@@ -27,19 +27,12 @@ import sys
 ## pip install termcolor
 from termcolor import colored
 
-
 # ----- some auxiliary functions ----------------------------------
-
-
 def getNameVal(line):
     optionName = line.split("=")[0].rstrip().lstrip()
     optionName = optionName.lower()  ## convert everything to lowercase
-    value = (
-        line.split("=")[-1].split("!")[0].rstrip().lstrip()
-    )  # remove comments and get value
+    value = line.split("=")[-1].split("!")[0].rstrip().lstrip()
     return optionName, value
-
-
 def convertBool(val):
     # fix occasional typo in the docs
     if (val == ".true.") or (val == ".true"):
@@ -64,7 +57,7 @@ def cleanVal(val):
     val = convertBool(val)
     return val
 
-
+# ----------------------- read the defaults ----------------------------------
 def getDefaults(namelist, MESA_DIR=""):
     defaults = {}
     if MESA_DIR == "":
@@ -95,16 +88,15 @@ def getDefaults(namelist, MESA_DIR=""):
             else:
                 optionName, value = getNameVal(l)
                 value = cleanVal(value)
-                # fix arrays
-                if "(" in optionName:
-                    optionName = optionName.split("(", 1)[0]
+                # # fix arrays
+                # if "(" in optionName:
+                #     optionName = optionName.split("(", 1)[0]
                 defaults[optionName] = value
     # Note, the longest key is ~45 characters in length, hence the 45 further down in the string formatting
     return defaults
 
 
-# -------------------------------------------------------------
-
+# --------------------- read namelist of the inlists -------------------------
 
 def getJobNamelist(inlist):
     """ 
@@ -141,6 +133,7 @@ def getJobNamelist(inlist):
     return job, isBinary
 
 
+
 def getControlsNamelist(inlist):
     """ 
     returns a dictionary of the controls or binary_controls namelist entries and values 
@@ -175,457 +168,113 @@ def getControlsNamelist(inlist):
                         controls[optionName] = value
     return controls, isBinary
 
+# ---------- compare namelists entries between each other and defaults -------------------------
+
+def compareAndReport(k, dic1, dic2, string1, string2, vb = False):
+    """
+    Given two dictionaries, compares them entry by entry
+    """
+    if dic1[k] != dic2[k]:
+        print(colored(f"{string1:<45}\t{k}={str(dic1[k]):<45}", "red"))
+        print(colored(f"{string2:<45}\t{k}={str(dic2[k]):<45}", "red"))
+        print("")
+    elif vb:
+        print(colored(f"{string1:<45}\t{k}={str(dic1[k]):<45}", "green"))
+        print(colored(f"{string2:<45}\t{k}={str(dic2[k]):<45}", "green"))
+        print("")
+
+def compareDefaultsAndReport(k, dic, dic_defaults, string, string_other, vb = False):
+    """
+    Given two dictionaries, compares them entry by entry and prints if not default
+    """
+    default = "default" # for fstring
+    try:
+        tmp = dic_defaults[k]
+    except KeyError:
+        print(colored(k+" not in defaults", "yellow"))
+        # print(colored(dic_defaults.keys(),"yellow"))
+        return
+    if dic[k] != dic_defaults[k]:
+        print(colored(f"{string:<45}\t{k}={str(dic[k]):<45}", "red"))
+        print(colored(f"{string_other:<45}\tmissing", "red"))
+        print(colored(f"{default:<45}\t{k}={str(dic_defaults[k]):<45}", "red"))
+        print("")
+    elif vb:
+        print(colored(f"{string:<45}\t{k}={str(dic[k]):<45}", "green"))
+        print(colored(f"{default:<45}\t{k}={str(dic_defaults[k]):<45}", "green"))
+        print("")
+
+# --------------do the diff on separate namelists ---------------------------
+
 
 def diffPgStar(inlist1, inlist2, MESA_DIR="", vb=False):
     print("in diffPgStar...please implement me")
     # TODO: implement me
     return True
 
-
 def diffStarJob(job1, job2, string1, string2, MESA_DIR="", vb=False):
     # check the keys appearing in both
     for k in job1.keys() & job2.keys():
-        if job1[k] != job2[k]:
-            print(colored("{:<45}\t{:}={:<45}".format(string1, k, str(job1[k])), "red"))
-            print(colored("{:<45}\t{:}={:<45}".format(string2, k, str(job2[k])), "red"))
-            print("")
-        elif vb:
-            print(
-                colored("{:<45}\t{:}={:<45}".format(string1, k, str(job1[k])), "green")
-            )
-            print(
-                colored("{:<45}\t{:}={:<45}".format(string2, k, str(job2[k])), "green")
-            )
-            print("")
+        compareAndReport(k, job1, job2, string1, string2, vb)
     # check keys that are not in both and check if they are different than defaults
     defaults = getDefaults("star_job", MESA_DIR)
     # keys in job1 but not job2
     k1 = set(job1.keys()).difference(set(job2.keys()))
     for k in k1:
-        ## need ad-hoc fix for arrays
-        if "(" in k:
-            k_fix = k.split("(", 1)[0]
-            if job1[k] != defaults[k_fix]:
-                print(
-                    colored(
-                        "{:<45}\t{:}={:<45}".format(string1, k, str(job1[k])), "red"
-                    )
-                )
-                print(
-                    colored("{:<45}\t{:}{:<45}".format(string2, "", "missing"), "red")
-                )
-                print(
-                    colored(
-                        "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k_fix])),
-                        "red",
-                    )
-                )
-                print("")
-            elif vb:
-                print(
-                    colored(
-                        "{:<45}\t{:}={:<45}".format(string1, k, str(job1[k])), "green"
-                    )
-                )
-                print(
-                    colored(
-                        "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k_fix])),
-                        "green",
-                    )
-                )
-                print("")
-            continue
-        if job1[k] != defaults[k]:
-            print(colored("{:<45}\t{:}={:<45}".format(string1, k, str(job1[k])), "red"))
-            print(colored("{:<45}\t{:}{:<45}".format(string2, "", "missing"), "red"))
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k])), "red"
-                )
-            )
-            print("")
-        elif vb:
-            print(
-                colored("{:<45}\t{:}={:<45}".format(string1, k, str(job1[k])), "green")
-            )
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k])), "green"
-                )
-            )
-            print("")
+        compareDefaultsAndReport(k, job1, defaults, string1, string2, vb)
     # keys in job2 but not job1
     k2 = set(job2.keys()).difference(set(job1.keys()))
     for k in k2:
-        ## need ad-hoc fix for arrays
-        if "(" in k:
-            k_fix = k.split("(", 1)[0]
-            if job2[k] != defaults[k_fix]:
-                print(
-                    colored(
-                        "{:<45}\t{:}={:<45}".format(string2, k, str(job2[k])), "red"
-                    )
-                )
-                print(
-                    colored("{:<45}\t{:}{:<45}".format(string1, "", "missing"), "red")
-                )
-                print(
-                    colored(
-                        "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k_fix])),
-                        "red",
-                    )
-                )
-                print("")
-            elif vb:
-                print(
-                    colored(
-                        "{:<45}\t{:}={:<45}".format(string2, k, str(job2[k])), "green"
-                    )
-                )
-                print(
-                    colored(
-                        "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k_fix])),
-                        "green",
-                    )
-                )
-                print("")
-            continue
-        if job2[k] != defaults[k]:
-            print(colored("{:<45}\t{:}={:<45}".format(string2, k, str(job2[k])), "red"))
-            print(colored("{:<45}\t{:}{:<45}".format(string1, "", "missing"), "red"))
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k])), "red"
-                )
-            )
-            print("")
-        elif vb:
-            print(
-                colored("{:<45}\t{:}={:<45}".format(string2, k, str(job2[k])), "green")
-            )
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k])), "green"
-                )
-            )
-            print("")
+        compareDefaultsAndReport(k, job2, defaults, string2, string1, vb)
 
-
-def diffBinaryJob(job1, job2, string1, string2, MESA_DIR="", vb=False):
-    # check the keys appearing in both
-    for k in job1.keys() & job2.keys():
-        if job1[k] != job2[k]:
-            print(colored("{:<45}\t{:}={:<45}".format(string1, k, str(job1[k])), "red"))
-            print(colored("{:<45}\t{:}={:<45}".format(string2, k, str(job2[k])), "red"))
-            print("")
-        elif vb:
-            print(
-                colored("{:<45}\t{:}={:<45}".format(string1, k, str(job1[k])), "green")
-            )
-            print(
-                colored("{:<45}\t{:}={:<45}".format(string2, k, str(job2[k])), "green")
-            )
-            print("")
-    # check keys that are not in both and check if they are different than defaults
-    defaults = getDefaults("binary_job", MESA_DIR)
-    # keys in job1 but not job2
-    k1 = set(job1.keys()).difference(set(job2.keys()))
-    for k in k1:
-        if job1[k] != defaults[k]:
-            print(colored("{:<45}\t{:}={:<45}".format(string1, k, str(job1[k])), "red"))
-            print(colored("{:<45}\t{:}{:<45}".format(string2, "", "missing"), "red"))
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k])), "red"
-                )
-            )
-            print("")
-        elif vb:
-            print(
-                colored("{:<45}\t{:}={:<45}".format(string1, k, str(job1[k])), "green")
-            )
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k])), "green"
-                )
-            )
-            print("")
-    # keys in job2 but not job1
-    k2 = set(job2.keys()).difference(set(job1.keys()))
-    for k in k2:
-        if job2[k] != defaults[k]:
-            print(colored("{:<45}\t{:}={:<45}".format(string2, k, str(job2[k])), "red"))
-            print(colored("{:<45}\t{:}{:<45}".format(string1, "", "missing"), "red"))
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k])), "red"
-                )
-            )
-            print("")
-        elif vb:
-            print(
-                colored("{:<45}\t{:}={:<45}".format(string2, k, str(job2[k])), "green")
-            )
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k])), "green"
-                )
-            )
-            print("")
-
-
+        
 def diffStarControls(controls1, controls2, string1, string2, MESA_DIR="", vb=False):
     # check the keys appearing in both
     for k in controls1.keys() & controls2.keys():
-        if controls1[k] != controls2[k]:
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format(string1, k, str(controls1[k])), "red"
-                )
-            )
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format(string2, k, str(controls2[k])), "red"
-                )
-            )
-            print("")
-        elif vb:
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format(string1, k, str(controls1[k])), "green"
-                )
-            )
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format(string2, k, str(controls2[k])), "green"
-                )
-            )
-            print("")
+        compareAndReport(k, controls1, controls2, string1, string2, vb)
     # check keys that are not in both and check if they are different than defaults
     defaults = getDefaults("controls", MESA_DIR)
     # keys in controls1 but not controls2
     k1 = set(controls1.keys()).difference(set(controls2.keys()))
     for k in k1:
-        ## need ad-hoc fix for arrays
-        if "(" in k:
-            k_fix = k.split("(", 1)[0]
-            if controls1[k] != defaults[k_fix]:
-                print(
-                    colored(
-                        "{:<45}\t{:}={:<45}".format(string1, k, str(controls1[k])),
-                        "red",
-                    )
-                )
-                print(
-                    colored("{:<45}\t{:}{:<45}".format(string2, "", "missing"), "red")
-                )
-                print(
-                    colored(
-                        "{:<45}\t{:}={:<45}".format(
-                            "default", k_fix, str(defaults[k_fix])
-                        ),
-                        "red",
-                    )
-                )
-                print("")
-            elif vb:
-                print(
-                    colored(
-                        "{:<45}\t{:}={:<45}".format(string1, k, str(controls1[k])),
-                        "green",
-                    )
-                )
-                print(
-                    colored(
-                        "{:<45}\t{:}={:<45}".format(
-                            "default", k_fix, str(defaults[k_fix])
-                        ),
-                        "green",
-                    )
-                )
-                print("")
-            continue  # move on to next item
-        if controls1[k] != defaults[k]:
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format(string1, k, str(controls1[k])), "red"
-                )
-            )
-            print(colored("{:<45}\t{:}{:<45}".format(string2, "", "missing"), "red"))
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k])), "red"
-                )
-            )
-            print("")
-        elif vb:
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format(string1, k, str(controls1[k])), "green"
-                )
-            )
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k])), "green"
-                )
-            )
-            print("")
+        compareDefaultsAndReport(k, controls1, defaults, string1, string2, vb)
     # keys in controls2 but not controls1
     k2 = set(controls2.keys()).difference(set(controls1.keys()))
     for k in k2:
-        ## need ad-hoc fix for arrays
-        if "(" in k:
-            k_fix = k.split("(", 1)[0]
-            if controls2[k] != defaults[k_fix]:
-                print(
-                    colored(
-                        "{:<45}\t{:}={:<45}".format(string2, k, str(controls2[k])),
-                        "red",
-                    )
-                )
-                print(
-                    colored("{:<45}\t{:}{:<45}".format(string1, "", "missing"), "red")
-                )
-                print(
-                    colored(
-                        "{:<45}\t{:}={:<45}".format(
-                            "default", k_fix, str(defaults[k_fix])
-                        ),
-                        "red",
-                    )
-                )
-                print("")
-            elif vb:
-                print(
-                    colored(
-                        "{:<45}\t{:}={:<45}".format(string2, k, str(controls2[k])),
-                        "green",
-                    )
-                )
-                print(
-                    colored(
-                        "{:<45}\t{:}={:<45}".format(
-                            "default", k_ov, str(defaults[k_ov])
-                        ),
-                        "green",
-                    )
-                )
-                print("")
-            continue  # move on to next item
-        if controls2[k] != defaults[k]:
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format(string2, k, str(controls2[k])), "red"
-                )
-            )
-            print(colored("{:<45}\t{:}{:<45}".format(string1, "", "missing"), "red"))
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k])), "red"
-                )
-            )
-            print("")
-        elif vb:
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format(string2, k, str(controls2[k])), "green"
-                )
-            )
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k])), "green"
-                )
-            )
-            print("")
+        compareDefaultsAndReport(k, controls2, defaults, string2, string1, vb)
 
-
+        
+def diffBinaryJob(job1, job2, string1, string2, MESA_DIR="", vb=False):
+    # check the keys appearing in both
+    for k in job1.keys() & job2.keys():
+        compareAndReport(k, job1, job2, string1, string2, vb)
+    # check keys that are not in both and check if they are different than defaults
+    defaults = getDefaults("binary_job", MESA_DIR)
+    # keys in job1 but not job2
+    k1 = set(job1.keys()).difference(set(job2.keys()))
+    for k in k1:
+        compareDefaultsAndReport(k, job1, defaults, string1, string2, vb)
+    # keys in job2 but not job1
+    k2 = set(job2.keys()).difference(set(job1.keys()))
+    for k in k2:
+        compareDefaultsAndReport(k, job2, defaults, string2, string1, vb)
+        
 def diffBinaryControls(controls1, controls2, string1, string2, MESA_DIR="", vb=False):
     # check the keys appearing in both
     for k in controls1.keys() & controls2.keys():
-        if controls1[k] != controls2[k]:
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format(string1, k, str(controls1[k])), "red"
-                )
-            )
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format(string2, k, str(controls2[k])), "red"
-                )
-            )
-            print("")
-        elif vb:
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format(string1, k, str(controls1[k])), "green"
-                )
-            )
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format(string2, k, str(controls2[k])), "green"
-                )
-            )
-            print("")
+        compareAndReport(k, controls1, controls2, string1, string2, vb)
     # check keys that are not in both and check if they are different than defaults
     defaults = getDefaults("binary_controls", MESA_DIR)
     # keys in controls1 but not controls2
     k1 = set(controls1.keys()).difference(set(controls2.keys()))
     for k in k1:
-        if controls1[k] != defaults[k]:
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format(string1, k, str(controls1[k])), "red"
-                )
-            )
-            print(colored("{:<45}\t{:}{:<45}".format(string2, "", "missing"), "red"))
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k])), "red"
-                )
-            )
-            print("")
-        elif vb:
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format(string1, k, str(controls1[k])), "green"
-                )
-            )
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k])), "green"
-                )
-            )
-            print("")
-    # keys in controls2 but not controls1
+        compareDefaultsAndReport(k, controls1, defaults, string1, string2, vb)
+    # keys in controls2 but not controls1    
     k2 = set(controls2.keys()).difference(set(controls1.keys()))
     for k in k2:
-        if controls2[k] != defaults[k]:
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format(string2, k, str(controls2[k])), "red"
-                )
-            )
-            print(colored("{:<45}\t{:}{:<45}".format(string1, "", "missing"), "red"))
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k])), "red"
-                )
-            )
-            print("")
-        elif vb:
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format(string2, k, str(controls2[k])), "green"
-                )
-            )
-            print(
-                colored(
-                    "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k])), "green"
-                )
-            )
-            print("")
+        compareDefaultsAndReport(k, controls2, defaults, string2, string1, vb)
 
-
+# ----------- do the diff of the whole inlists ----------------------------
 def diffInlists(inlist1, inlist2, MESA_DIR="", vb=False):
     """
     print a pretty diff of the inlists, or nothing if they are the same.
@@ -640,12 +289,7 @@ def diffInlists(inlist1, inlist2, MESA_DIR="", vb=False):
     job1, isBinary1 = getJobNamelist(inlist1)
     job2, isBinary2 = getJobNamelist(inlist2)
     if isBinary1 != isBinary2:
-        print(
-            colored(
-                "ERROR: comparing one inlist for binaries to one for single stars!",
-                "red",
-            )
-        )
+        print(colored("ERROR: comparing binary to single star!","red"))
         return
     else:
         if isBinary1 == False:
@@ -663,12 +307,7 @@ def diffInlists(inlist1, inlist2, MESA_DIR="", vb=False):
     controls1, isBinary1 = getControlsNamelist(inlist1)
     controls2, isBinary2 = getControlsNamelist(inlist2)
     if isBinary1 != isBinary2:
-        print(
-            colored(
-                "ERROR: comparing one inlist for binaries to one for single stars!",
-                "red",
-            )
-        )
+        print(colored("ERROR: comparing binary to single star!","red"))
         return
     else:
         if isBinary1 == False:
@@ -693,8 +332,7 @@ def diffInlists(inlist1, inlist2, MESA_DIR="", vb=False):
             )
     print("------end controls namelist------")
 
-
-## function for testing
+# # ----------------- for testing on the MESA test_suite -------------------------------
 def test_diffInlists(outfile="", MESA_DIR=""):
     """
     Run all possible pairs of inlists from the test_suite as a test
@@ -711,7 +349,7 @@ def test_diffInlists(outfile="", MESA_DIR=""):
             MESA_DIR = os.environ["MESA_DIR"]
         inlists_single = glob.glob(MESA_DIR + "/star/test_suite/*/inlist*")
         inlists_binary = glob.glob(MESA_DIR + "/binary/test_suite/*/inlist*")
-        inlists = inlists_single + inlists_binary
+        inlists = inlists_binary # inlists_single +
         # this below could be parallelized
         for pair in itertools.combinations_with_replacement(inlists, 2):
             inlist1 = pair[0]
@@ -731,7 +369,7 @@ def test_diffInlists(outfile="", MESA_DIR=""):
     print("...test took", t_end-t_start, "seconds")
     return Failed
 
-
+    
 if __name__ == "__main__":
     args = sys.argv
     # args[0] is the name of the script
