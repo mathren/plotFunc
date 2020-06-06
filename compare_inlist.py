@@ -283,12 +283,12 @@ def diffStarControls(controls1, controls2, string1, string2, MESA_DIR="", vb=Fal
         ## need ad-hoc fix for overshooting
         if "overshoot" in k:
             k_ov = k.split('(',1)[0]
-            if controls1[k] != defaults[k_ov]:
-                print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(controls1[k])),"red"))
+            if controls2[k] != defaults[k_ov]:
+                print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(controls2[k])),"red"))
                 print(colored("{:<45}\t{:}={:<45}".format("default",k_ov,str(defaults[k_ov])),"red"))
                 print("")
             elif vb:
-                print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(controls1[k])),"green"))
+                print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(controls2[k])),"green"))
                 print(colored("{:<45}\t{:}={:<45}".format("default",k_ov,str(defaults[k_ov])),"green"))
                 print("")
             continue # move on to next item
