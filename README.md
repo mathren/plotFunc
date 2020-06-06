@@ -81,6 +81,7 @@ I need it less, but it can be enabled using `--pgstar=True`.
 
 ## Example
 
-A screenshot of an example with `--vb=True`:
+A screenshot of an example with `--vb=True` and `$MESA_DIR` not set as
+environment variable, but passed as command line option:
 
 ![example](/examples/verbose.png?raw=true "verbose output")
