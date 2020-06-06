@@ -62,7 +62,7 @@ def cleanVal(val):
     return val
 
 def getMESA_DIR():
-    # read the MESA_DIR from bashrc if not provided
+    # read the MESA_DIR in the environment variables if not provided
     try:
         MESA_DIR = os.environ["MESA_DIR"]
         return MESA_DIR
@@ -87,7 +87,7 @@ def getDefaults(namelist, MESA_DIR=""):
     elif namelist.lower() == "pgstar":
         defaultFname = MESA_DIR + "/star/defaults/pgstar.defaults"
     else:
-        print("Namelist: " + namelist + " not recognized, don't know what to do!", red)
+        print("Namelist: " + namelist + " not recognized, don't know what to do!", "yellow")
         return defaults
     # now if we did not exit already, load a dict
     # print(defaultFname)
@@ -100,9 +100,6 @@ def getDefaults(namelist, MESA_DIR=""):
             else:
                 optionName, value = getNameVal(l)
                 value = cleanVal(value)
-                # # fix arrays
-                # if "(" in optionName:
-                #     optionName = optionName.split("(", 1)[0]
                 defaults[optionName] = value
     # Note, the longest key is ~45 characters in length, hence the 45 further down in the string formatting
     return defaults
@@ -250,7 +247,7 @@ def compareDefaultsAndReport(k, dic, dic_defaults, string, string_other, vb=Fals
         print("")
 
 
-# --------------do the diff on separate namelists ---------------------------
+# --------------do the diff individual namelists ---------------------------
 
 
 def diffPgstar(pgstar1, pgstar2, string1, string2, MESA_DIR="", vb=False):
@@ -334,6 +331,8 @@ def diffBinaryControls(controls1, controls2, string1, string2, MESA_DIR="", vb=F
 
 
 # ----------- do the diff of the whole inlists ----------------------------
+
+
 def diffInlists(inlist1, inlist2, doPgstar=False, MESA_DIR="", vb=False):
     """
     Takes the path of two inlists and compares them taking care of
@@ -393,12 +392,11 @@ def diffInlists(inlist1, inlist2, doPgstar=False, MESA_DIR="", vb=False):
         # this will compare single pgstar namelists and binaries
         pgstar1 = getPgstarNamelist(inlist1)
         pgstar2 = getPgstarNamelist(inlist2)
-        # sometimes they can be empty, substitute with defaults
         diffPgstar(pgstar1, pgstar2, name1, name2, MESA_DIR,vb)
-        print(colored("at least one pgstar namelists empty", "yellow"))
         print("------end pgstar namelist------")
 
 # # ----------------- for testing on the MESA test_suite -------------------------------
+
 def test_diffInlists(outfile="", MESA_DIR=""):
     """
     Run all possible pairs of inlists from the test_suite as a test
