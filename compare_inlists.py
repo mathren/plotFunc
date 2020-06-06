@@ -695,7 +695,7 @@ def diffInlists(inlist1, inlist2, MESA_DIR="", vb=False):
 
 
 ## function for testing
-def test_diffInlists(MESA_DIR=""):
+def test_diffInlists(outfile="", MESA_DIR=""):
     """
     Run all possible pairs of inlists from the test_suite as a test
     """
@@ -703,7 +703,6 @@ def test_diffInlists(MESA_DIR=""):
     if go_on == "Y" or go_on == "y":
         import glob
         import itertools
-
         if MESA_DIR == "":
             # read the MESA_DIR from bashrc if not provided
             MESA_DIR = os.environ["MESA_DIR"]
@@ -720,6 +719,8 @@ def test_diffInlists(MESA_DIR=""):
                 diffInlists(inlist1, inlist2)
             except:
                 print(colored("FAILED: " + inlist1 + " " + inlist2, "yellow"))
+                with open(outfile,"w") as F:
+                    F.writelines("FAILED: " + inlist1 + " " + inlist2+"\n")
                 Failed += 1
         return Failed
     else:
