@@ -31,6 +31,7 @@ from termcolor import colored
 
 def getNameVal(line):
     optionName = line.split('=')[0].rstrip().lstrip()
+    optionName = optionName.lower() ## convert everything to lowercase
     value = line.split('=')[-1].split('!')[0].rstrip().lstrip()
     return optionName, value
 
@@ -67,9 +68,9 @@ def getDefaults(namelist, MESA_DIR=""):
         defaultFname = MESA_DIR+'/binary/defaults/binary_job.defaults'
     elif namelist.lower() == "controls":
         defaultFname = MESA_DIR+'/star/defaults/controls.defaults'
-    elif namelist == "binary_controls":
+    elif namelist.lower() == "binary_controls":
         defaultFname = MESA_DIR+'/binary/defaults/binary_controls.defaults'
-    elif namelist == "pgstar":
+    elif namelist.lower() == "pgstar":
         print("pgstar stuff needs to be implemented!", "red")
         return defaults
     else:
@@ -103,11 +104,11 @@ def getJobNamelist(inlist):
         for i, line in enumerate(i1):
             # print(line.strip('\n\r'))
             l = line.strip('\n\r').rstrip().lstrip() # remove \n and white spaces
-            if ("&star_job" == l):
+            if ("&star_job" == l.lower()):
                 inJobNamelist=True
                 isBinary = False
                 continue # to avoid adding the first line
-            elif ("&binary_job" == l):
+            elif ("&binary_job" == l.lower()):
                 inJobNamelist=True
                 isBinary = True
                 continue # to avoid adding the first line
@@ -138,11 +139,11 @@ def getControlsNamelist(inlist):
         for i, line in enumerate(i1):
             # print(line.strip('\n\r'))
             l = line.strip('\n\r').rstrip().lstrip() # remove \n and white spaces
-            if ("&controls" == l):
+            if ("&controls" == l.lower()):
                 inControlsNamelist = True
                 isBinary = False
                 continue # to avoid adding the first line
-            elif ("&binary_controls" == l):
+            elif ("&binary_controls" == l.lower()):
                 inControlsNamelist = True
                 isBinary = True
                 continue # to avoid adding the first line
@@ -256,6 +257,18 @@ def diffStarControls(controls1, controls2, string1, string2, MESA_DIR="", vb=Fal
     # keys in controls1 but not controls2
     k1 =  set(controls1.keys()).difference(set(controls2.keys()))
     for k in k1:
+        ## need ad-hoc fix for overshooting
+        if "overshoot" in k:
+            k_ov = k.split('(',1)[0]
+            if controls1[k] != defaults[k_ov]:
+                print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(controls1[k])),"red"))
+                print(colored("{:<45}\t{:}={:<45}".format("default",k_ov,str(defaults[k_ov])),"red"))
+                print("")
+            elif vb:
+                print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(controls1[k])),"green"))
+                print(colored("{:<45}\t{:}={:<45}".format("default",k_ov,str(defaults[k_ov])),"green"))
+                print("")
+            continue # move on to next item
         if controls1[k] != defaults[k]:
             print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(controls1[k])),"red"))
             print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"red"))
@@ -267,6 +280,18 @@ def diffStarControls(controls1, controls2, string1, string2, MESA_DIR="", vb=Fal
     # keys in controls2 but not controls1
     k2 =  set(controls2.keys()).difference(set(controls1.keys()))
     for k in k2:
+        ## need ad-hoc fix for overshooting
+        if "overshoot" in k:
+            k_ov = k.split('(',1)[0]
+            if controls1[k] != defaults[k_ov]:
+                print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(controls1[k])),"red"))
+                print(colored("{:<45}\t{:}={:<45}".format("default",k_ov,str(defaults[k_ov])),"red"))
+                print("")
+            elif vb:
+                print(colored("{:<45}\t{:}={:<45}".format(string1,k,str(controls1[k])),"green"))
+                print(colored("{:<45}\t{:}={:<45}".format("default",k_ov,str(defaults[k_ov])),"green"))
+                print("")
+            continue # move on to next item
         if controls2[k] != defaults[k]:
             print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(controls2[k])),"red"))
             print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"red"))
@@ -275,7 +300,6 @@ def diffStarControls(controls1, controls2, string1, string2, MESA_DIR="", vb=Fal
             print(colored("{:<45}\t{:}={:<45}".format(string2,k,str(controls2[k])),"green"))
             print(colored("{:<45}\t{:}={:<45}".format("default",k,str(defaults[k])),"green"))
             print("")
-
 
 def diffBinaryControls(controls1, controls2, string1, string2, MESA_DIR="", vb=False):
     # check the keys appearing in both
