@@ -344,8 +344,8 @@ def diffInlists(inlist1, inlist2, doPgstar=False, MESA_DIR="", vb=False):
     if MESA_DIR == "":
         MESA_DIR = getMESA_DIR()
         # print(MESA_DIR)
-    name1 = inlist1.split("/")[-1]
-    name2 = inlist2.split("/")[-1]
+    name1 = "1: "+inlist1.split("/")[-1]
+    name2 = "2: "+inlist2.split("/")[-1]
     ## check star_job
     job1, isBinary1 = getJobNamelist(inlist1)
     job2, isBinary2 = getJobNamelist(inlist2)
