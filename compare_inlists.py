@@ -93,6 +93,9 @@ def getDefaults(namelist, MESA_DIR=""):
             else:
                 optionName, value = getNameVal(l)
                 value = cleanVal(value)
+                # fix arrays
+                if "(" in optionName:
+                    optionName = optionName.split("(", 1)[0]
                 defaults[optionName] = value
     # Note, the longest key is ~45 characters in length, hence the 45 further down in the string formatting
     return defaults
