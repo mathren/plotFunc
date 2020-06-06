@@ -35,7 +35,7 @@ file as explained [here](https://matplotlib.org/tutorials/introductory/customizi
 
 While experimenting with MESA and developing setups, I find myself
 rather often comparing inlists (for single and/or binary stars) with
-each other. A simple diff is often not particularyly informative because of the
+each other. A simple diff is often not particularly informative because of the
 comments, order of the entries, or missing entries in one file that
 are present in the other file but anyways set to the defaults. For
 this reason, I've written the script `compare_inlists.py` which can
