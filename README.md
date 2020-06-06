@@ -69,3 +69,5 @@ python compare_inlist.py /path/to/inlist1 /path/to/inlist2 vb
 
 (actually right now any argument beyond the two inlists paths will be
 interpreted as a wish for verbosity).
+
+For the time being, the script performs no checks on the pgstar namelists.

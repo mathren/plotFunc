@@ -34,7 +34,9 @@ from termcolor import colored
 def getNameVal(line):
     optionName = line.split("=")[0].rstrip().lstrip()
     optionName = optionName.lower()  ## convert everything to lowercase
-    value = line.split("=")[-1].split("!")[0].rstrip().lstrip()
+    value = (
+        line.split("=")[-1].split("!")[0].rstrip().lstrip()
+    )  # remove comments and get value
     return optionName, value
 
 
@@ -200,6 +202,39 @@ def diffStarJob(job1, job2, string1, string2, MESA_DIR="", vb=False):
     # keys in job1 but not job2
     k1 = set(job1.keys()).difference(set(job2.keys()))
     for k in k1:
+        ## need ad-hoc fix for arrays
+        if "(" in k:
+            k_fix = k.split("(", 1)[0]
+            if job1[k] != defaults[k_fix]:
+                print(
+                    colored(
+                        "{:<45}\t{:}={:<45}".format(string1, k, str(job1[k])), "red"
+                    )
+                )
+                print(
+                    colored("{:<45}\t{:}{:<45}".format(string2, "", "missing"), "red")
+                )
+                print(
+                    colored(
+                        "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k_fix])),
+                        "red",
+                    )
+                )
+                print("")
+            elif vb:
+                print(
+                    colored(
+                        "{:<45}\t{:}={:<45}".format(string1, k, str(job1[k])), "green"
+                    )
+                )
+                print(
+                    colored(
+                        "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k_fix])),
+                        "green",
+                    )
+                )
+                print("")
+            continue
         if job1[k] != defaults[k]:
             print(colored("{:<45}\t{:}={:<45}".format(string1, k, str(job1[k])), "red"))
             print(colored("{:<45}\t{:}{:<45}".format(string2, "", "missing"), "red"))
@@ -222,6 +257,39 @@ def diffStarJob(job1, job2, string1, string2, MESA_DIR="", vb=False):
     # keys in job2 but not job1
     k2 = set(job2.keys()).difference(set(job1.keys()))
     for k in k2:
+        ## need ad-hoc fix for arrays
+        if "(" in k:
+            k_fix = k.split("(", 1)[0]
+            if job2[k] != defaults[k_fix]:
+                print(
+                    colored(
+                        "{:<45}\t{:}={:<45}".format(string2, k, str(job2[k])), "red"
+                    )
+                )
+                print(
+                    colored("{:<45}\t{:}{:<45}".format(string1, "", "missing"), "red")
+                )
+                print(
+                    colored(
+                        "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k_fix])),
+                        "red",
+                    )
+                )
+                print("")
+            elif vb:
+                print(
+                    colored(
+                        "{:<45}\t{:}={:<45}".format(string2, k, str(job2[k])), "green"
+                    )
+                )
+                print(
+                    colored(
+                        "{:<45}\t{:}={:<45}".format("default", k, str(defaults[k_fix])),
+                        "green",
+                    )
+                )
+                print("")
+            continue
         if job2[k] != defaults[k]:
             print(colored("{:<45}\t{:}={:<45}".format(string2, k, str(job2[k])), "red"))
             print(colored("{:<45}\t{:}{:<45}".format(string1, "", "missing"), "red"))
@@ -625,20 +693,22 @@ def diffInlists(inlist1, inlist2, MESA_DIR="", vb=False):
             )
     print("------end controls namelist------")
 
+
 ## function for testing
 def test_diffInlists(MESA_DIR=""):
     """
     Run all possible pairs of inlists from the test_suite as a test
     """
-    go_on = raw_input("Do you want to do this very long test? [Y/y]")
+    go_on = input("Do you want to do this very long test? [Y/y]")
     if go_on == "Y" or go_on == "y":
         import glob
         import itertools
+
         if MESA_DIR == "":
             # read the MESA_DIR from bashrc if not provided
             MESA_DIR = os.environ["MESA_DIR"]
-        inlists_single = glob.glob(MESA_DIR+"/star/test_suite/*/inlist*")
-        inlists_binary = glob.glob(MESA_DIR+"/binary/test_suite/*/inlist*")
+        inlists_single = glob.glob(MESA_DIR + "/star/test_suite/*/inlist*")
+        inlists_binary = glob.glob(MESA_DIR + "/binary/test_suite/*/inlist*")
         inlists = inlists_single + inlists_binary
         # test of testing
         Failed = 0
@@ -649,12 +719,13 @@ def test_diffInlists(MESA_DIR=""):
             try:
                 diffInlists(inlist1, inlist2)
             except:
-                print(colored("FAILED: "+inlist1+" "+inlist2, "red"))
+                print(colored("FAILED: " + inlist1 + " " + inlist2, "yellow"))
                 Failed += 1
         return Failed
     else:
         print("If you don't try nothing fails...that's perfect!")
         return 0
+
 
 if __name__ == "__main__":
     args = sys.argv
