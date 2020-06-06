@@ -360,7 +360,7 @@ def diffInlists(inlist1, inlist2, MESA_DIR="", vb=False):
         else:
             # then binaries
             diffBinaryJob(job1, job2, inlist1.split('/')[-1], inlist2.split('/')[-1], MESA_DIR,vb)
-    print("------end job")
+    print("------end job namelist------")
     ## check constrols
     controls1, isBinary1 = getControlsNamelist(inlist1)
     controls2, isBinary2 = getControlsNamelist(inlist2)
@@ -374,7 +374,7 @@ def diffInlists(inlist1, inlist2, MESA_DIR="", vb=False):
         else:
             # then binaries
             diffBinaryControls(controls1, controls2,inlist1.split('/')[-1],inlist2.split('/')[-1], MESA_DIR,vb)
-    print("------end controls")
+    print("------end controls namelist------")
 
 
 
