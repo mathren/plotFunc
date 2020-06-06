@@ -625,6 +625,28 @@ def diffInlists(inlist1, inlist2, MESA_DIR="", vb=False):
             )
     print("------end controls namelist------")
 
+## function for testing
+def test_diffInlists(MESA_DIR=""):
+    import glob
+    import itertools
+    if MESA_DIR == "":
+        # read the MESA_DIR from bashrc if not provided
+        MESA_DIR = os.environ["MESA_DIR"]
+    inlists_single = glob.glob(MESA_DIR+"/star/test_suite/*/inlist*")
+    inlists_binary = glob.glob(MESA_DIR+"/binary/test_suite/*/inlist*")
+    inlists = inlists_single + inlists_binary
+    # test of testing
+    Failed = 0
+    # this below could be parallelized
+    for pair in itertools.product(inlists, repeat=2):
+        inlist1 = pair[0]
+        inlist2 = pair[1]
+        try:
+            diffInlists(inlist1, inlist2)
+        except:
+            print(colored("FAILED: "+inlist1+" "+inlist2, "red"))
+        Failed += 1
+    return Failed
 
 if __name__ == "__main__":
     args = sys.argv
