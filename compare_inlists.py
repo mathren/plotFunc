@@ -26,10 +26,13 @@ import sys
 
 ## pip install -U termcolor
 from termcolor import colored
+
 ## pip install -U click
 import click
 
 # ----- some auxiliary functions ----------------------------------
+
+
 def getNameVal(line):
     optionName = line.split("=")[0].rstrip().lstrip()
     optionName = optionName.lower()  ## convert everything to lowercase
@@ -61,17 +64,21 @@ def cleanVal(val):
     val = convertBool(val)
     return val
 
+
 def getMESA_DIR():
     # read the MESA_DIR in the environment variables if not provided
     try:
         MESA_DIR = os.environ["MESA_DIR"]
         return MESA_DIR
     except KeyError:
-        print(colored("Maybe $MESA_DIR environment variabile is not set?","yellow"))
-        print(colored("I don't know what to do, bye!","yellow"))
+        print(colored("Maybe $MESA_DIR environment variabile is not set?", "yellow"))
+        print(colored("I don't know what to do, bye!", "yellow"))
         sys.exit()
 
+
 # ----------------------- read the defaults ----------------------------------
+
+
 def getDefaults(namelist, MESA_DIR=""):
     defaults = {}
     if MESA_DIR == "":
@@ -87,7 +94,10 @@ def getDefaults(namelist, MESA_DIR=""):
     elif namelist.lower() == "pgstar":
         defaultFname = MESA_DIR + "/star/defaults/pgstar.defaults"
     else:
-        print("Namelist: " + namelist + " not recognized, don't know what to do!", "yellow")
+        print(
+            "Namelist: " + namelist + " not recognized, don't know what to do!",
+            "yellow",
+        )
         return defaults
     # now if we did not exit already, load a dict
     # print(defaultFname)
@@ -106,6 +116,7 @@ def getDefaults(namelist, MESA_DIR=""):
 
 
 # --------------------- read namelist of the inlists -------------------------
+
 
 def getJobNamelist(inlist):
     """ 
@@ -175,6 +186,7 @@ def getControlsNamelist(inlist):
                         value = cleanVal(value)
                         controls[optionName] = value
     return controls, isBinary
+
 
 def getPgstarNamelist(inlist):
     """ 
@@ -265,7 +277,7 @@ def diffPgstar(pgstar1, pgstar2, string1, string2, MESA_DIR="", vb=False):
     for k in k2:
         compareDefaultsAndReport(k, pgstar2, defaults, string2, string1, vb)
 
-        
+
 def diffStarJob(job1, job2, string1, string2, MESA_DIR="", vb=False):
     # check the keys appearing in both
     for k in job1.keys() & job2.keys():
@@ -343,8 +355,8 @@ def diffInlists(inlist1, inlist2, doPgstar=False, MESA_DIR="", vb=False):
     if MESA_DIR == "":
         MESA_DIR = getMESA_DIR()
         # print(MESA_DIR)
-    name1 = "1: "+inlist1.split("/")[-1]
-    name2 = "2: "+inlist2.split("/")[-1]
+    name1 = "1: " + inlist1.split("/")[-1]
+    name2 = "2: " + inlist2.split("/")[-1]
     ## check star_job
     job1, isBinary1 = getJobNamelist(inlist1)
     job2, isBinary2 = getJobNamelist(inlist2)
@@ -369,22 +381,12 @@ def diffInlists(inlist1, inlist2, doPgstar=False, MESA_DIR="", vb=False):
         if isBinary1 == False:
             # then single stars
             diffStarControls(
-                controls1,
-                controls2,
-                name1,
-                name2,                
-                MESA_DIR,
-                vb,
+                controls1, controls2, name1, name2, MESA_DIR, vb,
             )
         else:
             # then binaries
             diffBinaryControls(
-                controls1,
-                controls2,
-                name1,
-                name2,
-                MESA_DIR,
-                vb,
+                controls1, controls2, name1, name2, MESA_DIR, vb,
             )
     print("------end controls namelist------")
     if doPgstar:
@@ -392,10 +394,12 @@ def diffInlists(inlist1, inlist2, doPgstar=False, MESA_DIR="", vb=False):
         # this will compare single pgstar namelists and binaries
         pgstar1 = getPgstarNamelist(inlist1)
         pgstar2 = getPgstarNamelist(inlist2)
-        diffPgstar(pgstar1, pgstar2, name1, name2, MESA_DIR,vb)
+        diffPgstar(pgstar1, pgstar2, name1, name2, MESA_DIR, vb)
         print("------end pgstar namelist------")
 
+
 # # ----------------- for testing on the MESA test_suite -------------------------------
+
 
 def test_diffInlists(outfile="", MESA_DIR=""):
     """
@@ -433,19 +437,22 @@ def test_diffInlists(outfile="", MESA_DIR=""):
     print("...test took", t_end - t_start, "seconds")
     return Failed
 
+
 # command line wrapper
 @click.command(context_settings={"ignore_unknown_options": True})
-@click.argument('inlist1', nargs=1, 
-                type=click.Path(exists=True))
-@click.argument('inlist2', nargs=1, 
-                type=click.Path(exists=True))
-@click.option('--pgstar', default=False, help="Show also diff of pgstar namelists.")
-@click.option("--mesa_dir", default="",
-              help="use customized location of $MESA_DIR. Will use environment variable if empty and return an error if empty.")
+@click.argument("inlist1", nargs=1, type=click.Path(exists=True))
+@click.argument("inlist2", nargs=1, type=click.Path(exists=True))
+@click.option("--pgstar", default=False, help="Show also diff of pgstar namelists.")
+@click.option(
+    "--mesa_dir",
+    default="",
+    help="use customized location of $MESA_DIR. Will use environment variable if empty and return an error if empty.",
+)
 @click.option("--vb", default=False, help="Show also matching lines using green.")
-def cli_wrapper(inlist1,inlist2,pgstar,mesa_dir,vb):
-    diffInlists(inlist1,inlist2,doPgstar=pgstar, MESA_DIR=mesa_dir,vb=vb)
+def cli_wrapper(inlist1, inlist2, pgstar, mesa_dir, vb):
+    diffInlists(inlist1, inlist2, doPgstar=pgstar, MESA_DIR=mesa_dir, vb=vb)
     print("done!")
-    
+
+
 if __name__ == "__main__":
     cli_wrapper()
