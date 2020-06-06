@@ -93,20 +93,25 @@ environment variable, but passed as command line option:
 
 # How to use `compare_all_work_dir_inlists.py`
 
+**Do not trust this too much, at least not yet**
+
 MESA allows to nest namelists (i.e., star_job, controls, and/or
 pgstar) using `read_extra_star_job_inlist*` and
-`extra_star_job_inlist*_name`. `compare_all_work_dir_inlists.py` uses
-the function defined in `compare_inlists.py`to compare the entire MESA
-setup of two work directories. It first builds a "master" dictionary
-with of all the options MESA reads for each namelist, starting from
-`inlist` and checking if it contains nested namelists, and perform the
-comparison of the "master" dictionaries of the two folders. If the
-same `read_extra_star_job_inlist*` (i.e. same number instead of the
-`*`) appears in multiple nested inlists the last read will over-write
-the previous, which is the same behavior as in MESA.
+`extra_star_job_inlist*_name`. The script `compare_all_work_dir_inlists.py` uses
+the functions defined in `compare_inlists.py`to compare the entire MESA
+setup of two work directories.
 
-This for now works only for single stars, and is more
-experimental. *Do not trust this too much, at least not yet*. It
+It first builds a "master" dictionary with of all the options MESA
+reads for each namelist, starting from `inlist` and checking if it
+contains nested namelists, and perform the comparison of the "master"
+dictionaries of the two folders. If the same
+`read_extra_star_job_inlist*` (i.e. same number instead of the `*`)
+appears in multiple nested inlists the last read will over-write the
+previous, which is the same behavior as in MESA. Same for controls and
+pgstar. The comparison between the pgstar namelists is also disabled
+by default and can be done using `--pgstar=True` from command line.
+
+This for now works only for single stars, and is more experimental. It
 can be used inside of scripts or notebooks, or from command line,
 thanks to [`click`](https://github.com/pallets/click).
 
