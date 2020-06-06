@@ -59,13 +59,21 @@ def cleanVal(val):
     val = convertBool(val)
     return val
 
+def getMESA_DIR():
+    # read the MESA_DIR from bashrc if not provided
+    try:
+        MESA_DIR = os.environ["MESA_DIR"]
+        return MESA_DIR
+    except KeyError:
+        print(colored("Maybe $MESA_DIR environment variabile is not set?","yellow"))
+        print(colored("I don't know what to do, bye!","yellow"))
+        sys.exit()
 
 # ----------------------- read the defaults ----------------------------------
 def getDefaults(namelist, MESA_DIR=""):
     defaults = {}
     if MESA_DIR == "":
-        # read the MESA_DIR from bashrc if not provided
-        MESA_DIR = os.environ["MESA_DIR"]
+        MESA_DIR = getMESA_DIR()
     if namelist.lower() == "star_job":
         defaultFname = MESA_DIR + "/star/defaults/star_job.defaults"
     elif namelist.lower() == "binary_job":
@@ -331,8 +339,7 @@ def diffInlists(inlist1, inlist2, doPgstar=False, MESA_DIR="", vb=False):
     TODO: implement this for pgstar
     """
     if MESA_DIR == "":
-        # read the MESA_DIR from bashrc if not provided
-        MESA_DIR = os.environ["MESA_DIR"]
+        MESA_DIR = getMESA_DIR()
         # print(MESA_DIR)
     name1 = inlist1.split("/")[-1]
     name2 = inlist2.split("/")[-1]
@@ -402,8 +409,7 @@ def test_diffInlists(outfile="", MESA_DIR=""):
 
         t_start = time.time()
         if MESA_DIR == "":
-            # read the MESA_DIR from bashrc if not provided
-            MESA_DIR = os.environ["MESA_DIR"]
+            MESA_DIR = getMESA_DIR()
         inlists_single = glob.glob(MESA_DIR + "/star/test_suite/*/inlist*")
         inlists_binary = glob.glob(MESA_DIR + "/binary/test_suite/*/inlist*")
         inlists = inlists_binary + inlists_single
