@@ -93,26 +93,19 @@ environment variable, but passed as command line option:
 
 # How to use `compare_all_work_dir_inlists.py`
 
-**Do not trust this too much, at least not yet**
-
 MESA allows to nest namelists (i.e., star_job, controls, and/or
-pgstar) using `read_extra_star_job_inlist*` and
-`extra_star_job_inlist*_name`. The script `compare_all_work_dir_inlists.py` uses
+pgstar, and their binary counterparts) using `read_extra_star_job_inlist*` and
+`extra_star_job_inlist*_name` (and similar). The script `compare_all_work_dir_inlists.py` uses
 the functions defined in `compare_inlists.py`to compare the entire MESA
-setup of two work directories.
+setup of two work directories. 
 
-It first builds a "master" dictionary with of all the options MESA
-reads for each namelist, starting from `inlist` and checking if it
-contains nested namelists, and perform the comparison of the "master"
-dictionaries of the two folders. If the same
-`read_extra_star_job_inlist*` (i.e. same number instead of the `*`)
-appears in multiple nested inlists the last read will over-write the
-previous, which is the same behavior as in MESA. Same for controls and
-pgstar. The comparison between the pgstar namelists is also disabled
-by default and can be done using `--pgstar=True` from command line.
+It will not work to compare a work directory for a single star with a
+work directory for a binary. However, the functions in the
+`compare_inlists.py` and `compare_all_work_dir_inlists.py` could be
+used to create a comparison (e.g., of a single star with the donor of
+a binary), it's just not ready yet.
 
-This for now works only for single stars, and is more experimental. It
-can be used inside of scripts or notebooks, or from command line,
+As `compare_inlists.py`, it can be used inside of scripts or notebooks, or from command line,
 thanks to [`click`](https://github.com/pallets/click).
 
 ```
@@ -126,5 +119,19 @@ Options:
   --vb TEXT        Show also matching lines using green.
   --help           Show this message and exit.
 ```
+
+If called on a pair of folders both for single stars (or both for
+binaries), it first builds a "master" dictionary with of all the
+options MESA reads for each namelist, starting from `inlist` and
+checking if it contains nested namelists. It then performs the
+comparison of the "master" dictionaries of the two folders. If the
+same `read_extra_star_job_inlist*` (i.e. same number instead of the
+`*`) appears in multiple nested inlists the last read will over-write
+the previous, which is the same behavior as in MESA. Same for controls
+and pgstar and the corresponding binary namelists. In the case of
+binary folders, it will also compare all the namelists for each of the
+stars in the binary. The comparison between the pgstar namelists is
+also disabled by default and can be done using `--pgstar=True` from
+command line.
 
 The output is similar to the example above for individual inlists.
