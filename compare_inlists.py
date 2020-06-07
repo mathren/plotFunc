@@ -358,6 +358,7 @@ def diffInlists(inlist1, inlist2, doPgstar=False, MESA_DIR="", vb=False):
     name1 = "1: " + inlist1.split("/")[-1]
     name2 = "2: " + inlist2.split("/")[-1]
     ## check star_job
+    print("")
     job1, isBinary1 = getJobNamelist(inlist1)
     job2, isBinary2 = getJobNamelist(inlist2)
     if isBinary1 != isBinary2:
@@ -365,13 +366,19 @@ def diffInlists(inlist1, inlist2, doPgstar=False, MESA_DIR="", vb=False):
         return
     else:
         if isBinary1 == False:
-            # then single stars
+            print("&star_job")
+            print("")
             diffStarJob(job1, job2, name1, name2, MESA_DIR, vb)
+            print("")
+            print("/ !end star_job namelist")
         else:
-            # then binaries
+            print("&binary_job")
+            print("")
             diffBinaryJob(job1, job2, name1, name2, MESA_DIR, vb)
-    print("------end job namelist------")
-    ## check constrols
+            print("")
+            print("/ !end binary_job namelist")
+    ## check constrols                
+    print("")
     controls1, isBinary1 = getControlsNamelist(inlist1)
     controls2, isBinary2 = getControlsNamelist(inlist2)
     if isBinary1 != isBinary2:
@@ -379,23 +386,30 @@ def diffInlists(inlist1, inlist2, doPgstar=False, MESA_DIR="", vb=False):
         return
     else:
         if isBinary1 == False:
-            # then single stars
+            print("&controls")
+            print("")
             diffControls(
                 controls1, controls2, name1, name2, MESA_DIR, vb,
             )
         else:
-            # then binaries
+            print("&binary_controls")
+            print("")
             diffBinaryControls(
                 controls1, controls2, name1, name2, MESA_DIR, vb,
             )
-    print("------end controls namelist------")
+    print("")
+    print("/ !end controls namelist")
     if doPgstar:
         # check pgstar
         # this will compare single pgstar namelists and binaries
+        print("")
+        print("&pgstar")
+        print("")
         pgstar1 = getPgstarNamelist(inlist1)
         pgstar2 = getPgstarNamelist(inlist2)
         diffPgstar(pgstar1, pgstar2, name1, name2, MESA_DIR, vb)
-        print("------end pgstar namelist------")
+        print("")
+        print("/ !end pgstar")
 
 
 # # ----------------- for testing on the MESA test_suite -------------------------------
@@ -451,8 +465,10 @@ def test_diffInlists(outfile="", MESA_DIR=""):
 @click.option("--vb", default=False, help="Show also matching lines using green.")
 def cli_wrapper(inlist1, inlist2, pgstar, mesa_dir, vb):
     diffInlists(inlist1, inlist2, doPgstar=pgstar, MESA_DIR=mesa_dir, vb=vb)
-    print("done!")
-
+    print("")
+    print("*********")
+    print("* done! *")
+    print("*********")
 
 if __name__ == "__main__":
     cli_wrapper()
