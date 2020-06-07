@@ -44,6 +44,15 @@ def appendInlistPath(path_list, path, workDir="./"):
     return path_list
 
 
+def getFirstInlist(workDir):
+    inlist = workDir+"/inlist"
+    if os.path.isfile(inlist):
+        return inlist
+    else:
+        print(colored(workDir+" does not contain an inlist, this is too complex for me","yellow"))
+        sys.exit()
+    
+
 # ------------------ check if there are nested namelists -------------------------------
 
     
@@ -126,7 +135,7 @@ def buildMasterStarJob(workDir):
     """
     Builds the namelist by reading the inlists starting from inlist 
     """
-    first_inlist = workDir+"/inlist"
+    first_inlist = getFirstInlist(workDir)
     job = getJobNamelist(first_inlist)[0]
     inlists_to_be_read = checkIfMoreStarJob(job, workDir=workDir)
     # print(inlists_to_be_read)
@@ -160,7 +169,7 @@ def buildMasterControls(workDir):
     """
     Builds the namelist by reading the inlists starting from inlist 
     """
-    first_inlist = workDir+"/inlist"
+    first_inlist = getFirstInlist(workDir)
     controls = getControlsNamelist(first_inlist)[0]
     inlists_to_be_read = checkIfMoreControls(controls, workDir=workDir)
     # print(inlists_to_be_read)
@@ -189,7 +198,7 @@ def buildMasterPgstar(workDir):
     """
     Builds the namelist by reading the inlists starting from inlist 
     """
-    first_inlist = workDir+"/inlist"
+    first_inlist = getFirstInlist(workDir)
     pgstar = getPgstarNamelist(first_inlist)[0]
     inlists_to_be_read = checkIfMoreStarPgstar(pgstar, workDir=workDir)
     # print(inlists_to_be_read)
