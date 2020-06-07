@@ -30,6 +30,7 @@ from termcolor import colored
 ## pip install -U click
 import click
 
+
 # ----- some auxiliary functions ----------------------------------
 
 
@@ -94,10 +95,10 @@ def getDefaults(namelist, MESA_DIR=""):
     elif namelist.lower() == "pgstar":
         defaultFname = MESA_DIR + "/star/defaults/pgstar.defaults"
     else:
-        print(
+        print(colored(
             "Namelist: " + namelist + " not recognized, don't know what to do!",
             "yellow",
-        )
+        ))
         return defaults
     # now if we did not exit already, load a dict
     # print(defaultFname)
@@ -262,22 +263,6 @@ def compareDefaultsAndReport(k, dic, dic_defaults, string, string_other, vb=Fals
 # --------------do the diff individual namelists ---------------------------
 
 
-def diffPgstar(pgstar1, pgstar2, string1, string2, MESA_DIR="", vb=False):
-    # check the keys appearing in both
-    for k in pgstar1.keys() & pgstar2.keys():
-        compareAndReport(k, pgstar1, pgstar2, string1, string2, vb)
-    # check keys that are not in both and check if they are different than defaults
-    defaults = getDefaults("pgstar", MESA_DIR)
-    # keys in pgstar1 but not pgstar2
-    k1 = set(pgstar1.keys()).difference(set(pgstar2.keys()))
-    for k in k1:
-        compareDefaultsAndReport(k, pgstar1, defaults, string1, string2, vb)
-    # keys in pgstar2 but not pgstar1
-    k2 = set(pgstar2.keys()).difference(set(pgstar1.keys()))
-    for k in k2:
-        compareDefaultsAndReport(k, pgstar2, defaults, string2, string1, vb)
-
-
 def diffStarJob(job1, job2, string1, string2, MESA_DIR="", vb=False):
     # check the keys appearing in both
     for k in job1.keys() & job2.keys():
@@ -308,6 +293,22 @@ def diffControls(controls1, controls2, string1, string2, MESA_DIR="", vb=False):
     k2 = set(controls2.keys()).difference(set(controls1.keys()))
     for k in k2:
         compareDefaultsAndReport(k, controls2, defaults, string2, string1, vb)
+
+
+def diffPgstar(pgstar1, pgstar2, string1, string2, MESA_DIR="", vb=False):
+    # check the keys appearing in both
+    for k in pgstar1.keys() & pgstar2.keys():
+        compareAndReport(k, pgstar1, pgstar2, string1, string2, vb)
+    # check keys that are not in both and check if they are different than defaults
+    defaults = getDefaults("pgstar", MESA_DIR)
+    # keys in pgstar1 but not pgstar2
+    k1 = set(pgstar1.keys()).difference(set(pgstar2.keys()))
+    for k in k1:
+        compareDefaultsAndReport(k, pgstar1, defaults, string1, string2, vb)
+    # keys in pgstar2 but not pgstar1
+    k2 = set(pgstar2.keys()).difference(set(pgstar1.keys()))
+    for k in k2:
+        compareDefaultsAndReport(k, pgstar2, defaults, string2, string1, vb)
 
 
 def diffBinaryJob(job1, job2, string1, string2, MESA_DIR="", vb=False):
@@ -377,7 +378,7 @@ def diffInlists(inlist1, inlist2, doPgstar=False, MESA_DIR="", vb=False):
             diffBinaryJob(job1, job2, name1, name2, MESA_DIR, vb)
             print("")
             print("/ !end binary_job namelist")
-    ## check constrols                
+    ## check constrols
     print("")
     controls1, isBinary1 = getControlsNamelist(inlist1)
     controls2, isBinary2 = getControlsNamelist(inlist2)
@@ -469,6 +470,7 @@ def cli_wrapper(inlist1, inlist2, pgstar, mesa_dir, vb):
     print("*********")
     print("* done! *")
     print("*********")
+
 
 if __name__ == "__main__":
     cli_wrapper()
