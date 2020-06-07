@@ -66,28 +66,33 @@ def getMasterInlistStarsInBinaries(job1, job2, MESA_DIR=""):
     """
     # primary first binary
     try:
-        master_inlist_star1_b1 = job1["inlist(1)"]
+        master_inlist_star1_b1 = job1["inlist_names(1)"]
     except KeyError:
         job_defaults = getDefaults("binary_job", MESA_DIR=MESA_DIR)
-        master_inlist_star1_b1 = job_defaults["inlist(1)"]
+        master_inlist_star1_b1 = job_defaults["inlist_names(1)"]
+    # either way you got it, clean it
+    master_inlist_star1_b1 = master_inlist_star1_b1.strip('\'').strip('\"')
     # secondary first binary
     try:
-        master_inlist_star2_b1 = job1["inlist(2)"]
+        master_inlist_star2_b1 = job1["inlist_names(2)"]
     except KeyError:
         job_defaults = getDefaults("binary_job", MESA_DIR=MESA_DIR)
-        master_inlist_star2_b1 = job_defaults["inlist(2)"]
+        master_inlist_star2_b1 = job_defaults["inlist_names(2)"]
+    master_inlist_star2_b1 = master_inlist_star2_b1.strip('\'').strip('\"')    
     # primary second binary
     try:
-        master_inlist_star1_b2 = job2["inlist(1)"]
+        master_inlist_star1_b2 = job2["inlist_names(1)"]
     except KeyError:
         job_defaults = getDefaults("binary_job", MESA_DIR=MESA_DIR)
-        master_inlist_star1_b2 = job_defaults["inlist(1)"]
+        master_inlist_star1_b2 = job_defaults["inlist_names(1)"]
+    master_inlist_star1_b2 = master_inlist_star1_b2.strip('\'').strip('\"')
     # secondary first binary
     try:
-        master_inlist_star2_b2 = job2["inlist(2)"]
+        master_inlist_star2_b2 = job2["inlist_names(2)"]
     except KeyError:
         job_defaults = getDefaults("binary_job", MESA_DIR=MESA_DIR)
-        master_inlist_star2_b2 = job_defaults["inlist(2)"]
+        master_inlist_star2_b2 = job_defaults["inlist_names(2)"]
+    master_inlist_star2_b2 = master_inlist_star2_b2.strip('\'').strip('\"')
     return master_inlist_star1_b1, master_inlist_star2_b1, master_inlist_star1_b2, master_inlist_star2_b2
         
 
@@ -346,13 +351,13 @@ def buildMasterBinaryControls(workDir, first_inlist=""):
     """
     if first_inlist == "":
         first_inlist = getFirstInlist(workDir)
-    binary_controls = getBinaryControlsNamelist(first_inlist)[0]
-    inlists_to_be_read = checkIfMoreBinary_Controls(binary_controls, workDir=workDir)
+    binary_controls = getControlsNamelist(first_inlist)[0]
+    inlists_to_be_read = checkIfMoreBinaryControls(binary_controls, workDir=workDir)
     # print(inlists_to_be_read)
     while inlists_to_be_read:
         current_inlist = inlists_to_be_read[0]
         print("...reading "+current_inlist+" binary_controls namelist")
-        binary_controls_to_add = getBinaryControlsNamelist(current_inlist)[0]
+        binary_controls_to_add = getControlsNamelist(current_inlist)[0]
         inlists_to_add = checkIfMoreBinaryControls(binary_controls_to_add, workDir=workDir)
         binary_controls = {**binary_controls, **binary_controls_to_add}
         ## note: if the same read_extra_star_binary_controls is used in multiple
@@ -411,7 +416,7 @@ def buildMasterBinaryPgstar(workDir, first_inlist=""):
     if first_inlist == "":
         first_inlist = getFirstInlist(workDir)
     binary_pgstar = getPgstarNamelist(first_inlist)
-    inlists_to_be_read = checkIfMoreBinary_Pgstar(binary_pgstar, workDir=workDir)
+    inlists_to_be_read = checkIfMoreBinaryPgstar(binary_pgstar, workDir=workDir)
     # print(inlists_to_be_read)
     while inlists_to_be_read:
         current_inlist = inlists_to_be_read[0]
@@ -509,7 +514,7 @@ def compareBinaryWorkDirs(work1, work2, doPgstar=False, MESA_DIR="", vb=False):
     print("")
     print("&binary_controls")
     print("")
-    diffBinary_Controls(binary_controls1, binary_controls2, name1, name2, MESA_DIR, vb)
+    diffBinaryControls(binary_controls1, binary_controls2, name1, name2, MESA_DIR, vb)
     print("")
     print("/ !end binary_controls namelist")
     print("")
@@ -522,13 +527,12 @@ def compareBinaryWorkDirs(work1, work2, doPgstar=False, MESA_DIR="", vb=False):
         diffPgstar(binary_pgstar1, binary_pgstar2, name1, name2, MESA_DIR, vb)
         print("")
         print("/ !end binary_pgstar")
-    # now compare the single stars
     print("")
     print(" Now compare the individual stars...")
     print("")
-    print(" Compare primary stars")   
-    star_job1 = buildMasterStarJob(work1, first_inlist=inlist1_b1)
-    star_job2 = buildMasterStarJob(work2, first_inlist=inlist1_b2)
+    print(" Compare primary stars")
+    star_job1 = buildMasterStarJob(work1, first_inlist=work1+'/'+inlist1_b1)
+    star_job2 = buildMasterStarJob(work2, first_inlist=work2+'/'+inlist1_b2)
     print("")
     print("&star_job")
     print("")
@@ -536,8 +540,8 @@ def compareBinaryWorkDirs(work1, work2, doPgstar=False, MESA_DIR="", vb=False):
     print("/ !end star_job namelist")
     print("")
     # controls
-    controls1 = buildMasterControls(work1, first_inlist=inlist1_b1)
-    controls2 = buildMasterControls(work2, first_inlist=inlist1_b2)
+    controls1 = buildMasterControls(work1, first_inlist=work1+'/'+inlist1_b1)
+    controls2 = buildMasterControls(work2, first_inlist=work2+'/'+inlist1_b2)
     print("")
     print("&controls")
     print("")
@@ -546,8 +550,8 @@ def compareBinaryWorkDirs(work1, work2, doPgstar=False, MESA_DIR="", vb=False):
     print("/ !end controls namelist")
     print("")
     if doPgstar:
-        pgstar1 = buildMasterPgstar(work1, first_inlist=inlist1_b1)
-        pgstar2 = buildMasterPgstar(work2, first_inlist=inlist1_b2)
+        pgstar1 = buildMasterPgstar(work1, first_inlist=work1+'/'+inlist1_b1)
+        pgstar2 = buildMasterPgstar(work2, first_inlist=work2+'/'+inlist1_b2)
         print("")
         print("&pgstar")
         print("")
@@ -555,10 +559,11 @@ def compareBinaryWorkDirs(work1, work2, doPgstar=False, MESA_DIR="", vb=False):
         print("")
         print("/ !end pgstar")
         print("")
-    print(" Done with primaries")
-    print(" Compare secondaries now")
-    star_job1 = buildMasterStarJob(work1, first_inlist=inlist2_b1)
-    star_job2 = buildMasterStarJob(work2, first_inlist=inlist2_b2)
+    print("   Done with primaries  ")
+    print("------------------------")
+    print(" Compare secondaries now ")
+    star_job1 = buildMasterStarJob(work1, first_inlist=work1+'/'+inlist2_b1)
+    star_job2 = buildMasterStarJob(work2, first_inlist=work2+'/'+inlist2_b2)
     print("")
     print("&star_job")
     print("")
@@ -566,8 +571,8 @@ def compareBinaryWorkDirs(work1, work2, doPgstar=False, MESA_DIR="", vb=False):
     print("/ !end star_job namelist")
     print("")
     # controls
-    controls1 = buildMasterControls(work1, first_inlist=inlist2_b1)
-    controls2 = buildMasterControls(work2, first_inlist=inlist2_b2)
+    controls1 = buildMasterControls(work1, first_inlist=work1+'/'+inlist2_b1)
+    controls2 = buildMasterControls(work2, first_inlist=work2+'/'+inlist2_b2)
     print("")
     print("&controls")
     print("")
@@ -576,8 +581,8 @@ def compareBinaryWorkDirs(work1, work2, doPgstar=False, MESA_DIR="", vb=False):
     print("/ !end controls namelist")
     print("")
     if doPgstar:
-        pgstar1 = buildMasterPgstar(work1, first_inlist=inlist2_b1)
-        pgstar2 = buildMasterPgstar(work2, first_inlist=inlist2_b2)
+        pgstar1 = buildMasterPgstar(work1, first_inlist=work1+'/'+inlist2_b1)
+        pgstar2 = buildMasterPgstar(work2, first_inlist=work2+'/'+inlist2_b2)
         print("")
         print("&pgstar")
         print("")
@@ -593,10 +598,8 @@ def checkFolderConsistency(work_dir1, work_dir2, doPgstar=False, MESA_DIR="", vb
     isBinary1 = isFolderBinary(work_dir1)
     isBinary2 = isFolderBinary(work_dir2)
     if (isBinary1 and isBinary2):
-        print("Compare two binary star work directories")
         compareBinaryWorkDirs(work_dir1, work_dir2, doPgstar=doPgstar, MESA_DIR=MESA_DIR, vb=vb)
     elif (not isBinary1) and (not isBinary2):
-        print("Compare two single star work directories")
         compareSingleWorkDirs(work_dir1, work_dir2, doPgstar=doPgstar, MESA_DIR=MESA_DIR, vb=vb)
     else:
         print(colored("You're asking to compare a single star directory with a binary.", "yellow"))
