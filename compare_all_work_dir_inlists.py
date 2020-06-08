@@ -573,9 +573,13 @@ def compareBinaryWorkDirs(work1, work2, doPgstar=False, MESA_DIR="", vb=False):
         print("")
         print("/ !end binary_pgstar")
     print("")
+    print("------------------------------------")
     print(" Now compare the individual stars...")
+    print("------------------------------------")
     print("")
-    print(" Compare primary stars")
+    print("*************************")
+    print("* Compare primary stars *")
+    print("*************************")
     star_job1 = buildMasterStarJob(work1, first_inlist=work1 + "/" + inlist1_b1)
     star_job2 = buildMasterStarJob(work2, first_inlist=work2 + "/" + inlist1_b2)
     print("")
@@ -604,9 +608,11 @@ def compareBinaryWorkDirs(work1, work2, doPgstar=False, MESA_DIR="", vb=False):
         print("")
         print("/ !end pgstar")
         print("")
-    print("   Done with primaries  ")
-    print("------------------------")
-    print(" Compare secondaries now ")
+    print("**************************")
+    print("*  Done with primaries   *")
+    print("**************************")
+    print(" Compare secondaries now *")
+    print("**************************")
     star_job1 = buildMasterStarJob(work1, first_inlist=work1 + "/" + inlist2_b1)
     star_job2 = buildMasterStarJob(work2, first_inlist=work2 + "/" + inlist2_b2)
     print("")
@@ -635,10 +641,11 @@ def compareBinaryWorkDirs(work1, work2, doPgstar=False, MESA_DIR="", vb=False):
         print("")
         print("/ !end pgstar")
         print("")
-    print(" Done with secondaries")
+    print("**************************")
+    print("* Done with secondaries  *")
+    print("**************************")
 
-
-def checkFolderConsistency(work_dir1, work_dir2, doPgstar=False, MESA_DIR="", vb=False):
+def checkFoldersConsistency(work_dir1, work_dir2, doPgstar=False, MESA_DIR="", vb=False):
     """ checks if both folders are for single or binary stars and calls the right functions"""
     isBinary1 = isFolderBinary(work_dir1)
     isBinary2 = isFolderBinary(work_dir2)
@@ -672,7 +679,7 @@ def checkFolderConsistency(work_dir1, work_dir2, doPgstar=False, MESA_DIR="", vb
 )
 @click.option("--vb", default=False, help="Show also matching lines using green.")
 def cli_wrapper_directories(work_dir1, work_dir2, pgstar, mesa_dir, vb):
-    checkFolderConsistency(
+    checkFoldersConsistency(
         work_dir1, work_dir2, doPgstar=pgstar, MESA_DIR=mesa_dir, vb=vb
     )
     print("")
