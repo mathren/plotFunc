@@ -23,7 +23,7 @@ import glob
 import sys
 import os
 import re # for getM
-
+import subprocess # for tail
 
 def gitPush(description=""):
     push = input('should we push to the git repo first? [Y/n]')
@@ -68,4 +68,44 @@ def getM(f):
     # use regexp to find mass, will only work if mass is the first number in the path
     m = re.findall("[+-]?\d+\.\d+", f)
     return float(m[0])
-        
+
+
+def tail(f, n): #read the last n lines of f (modified from somewhere on the internet)
+    n=str(n)
+    p = subprocess.Popen(["tail","-n",n, f], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = p.communicate()
+    # print stdout
+    lines = stdout.splitlines()
+    return lines
+
+
+
+def getTerminationCodeFromOutput(f):
+    """
+    Assuming you run MESA piping the output to a file called output
+    or out (possibly using tee as in ./rn | tee output), this will scan
+    this file for the termination code string and return it. It looks for 
+    the file in your run folder
+    """
+    if os.path.isfile(f+'/output'):
+        outputfile = f+'/output'
+    elif os.path.isfile(f+'/out'):
+        outputfile = f+'/out'
+    else:
+        print("can't find output file")
+        print("did you forget to pipe ./rn or ./re to a file?")
+        return ""
+    end_out = tail(outputfile,50)
+    termination_code = "Couldn't find termination code"
+    # print end_out
+    for i in range(len(end_out)-1,0,-1):
+        line = str(end_out[i].decode('utf-8'))
+        # print(line)
+        if ('termination code:' in line):
+            termination_code = line.split(':')[-1].strip()
+            break
+        elif (('star is going PISN!' in line) or ('above the escape velocity, PISN!' in line)):
+            termination_code = "PISN"
+            break
+    return termination_code
+    

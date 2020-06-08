@@ -36,8 +36,7 @@ from termcolor import colored
 # parallelization stuff
 from joblib import Parallel, delayed
 import multiprocessing
-import subprocess
-
+from utilsLib import tail
 
 ## define some colors ----------------------------------------------------------------------
 
@@ -119,14 +118,6 @@ def getPrePulseProfile(f):
         print(colored("cannot find pre-pulse profile!","red"))
         return ''
 
-
-def tail(f, n): #read the last n lines of f (modified from somewhere on the internet)
-    n=str(n)
-    p = subprocess.Popen(["tail","-n",n, f], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = p.communicate()
-    # print stdout
-    lines = stdout.splitlines()
-    return lines
 
 ### Plotting --------------------------------------------------------------------------------------------------------------------
 
