@@ -70,7 +70,8 @@ def getM(f):
     return float(m[0])
 
 
-def tail(f, n): #read the last n lines of f (modified from somewhere on the internet)
+def tail(f, n=1):
+    #read the last n lines of f (modified from somewhere on the internet)
     n=str(n)
     p = subprocess.Popen(["tail","-n",n, f], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
