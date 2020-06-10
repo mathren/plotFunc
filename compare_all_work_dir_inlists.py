@@ -24,21 +24,11 @@
 # sys.path.append('path/to/folder/plotFunc/')
 from compare_inlists import *
 
-
 # ------------------------- some auxiliary functions ----------------------------------
-
-
-def isPathAbsolute(path):
-    # print(path[0])
-    if path[0] == "/":
-        return True
-    else:
-        return False
-
 
 def appendInlistPath(path_list, path, workDir="./"):
     # print(path_list, path, workDir)
-    if isPathAbsolute(path) == True:
+    if os.path.isabs(path):
         path_list.append(path)
     else:  # it's relative
         path_list.append(workDir + "/" + path)
@@ -66,7 +56,7 @@ def isFolderBinary(workDir):
 
 
 def getMasterInlistStarsInBinaries(job1, job2, MESA_DIR=""):
-    """ 
+    """
     reads the inlist for each individual star in a binary 
     for both folders we are comparing. If not present, use the default
     """
@@ -302,6 +292,7 @@ def buildMasterStarJob(workDir, first_inlist=""):
         print("...reading " + current_inlist + " star_job namelist")
         job_to_add = getJobNamelist(current_inlist)[0]
         inlists_to_add = checkIfMoreStarJob(job_to_add, workDir=workDir)
+        # merge dictionaries with over-write
         job = {**job, **job_to_add}
         ## note: if the same read_extra_star_job is used in multiple
         ## inlists, only the last one works because settings
@@ -343,7 +334,7 @@ def buildMasterBinaryJob(workDir, first_inlist=""):
         ## remove inlist we are doing now from list
         inlists_to_be_read = inlists_to_be_read.remove(current_inlist)
         ## add possible new inlists
-        if inlists_to_add != None:
+        if not inlists_to_add:
             try:
                 inlists_to_be_read = inlists_to_be_read + inlists_to_add
             except TypeError:
@@ -376,7 +367,7 @@ def buildMasterControls(workDir, first_inlist=""):
         ## remove inlist we are doing now from list
         inlists_to_be_read = inlists_to_be_read.remove(current_inlist)
         ## add possible new inlists
-        if inlists_to_add != None:
+        if not inlists_to_add:
             try:
                 inlists_to_be_read = inlists_to_be_read + inlists_to_add
             except TypeError:
