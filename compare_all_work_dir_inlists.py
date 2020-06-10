@@ -54,7 +54,7 @@ def appendInlistPath(path_list, path, workDir="./"):
     return path_list
 
 
-def getFirstInlist(workDir):
+def getFirstInlist(workDir: str):
     inlist = workDir + "/inlist"
     if os.path.isfile(inlist):
         return inlist
@@ -63,13 +63,17 @@ def getFirstInlist(workDir):
         sys.exit()
 
 
-def isFolderBinary(workDir):
+def isFolderBinary(workDir: str):
+    """
+    checks if the provided path is to a work directory for a MESA binary run
+    (returns True) or single star (returns False)
+    """
     inlist = getFirstInlist(workDir)
     isBinary = getJobNamelist(inlist)[1]
     return isBinary
 
 
-def getMasterInlistStarsInBinaries(job1, job2, MESA_DIR=""):
+def getMasterInlistStarsInBinaries(job1: dict, job2: dict, MESA_DIR=""):
     """
     reads the inlist for each individual star in a binary 
     for both folders we are comparing. If not present, use the default
@@ -114,7 +118,7 @@ def getMasterInlistStarsInBinaries(job1, job2, MESA_DIR=""):
 # ------------------ check if there are nested namelists -------------------------------
 
 
-def checkIfMoreStarJob(job, workDir="./"):
+def checkIfMoreStarJob(job: dict, workDir="./"):
     """
     Check if there are more star_job namelists to be read and returns a 
     list of the paths to their inlists
@@ -138,7 +142,7 @@ def checkIfMoreStarJob(job, workDir="./"):
     return inlists_to_be_read
 
 
-def checkIfMoreBinaryJob(job, workDir="./"):
+def checkIfMoreBinaryJob(job: dict, workDir="./"):
     """
     Check if there are more binary_job namelists to be read and returns a
     list of the paths to their inlists
@@ -162,7 +166,7 @@ def checkIfMoreBinaryJob(job, workDir="./"):
     return inlists_to_be_read
 
 
-def checkIfMoreControls(controls, workDir="./"):
+def checkIfMoreControls(controls: dict, workDir="./"):
     """
     Check if there are more controls namelists to be read and returns a 
     list of the paths to their inlists
@@ -186,7 +190,7 @@ def checkIfMoreControls(controls, workDir="./"):
     return inlists_to_be_read
 
 
-def checkIfMoreBinaryControls(binary_controls, workDir="./"):
+def checkIfMoreBinaryControls(binary_controls: dict, workDir="./"):
     """
     Check if there are more binary_controls namelists to be read and returns a 
     list of the paths to their inlists
@@ -210,7 +214,7 @@ def checkIfMoreBinaryControls(binary_controls, workDir="./"):
     return inlists_to_be_read
 
 
-def checkIfMorePgstar(pgstar, workDir="./"):
+def checkIfMorePgstar(pgstar: dict, workDir="./"):
     """
     Check if there are more pgstar namelists to be read and returns a 
     list of the paths to their inlists
@@ -234,7 +238,7 @@ def checkIfMorePgstar(pgstar, workDir="./"):
     return inlists_to_be_read
 
 
-def checkIfMoreBinaryPgstar(binary_pgstar, workDir="./"):
+def checkIfMoreBinaryPgstar(binary_pgstar: dict, workDir="./"):
     """
     Check if there are more binary_pgstar namelists to be read and returns a 
     list of the paths to their inlists
@@ -261,7 +265,7 @@ def checkIfMoreBinaryPgstar(binary_pgstar, workDir="./"):
 # ----------------- build the dictionary that MESA will use ------------------------------
 
 
-def buildMasterStarJob(workDir, first_inlist=""):
+def buildMasterStarJob(workDir: str, first_inlist=""):
     """
     Builds the star_job namelist by reading the inlists starting from inlist, unless an
     optional different starting inlist is passed. 
@@ -295,7 +299,7 @@ def buildMasterStarJob(workDir, first_inlist=""):
     return job
 
 
-def buildMasterBinaryJob(workDir, first_inlist=""):
+def buildMasterBinaryJob(workDir: str, first_inlist=""):
     """
     Builds the namelist binary_job by reading the inlists starting from inlist, unless an
     optional different starting inlist is passed.
@@ -328,7 +332,7 @@ def buildMasterBinaryJob(workDir, first_inlist=""):
     return job
 
 
-def buildMasterControls(workDir, first_inlist=""):
+def buildMasterControls(workDir: str, first_inlist=""):
     """
     Builds the controls namelist by reading the inlists starting from inlist, unless an
     optional different starting inlist is passed.
@@ -360,7 +364,7 @@ def buildMasterControls(workDir, first_inlist=""):
     return controls
 
 
-def buildMasterBinaryControls(workDir, first_inlist=""):
+def buildMasterBinaryControls(workDir: str, first_inlist=""):
     """
     Builds the binary_controls namelist by reading the inlists starting from inlist, unless an
     optional different starting inlist is passed.
@@ -392,7 +396,7 @@ def buildMasterBinaryControls(workDir, first_inlist=""):
     return binary_controls
 
 
-def buildMasterPgstar(workDir, first_inlist=""):
+def buildMasterPgstar(workDir: str, first_inlist=""):
     """
     Builds the pgstar namelist by reading the inlists starting from inlist, unless an
     optional different starting inlist is passed.
@@ -424,7 +428,7 @@ def buildMasterPgstar(workDir, first_inlist=""):
     return pgstar
 
 
-def buildMasterBinaryPgstar(workDir, first_inlist=""):
+def buildMasterBinaryPgstar(workDir: str, first_inlist=""):
     """
     Builds the binary_pgstar namelist by reading the inlists starting from inlist, unless an
     optional different starting inlist is passed.
@@ -459,7 +463,7 @@ def buildMasterBinaryPgstar(workDir, first_inlist=""):
 # ----------------------------- do the comparison ----------------------------------
 
 
-def compareSingleWorkDirs(work1, work2, doPgstar=False, MESA_DIR="", vb=False):
+def compareSingleWorkDirs(work1: str, work2: str, doPgstar=False, MESA_DIR="", vb=False):
     """
     compare the MESA setup for single stars in two work directories
     allowing for multiple nested inlists
@@ -502,7 +506,7 @@ def compareSingleWorkDirs(work1, work2, doPgstar=False, MESA_DIR="", vb=False):
         print("/ !end pgstar")
 
 
-def compareBinaryWorkDirs(work1, work2, doPgstar=False, MESA_DIR="", vb=False):
+def compareBinaryWorkDirs(work1: str, work2: str, doPgstar=False, MESA_DIR="", vb=False):
     """
     compares the MESA setup for two binary runs
     """
@@ -619,7 +623,7 @@ def compareBinaryWorkDirs(work1, work2, doPgstar=False, MESA_DIR="", vb=False):
     print("**************************")
 
 
-def checkFoldersConsistency(work_dir1, work_dir2, doPgstar=False, MESA_DIR="", vb=False):
+def checkFoldersConsistency(work_dir1: str, work_dir2: str, doPgstar=False, MESA_DIR="", vb=False):
     """ checks if both folders are for single or binary stars and calls the right functions"""
     isBinary1 = isFolderBinary(work_dir1)
     isBinary2 = isFolderBinary(work_dir2)
