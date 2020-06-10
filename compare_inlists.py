@@ -23,7 +23,7 @@
 
 import os
 import sys
-
+from pathlib import Path
 ## pip install -U termcolor
 from termcolor import colored
 
@@ -75,8 +75,11 @@ def cleanVal(val):
     return val
 
 
-def getMESA_DIR():
-    """ read the MESA_DIR in the environment variables if not provided """
+def getMESA_DIR() -> str:
+    """
+    Read the MESA_DIR in the environment variables if not provided, 
+    and returns it as a string.
+    """
     try:
         MESA_DIR = os.environ["MESA_DIR"]
         return MESA_DIR
@@ -101,15 +104,15 @@ def getDefaults(namelist: str, MESA_DIR=""):
     if MESA_DIR == "":
         MESA_DIR = getMESA_DIR()
     if namelist.lower() == "star_job":
-        defaultFname = MESA_DIR + "/star/defaults/star_job.defaults"
+        defaultFname = Path(MESA_DIR + "/star/defaults/star_job.defaults")
     elif namelist.lower() == "binary_job":
-        defaultFname = MESA_DIR + "/binary/defaults/binary_job.defaults"
+        defaultFname = Path(MESA_DIR + "/binary/defaults/binary_job.defaults")
     elif namelist.lower() == "controls":
-        defaultFname = MESA_DIR + "/star/defaults/controls.defaults"
+        defaultFname = Path(MESA_DIR + "/star/defaults/controls.defaults")
     elif namelist.lower() == "binary_controls":
-        defaultFname = MESA_DIR + "/binary/defaults/binary_controls.defaults"
+        defaultFname = Path(MESA_DIR + "/binary/defaults/binary_controls.defaults")
     elif namelist.lower() == "pgstar":
-        defaultFname = MESA_DIR + "/star/defaults/pgstar.defaults"
+        defaultFname = Path(MESA_DIR + "/star/defaults/pgstar.defaults")
     else:
         print(
             colored("Namelist: " + namelist + " not recognized, don't know what to do!", "yellow",)
@@ -485,7 +488,7 @@ def test_diffInlists(outfile="", MESA_DIR=""):
     help="use customized location of $MESA_DIR. Will use environment variable if empty and return an error if empty.",
 )
 @click.option("--vb", default=False, help="Show also matching lines using green.")
-def cli_wrapper(inlist1, inlist2, pgstar, mesa_dir, vb):
+def cli_wrapper(inlist1: str, inlist2: str, pgstar: bool, mesa_dir: str, vb: bool):
     diffInlists(inlist1, inlist2, doPgstar=pgstar, MESA_DIR=mesa_dir, vb=vb)
     print("")
     print("*********")

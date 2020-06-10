@@ -23,7 +23,7 @@
 
 import os
 import sys
-
+from pathlib import Path
 ## pip install -U termcolor
 from termcolor import colored
 
@@ -45,9 +45,12 @@ from compare_inlists import (
 # ------------------------- some auxiliary functions ----------------------------------
 
 
-def appendInlistPath(path_list, path, workDir="./"):
-    # print(path_list, path, workDir)
-    if os.path.isabs(path):
+def appendInlistPath(path_list: list, path: str, workDir="./"):
+    """
+    takes the list of paths to inlists, and adds the path to a new inlist,
+    taking care of absolute vs. relative paths
+    """
+    if Path(path).is_absolute():
         path_list.append(path)
     else:  # it's relative
         path_list.append(workDir + "/" + path)
