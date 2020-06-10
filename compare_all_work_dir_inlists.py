@@ -21,10 +21,29 @@
 
 ## This has been tested with MESA version 12778
 
+import os
+import sys
+
+## pip install -U termcolor
+from termcolor import colored
+
+## pip install -U click
+import click
+
 # sys.path.append('path/to/folder/plotFunc/')
-from compare_inlists import *
+from compare_inlists import (
+    getJobNamelist,
+    getControlsNamelist,
+    getDefaults,
+    diffBinaryControls,
+    diffBinaryJob,
+    diffControls,
+    diffPgstar,
+    diffStarJob,
+)
 
 # ------------------------- some auxiliary functions ----------------------------------
+
 
 def appendInlistPath(path_list, path, workDir="./"):
     # print(path_list, path, workDir)
@@ -40,12 +59,7 @@ def getFirstInlist(workDir):
     if os.path.isfile(inlist):
         return inlist
     else:
-        print(
-            colored(
-                workDir + " does not contain an inlist, this is too complex for me",
-                "yellow",
-            )
-        )
+        print(colored(workDir + " has no inlist, too complex for me", "yellow"))
         sys.exit()
 
 
@@ -179,39 +193,19 @@ def checkIfMoreBinaryControls(binary_controls, workDir="./"):
     """
     inlists_to_be_read = []
     if binary_controls.get("read_extra_binary_controls_inlist1") == ".true.":
-        new_inlist = (
-            binary_controls.get("extra_binary_controls_inlist1_name")
-            .strip("'")
-            .strip('"')
-        )
+        new_inlist = binary_controls.get("extra_binary_controls_inlist1_name").strip("'").strip('"')
         inlists_to_be_read = appendInlistPath(inlists_to_be_read, new_inlist, workDir)
     if binary_controls.get("read_extra_binary_controls_inlist2") == ".true.":
-        new_inlist = (
-            binary_controls.get("extra_binary_controls_inlist2_name")
-            .strip("'")
-            .strip('"')
-        )
+        new_inlist = binary_controls.get("extra_binary_controls_inlist2_name").strip("'").strip('"')
         inlists_to_be_read = appendInlistPath(inlists_to_be_read, new_inlist, workDir)
     if binary_controls.get("read_extra_binary_controls_inlist3") == ".true.":
-        new_inlist = (
-            binary_controls.get("extra_binary_controls_inlist3_name")
-            .strip("'")
-            .strip('"')
-        )
+        new_inlist = binary_controls.get("extra_binary_controls_inlist3_name").strip("'").strip('"')
         inlists_to_be_read = appendInlistPath(inlists_to_be_read, new_inlist, workDir)
     if binary_controls.get("read_extra_binary_controls_inlist4") == ".true.":
-        new_inlist = (
-            binary_controls.get("extra_binary_controls_inlist4_name")
-            .strip("'")
-            .strip('"')
-        )
+        new_inlist = binary_controls.get("extra_binary_controls_inlist4_name").strip("'").strip('"')
         inlists_to_be_read = appendInlistPath(inlists_to_be_read, new_inlist, workDir)
     if binary_controls.get("read_extra_binary_controls_inlist5") == ".true.":
-        new_inlist = (
-            binary_controls.get("extra_binary_controls_inlist5_name")
-            .strip("'")
-            .strip('"')
-        )
+        new_inlist = binary_controls.get("extra_binary_controls_inlist5_name").strip("'").strip('"')
         inlists_to_be_read = appendInlistPath(inlists_to_be_read, new_inlist, workDir)
     return inlists_to_be_read
 
@@ -247,29 +241,19 @@ def checkIfMoreBinaryPgstar(binary_pgstar, workDir="./"):
     """
     inlists_to_be_read = []
     if binary_pgstar.get("read_extra_binary_pgstar_inlist1") == ".true.":
-        new_inlist = (
-            binary_pgstar.get("extra_binary_pgstar_inlist1_name").strip("'").strip('"')
-        )
+        new_inlist = binary_pgstar.get("extra_binary_pgstar_inlist1_name").strip("'").strip('"')
         inlists_to_be_read = appendInlistPath(inlists_to_be_read, new_inlist, workDir)
     if binary_pgstar.get("read_extra_binary_pgstar_inlist2") == ".true.":
-        new_inlist = (
-            binary_pgstar.get("extra_binary_pgstar_inlist2_name").strip("'").strip('"')
-        )
+        new_inlist = binary_pgstar.get("extra_binary_pgstar_inlist2_name").strip("'").strip('"')
         inlists_to_be_read = appendInlistPath(inlists_to_be_read, new_inlist, workDir)
     if binary_pgstar.get("read_extra_binary_pgstar_inlist3") == ".true.":
-        new_inlist = (
-            binary_pgstar.get("extra_binary_pgstar_inlist3_name").strip("'").strip('"')
-        )
+        new_inlist = binary_pgstar.get("extra_binary_pgstar_inlist3_name").strip("'").strip('"')
         inlists_to_be_read = appendInlistPath(inlists_to_be_read, new_inlist, workDir)
     if binary_pgstar.get("read_extra_binary_pgstar_inlist4") == ".true.":
-        new_inlist = (
-            binary_pgstar.get("extra_binary_pgstar_inlist4_name").strip("'").strip('"')
-        )
+        new_inlist = binary_pgstar.get("extra_binary_pgstar_inlist4_name").strip("'").strip('"')
         inlists_to_be_read = appendInlistPath(inlists_to_be_read, new_inlist, workDir)
     if binary_pgstar.get("read_extra_binary_pgstar_inlist5") == ".true.":
-        new_inlist = (
-            binary_pgstar.get("extra_binary_pgstar_inlist5_name").strip("'").strip('"')
-        )
+        new_inlist = binary_pgstar.get("extra_binary_pgstar_inlist5_name").strip("'").strip('"')
         inlists_to_be_read = appendInlistPath(inlists_to_be_read, new_inlist, workDir)
     return inlists_to_be_read
 
@@ -390,9 +374,7 @@ def buildMasterBinaryControls(workDir, first_inlist=""):
         current_inlist = inlists_to_be_read[0]
         print("...reading " + current_inlist + " binary_controls namelist")
         binary_controls_to_add = getControlsNamelist(current_inlist)[0]
-        inlists_to_add = checkIfMoreBinaryControls(
-            binary_controls_to_add, workDir=workDir
-        )
+        inlists_to_add = checkIfMoreBinaryControls(binary_controls_to_add, workDir=workDir)
         binary_controls = {**binary_controls, **binary_controls_to_add}
         ## note: if the same read_extra_star_binary_controls is used in multiple
         ## inlists, only the last one works because settings
@@ -636,25 +618,17 @@ def compareBinaryWorkDirs(work1, work2, doPgstar=False, MESA_DIR="", vb=False):
     print("* Done with secondaries  *")
     print("**************************")
 
+
 def checkFoldersConsistency(work_dir1, work_dir2, doPgstar=False, MESA_DIR="", vb=False):
     """ checks if both folders are for single or binary stars and calls the right functions"""
     isBinary1 = isFolderBinary(work_dir1)
     isBinary2 = isFolderBinary(work_dir2)
     if isBinary1 and isBinary2:
-        compareBinaryWorkDirs(
-            work_dir1, work_dir2, doPgstar=doPgstar, MESA_DIR=MESA_DIR, vb=vb
-        )
+        compareBinaryWorkDirs(work_dir1, work_dir2, doPgstar=doPgstar, MESA_DIR=MESA_DIR, vb=vb)
     elif (not isBinary1) and (not isBinary2):
-        compareSingleWorkDirs(
-            work_dir1, work_dir2, doPgstar=doPgstar, MESA_DIR=MESA_DIR, vb=vb
-        )
+        compareSingleWorkDirs(work_dir1, work_dir2, doPgstar=doPgstar, MESA_DIR=MESA_DIR, vb=vb)
     else:
-        print(
-            colored(
-                "You're asking to compare a single star directory with a binary.",
-                "yellow",
-            )
-        )
+        print(colored("You're asking to compare a single star directory with a binary.", "yellow",))
         print(colored("I politely decline to do so.", "yellow"))
 
 
@@ -670,9 +644,7 @@ def checkFoldersConsistency(work_dir1, work_dir2, doPgstar=False, MESA_DIR="", v
 )
 @click.option("--vb", default=False, help="Show also matching lines using green.")
 def cli_wrapper_directories(work_dir1, work_dir2, pgstar, mesa_dir, vb):
-    checkFoldersConsistency(
-        work_dir1, work_dir2, doPgstar=pgstar, MESA_DIR=mesa_dir, vb=vb
-    )
+    checkFoldersConsistency(work_dir1, work_dir2, doPgstar=pgstar, MESA_DIR=mesa_dir, vb=vb)
     print("")
     print("*********")
     print("* done! *")
