@@ -23,7 +23,7 @@
 
 import os
 import sys
-
+from pathlib import Path
 ## pip install -U termcolor
 from termcolor import colored
 
@@ -34,7 +34,11 @@ import click
 # ----- some auxiliary functions ----------------------------------
 
 
-def getNameVal(line):
+def getNameVal(line: str):
+    """
+    read the line removing comments and white spaces
+    and returns the name of the option and the associated value
+    """
     optionName = line.split("=")[0].rstrip().lstrip()
     optionName = optionName.lower()  ## convert everything to lowercase
     value = line.split("=")[-1].split("!")[0].rstrip().lstrip()
@@ -42,7 +46,7 @@ def getNameVal(line):
 
 
 def convertBool(val):
-    # fix occasional typo in the docs
+    """ fix occasional typo in MESA docs, might not be needed """
     if (val == ".true.") or (val == ".true"):
         return ".true."
     elif (val == ".false.") or (val == ".false"):
@@ -52,6 +56,10 @@ def convertBool(val):
 
 
 def convertFloat(val):
+    """
+    convert inlists entries into python floats
+    to avoid mismatch do to formatting issues
+    """
     try:
         tmp = val.replace("d", "e")
         new_val = float(tmp)
@@ -61,13 +69,17 @@ def convertFloat(val):
 
 
 def cleanVal(val):
+    """ clean values in inlists """
     val = convertFloat(val)
     val = convertBool(val)
     return val
 
 
-def getMESA_DIR():
-    # read the MESA_DIR in the environment variables if not provided
+def getMESA_DIR() -> str:
+    """
+    Read the MESA_DIR in the environment variables if not provided, 
+    and returns it as a string.
+    """
     try:
         MESA_DIR = os.environ["MESA_DIR"]
         return MESA_DIR
@@ -80,31 +92,37 @@ def getMESA_DIR():
 # ----------------------- read the defaults ----------------------------------
 
 
-def getDefaults(namelist, MESA_DIR=""):
+def getDefaults(namelist: str, MESA_DIR=""):
+    """
+    read the namelists from the MESA_DIR folder.
+    MESA_DIR will be read from the environment variables if it is an empty string
+
+    namelist can be either star_job, binary_job, controls, binary_controls, or pgstar
+    returns a dictionary with MESA options as keys and the values set in the default files
+    """
     defaults = {}
     if MESA_DIR == "":
         MESA_DIR = getMESA_DIR()
     if namelist.lower() == "star_job":
-        defaultFname = MESA_DIR + "/star/defaults/star_job.defaults"
+        defaultFname = Path(MESA_DIR + "/star/defaults/star_job.defaults")
     elif namelist.lower() == "binary_job":
-        defaultFname = MESA_DIR + "/binary/defaults/binary_job.defaults"
+        defaultFname = Path(MESA_DIR + "/binary/defaults/binary_job.defaults")
     elif namelist.lower() == "controls":
-        defaultFname = MESA_DIR + "/star/defaults/controls.defaults"
+        defaultFname = Path(MESA_DIR + "/star/defaults/controls.defaults")
     elif namelist.lower() == "binary_controls":
-        defaultFname = MESA_DIR + "/binary/defaults/binary_controls.defaults"
+        defaultFname = Path(MESA_DIR + "/binary/defaults/binary_controls.defaults")
     elif namelist.lower() == "pgstar":
-        defaultFname = MESA_DIR + "/star/defaults/pgstar.defaults"
+        defaultFname = Path(MESA_DIR + "/star/defaults/pgstar.defaults")
     else:
-        print(colored(
-            "Namelist: " + namelist + " not recognized, don't know what to do!",
-            "yellow",
-        ))
+        print(
+            colored("Namelist: " + namelist + " not recognized, don't know what to do!", "yellow",)
+        )
         return defaults
     # now if we did not exit already, load a dict
     # print(defaultFname)
     with open(defaultFname, "r") as f:
         for i, line in enumerate(f):
-            l = line.strip("\n\r").rstrip().lstrip()  # remove \n and white spaces
+            l = line.strip("\n\r").strip()  # remove \n and white spaces
             if (l == "") or (l[0] == "!"):
                 # empty line or comment, move on
                 continue
@@ -119,10 +137,10 @@ def getDefaults(namelist, MESA_DIR=""):
 # --------------------- read namelist of the inlists -------------------------
 
 
-def getJobNamelist(inlist):
+def getJobNamelist(inlist: str):
     """
-    returns a dictionary of the star_job or binary_job namelist entries and values
-    and a flag for binaries
+    returns a dictionary of the star_job or binary_job namelist entries 
+    inside inlist, and values and a flag for binaries
     """
     job = {}
     isBinary = False
@@ -154,8 +172,8 @@ def getJobNamelist(inlist):
     return job, isBinary
 
 
-def getControlsNamelist(inlist):
-    """ 
+def getControlsNamelist(inlist: str):
+    """
     returns a dictionary of the controls or binary_controls namelist entries and values 
     and a flag for binaries
     """
@@ -189,7 +207,7 @@ def getControlsNamelist(inlist):
     return controls, isBinary
 
 
-def getPgstarNamelist(inlist):
+def getPgstarNamelist(inlist: str):
     """ 
     returns a dictionary of the pgstar namelist entries and values 
     """
@@ -220,9 +238,9 @@ def getPgstarNamelist(inlist):
 # ---------- compare namelists entries between each other and defaults -------------------------
 
 
-def compareAndReport(k, dic1, dic2, string1, string2, vb=False):
+def compareAndReport(k: str, dic1: dict, dic2: dict, string1: str, string2: str, vb=False):
     """
-    Given two dictionaries, compares them entry by entry.
+    Given two dictionaries, compares their entry k.
     Assumes the inlist name is less than 30 characters.
     The longest MESA parameter is about 45 characters.
     """
@@ -236,9 +254,11 @@ def compareAndReport(k, dic1, dic2, string1, string2, vb=False):
         print("")
 
 
-def compareDefaultsAndReport(k, dic, dic_defaults, string, string_other, vb=False):
+def compareDefaultsAndReport(
+    k: str, dic: dict, dic_defaults: dict, string: str, string_other: str, vb=False
+):
     """
-    Given two dictionaries, compares them entry by entry and prints if not default.
+    Given two dictionaries, compares the entry with key k and prints if not default.
     Assumes the inlist name is less than 30 characters.
     The longest MESA parameter is about 45 characters.
     """
@@ -263,7 +283,7 @@ def compareDefaultsAndReport(k, dic, dic_defaults, string, string_other, vb=Fals
 # --------------do the diff individual namelists ---------------------------
 
 
-def diffStarJob(job1, job2, string1, string2, MESA_DIR="", vb=False):
+def diffStarJob(job1: dict, job2: dict, string1: str, string2: str, MESA_DIR="", vb=False):
     # check the keys appearing in both
     for k in job1.keys() & job2.keys():
         compareAndReport(k, job1, job2, string1, string2, vb)
@@ -279,7 +299,9 @@ def diffStarJob(job1, job2, string1, string2, MESA_DIR="", vb=False):
         compareDefaultsAndReport(k, job2, defaults, string2, string1, vb)
 
 
-def diffControls(controls1, controls2, string1, string2, MESA_DIR="", vb=False):
+def diffControls(
+    controls1: dict, controls2: dict, string1: str, string2: str, MESA_DIR="", vb=False
+):
     # check the keys appearing in both
     for k in controls1.keys() & controls2.keys():
         compareAndReport(k, controls1, controls2, string1, string2, vb)
@@ -295,7 +317,7 @@ def diffControls(controls1, controls2, string1, string2, MESA_DIR="", vb=False):
         compareDefaultsAndReport(k, controls2, defaults, string2, string1, vb)
 
 
-def diffPgstar(pgstar1, pgstar2, string1, string2, MESA_DIR="", vb=False):
+def diffPgstar(pgstar1: dict, pgstar2: dict, string1: str, string2: str, MESA_DIR="", vb=False):
     # check the keys appearing in both
     for k in pgstar1.keys() & pgstar2.keys():
         compareAndReport(k, pgstar1, pgstar2, string1, string2, vb)
@@ -311,7 +333,7 @@ def diffPgstar(pgstar1, pgstar2, string1, string2, MESA_DIR="", vb=False):
         compareDefaultsAndReport(k, pgstar2, defaults, string2, string1, vb)
 
 
-def diffBinaryJob(job1, job2, string1, string2, MESA_DIR="", vb=False):
+def diffBinaryJob(job1: dict, job2: dict, string1: str, string2: str, MESA_DIR="", vb=False):
     # check the keys appearing in both
     for k in job1.keys() & job2.keys():
         compareAndReport(k, job1, job2, string1, string2, vb)
@@ -327,7 +349,9 @@ def diffBinaryJob(job1, job2, string1, string2, MESA_DIR="", vb=False):
         compareDefaultsAndReport(k, job2, defaults, string2, string1, vb)
 
 
-def diffBinaryControls(controls1, controls2, string1, string2, MESA_DIR="", vb=False):
+def diffBinaryControls(
+    controls1: dict, controls2: dict, string1: str, string2: str, MESA_DIR="", vb=False
+):
     # check the keys appearing in both
     for k in controls1.keys() & controls2.keys():
         compareAndReport(k, controls1, controls2, string1, string2, vb)
@@ -346,12 +370,12 @@ def diffBinaryControls(controls1, controls2, string1, string2, MESA_DIR="", vb=F
 # ----------- do the diff of the whole inlists ----------------------------
 
 
-def diffInlists(inlist1, inlist2, doPgstar=False, MESA_DIR="", vb=False):
+def diffInlists(inlist1: str, inlist2: str, doPgstar=False, MESA_DIR="", vb=False):
     """
     Takes the path of two inlists and compares them taking care of
-    comments and missing entries set to default. 
+    comments and missing entries set to default.
     Prints a pretty diff of the inlists, or nothing if they are the same (unless vb=True).
-    Will ignore order, comments, and empty lines. Works for single stars and binaries
+    Will ignore order, comments, and empty lines. Works for single stars and binaries.
     """
     if MESA_DIR == "":
         MESA_DIR = getMESA_DIR()
@@ -464,7 +488,7 @@ def test_diffInlists(outfile="", MESA_DIR=""):
     help="use customized location of $MESA_DIR. Will use environment variable if empty and return an error if empty.",
 )
 @click.option("--vb", default=False, help="Show also matching lines using green.")
-def cli_wrapper(inlist1, inlist2, pgstar, mesa_dir, vb):
+def cli_wrapper(inlist1: str, inlist2: str, pgstar: bool, mesa_dir: str, vb: bool):
     diffInlists(inlist1, inlist2, doPgstar=pgstar, MESA_DIR=mesa_dir, vb=vb)
     print("")
     print("*********")
