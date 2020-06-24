@@ -94,32 +94,29 @@ def scrub(file):
 
 
 
-def getSrcCol(file, clean=True, convert=True):
+def getSrcCol(f, clean=True, convert=True):
     # TODO: maybe one day I'll update this to be a pandas dataframe
     # should work both for history and profiles
     # read header
-    P = open(file)
-    for i, line in enumerate(P):
-        if i==5:
-            col = line.split()
-            break
-    P.close()
+    with open(f, 'r') as P:
+        for i, line in enumerate(P):
+            if i==5:
+                col = line.split()
+                break
     # check if binary exists
-    mybinfile = str(file[:-4])+".npy"
+    mybinfile = str(f[:-4])+".npy"
     if (os.path.isfile(mybinfile)):
         # read the column and binary
-        src = reader(file, len(col), 6)
-        return src, col
+        src = reader(f, len(col), 6)
     else: # binary file does not exist
         print("... Binary file does not yet exist")
         if clean:
-            scrub(file)
+            scrub(f)
         if convert:
-            src = reader(file, len(col), 6)
-            return src, col
+            src = reader(f, len(col), 6)
         else:
-            src = np.genfromtxt(file, skip_header=6)
-            return src, col
+            src = np.genfromtxt(f, skip_header=6)
+    return src, col
 
 ## plotting useful things ---------------------------------------------------------------------
 
