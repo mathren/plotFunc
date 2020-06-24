@@ -67,6 +67,7 @@ def MoveIntoFolder(folder, description=""):
 def getM(f):
     # use regexp to find mass, will only work if mass is the first number in the path
     m = re.findall("[+-]?\d+\.\d+", f)
+    # print(m)
     return float(m[0])
 
 
