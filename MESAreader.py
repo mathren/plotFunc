@@ -88,6 +88,7 @@ def reader(myfile, ncols, nhead):
 
 
 def scrub(file):
+    # this uses the log_scrubber.py script from Bill Wolf
     print("... let me scrub this for you")
     os.system('python log_scrubber.py '+file)
     print("... done cleaning", file)
