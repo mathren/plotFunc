@@ -116,7 +116,13 @@ def getTerminationCodeFromOutput(f):
             break
     return termination_code
 
-
+def getLastProfile(folder):
+    """
+    returns the path to the last profile written in the folder, assumes it is a LOGS* folder
+    from a MESA run
+    """
+    profiles = sorted(glob.glob(folder+"/profile*.data"), os.path.getmtime)
+    print(profiles)
 
 def mvFolder(runFolder, targetFolder, targetTerminationCode="max_model_number"):
     """ 
@@ -125,18 +131,32 @@ def mvFolder(runFolder, targetFolder, targetTerminationCode="max_model_number"):
     """
     terminationCode = getTerminationCodeFromOutput(runFolder)
     if terminationCode == targetTerminationCode:
+        ## make the folder if needed
         if not os.path.isdir(targetFolder):
             os.system('mkdir -p '+targetFolder)
-        # # copy output
-        os.system("cp -r "+runFolder+"/LOGS "+" "+targetFolder)
-        # copy input
-        os.system("cp -r "+runFolder+"/inlist* "+targetFolder)
+        if not os.path.isdir(targetFolder+"/LOGS/"):
+            os.system('mkdir -p '+targetFolder+"/LOGS/")
+        ## these below are not needed for single stars, but whatever
+        if not os.path.isdir(targetFolder+"/LOGS1/"):
+            os.system('mkdir -p '+targetFolder+"/LOGS1/")
+        if not os.path.isdir(targetFolder+"/LOGS2/"):
+            os.system('mkdir -p '+targetFolder+"/LOGS2/")
+        ## copy history output
+        os.system("cp -r "+runFolder+"/LOGS/history.data "+" "+targetFolder+"/LOGS/history.data")
+        os.system("cp -r "+runFolder+"/LOGS1/history.data "+" "+targetFolder+"/LOGS1/history.data")
+        os.system("cp -r "+runFolder+"/LOGS2/history.data "+" "+targetFolder+"/LOGS2/history.data")
         os.system("cp -r "+runFolder+"/binary_history.data "+targetFolder)
+        ## copy last profile
+        os.system("cp -r "+runFolder+"/LOGS/ "+" "+targetFolder+"LOGS/")
+        os.system("cp -r "+runFolder+"/LOGS1/ "+" "+targetFolder+"/LOGS1/")
+        os.system("cp -r "+runFolder+"/LOGS2/ "+" "+targetFolder+"/LOGS2/")
+        ## copy models
+        os.system("cp -r "+runFolder+"/*.mod "+targetFolder)        
+        ## copy input
+        os.system("cp -r "+runFolder+"/inlist* "+targetFolder)
         os.system("cp -r "+runFolder+"/src/run_*_extras* "+targetFolder)
-        # copy models
-        os.system("cp -r "+runFolder+"/*.mod "+targetFolder)
         print(runFolder, "copied to", targetFolder)
-        # now clean backup files and stuff
+        ## now clean backup files and stuff
         os.system("rm -rf "+targetFolder+"/*~")
         os.system("rm -rf "+targetFolder+"/*.back")
     else:
