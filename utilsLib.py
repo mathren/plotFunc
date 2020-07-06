@@ -131,6 +131,7 @@ def mvFolder(runFolder, targetFolder, targetTerminationCode="max_model_number"):
         os.system("cp -r "+runFolder+"/LOGS "+" "+targetFolder)
         # copy input
         os.system("cp -r "+runFolder+"/inlist* "+targetFolder)
+        os.system("cp -r "+runFolder+"/binary_history.data "+targetFolder)
         os.system("cp -r "+runFolder+"/src/run_*_extras* "+targetFolder)
         # copy models
         os.system("cp -r "+runFolder+"/*.mod "+targetFolder)
