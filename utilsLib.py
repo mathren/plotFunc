@@ -116,16 +116,30 @@ def getTerminationCodeFromOutput(f):
             break
     return termination_code
 
-def getLastProfile(folder):
+
+def getFinalProfileLOGS(LOGfolder):
     """
     returns the path to the last profile written in the folder, assumes it is a LOGS* folder
     from a MESA run
     """
-    profiles = sorted(glob.glob(folder+"/profile*.data"), os.path.getmtime)
-    print(profiles)
 
+    indexFile = LOGfolder+"/profiles.index"
+    last_line = tail(indexFile,1)[0]
+    # print(last_line)
+    last_line = last_line.decode("utf-8")
+    # print(type(last_line))
+    profNum = "%d"%int(last_line.split()[-1])
+    profile = "profile"+str(profNum)+".data"
+    # print(profile)
+    return profile
+
+# def getLastProfile(folder):
+#     profiles = sorted(glob.glob(folder+"/profile*.data"), key=os.path.getmtime)
+#     print(profiles[-1])
+    
+    
 def mvFolder(runFolder, targetFolder, targetTerminationCode="max_model_number"):
-    """ 
+    """
     checks a MESA work directory and if the termination code is what is wanted
     moves the relevant content to a target folder
     """
@@ -147,9 +161,9 @@ def mvFolder(runFolder, targetFolder, targetTerminationCode="max_model_number"):
         os.system("cp -r "+runFolder+"/LOGS2/history.data "+" "+targetFolder+"/LOGS2/history.data")
         os.system("cp -r "+runFolder+"/binary_history.data "+targetFolder)
         ## copy last profile
-        os.system("cp -r "+runFolder+"/LOGS/ "+" "+targetFolder+"LOGS/")
-        os.system("cp -r "+runFolder+"/LOGS1/ "+" "+targetFolder+"/LOGS1/")
-        os.system("cp -r "+runFolder+"/LOGS2/ "+" "+targetFolder+"/LOGS2/")
+        os.system("cp -r "+runFolder+"/LOGS/"+getFinalProfileLOGS(runFolder+"/LOGS/")+" "+targetFolder+"LOGS/")
+        os.system("cp -r "+runFolder+"/LOGS1/"+getFinalProfileLOGS(runFolder+"/LOGS1/")+" "+targetFolder+"/LOGS1/")
+        os.system("cp -r "+runFolder+"/LOGS2/"+getFinalProfileLOGS(runFolder+"/LOGS2/")+" "+targetFolder+"/LOGS2/")
         ## copy models
         os.system("cp -r "+runFolder+"/*.mod "+targetFolder)        
         ## copy input

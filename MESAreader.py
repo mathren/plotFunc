@@ -37,6 +37,7 @@ import mesaPlot as mp
 mmm=mp.MESA()
 ppp=mp.plot()
 import re
+from utilsLib import getFinalProfileLOGS
 
 ## constants -------------------------------------------------------------------------------
 global secyer
@@ -228,18 +229,6 @@ def binarySortM1(folder):
 
 def sortSingleM(s):
     return float(s.split('/')[-2])
-
-
-def getFinalProfileLOGS(LOGfolder):
-    indexFile = LOGfolder+"/profiles.index"
-    last_line = tail(indexFile,1)[0]
-    # print(last_line)
-    last_line = last_line.decode("utf-8")
-    # print(type(last_line))
-    profNum = "%d"%int(last_line.split()[-1])
-    profile = "profile"+str(profNum)+".data"
-    # print(profile)
-    return profile
 
 
 def getM(f):
