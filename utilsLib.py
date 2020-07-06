@@ -115,3 +115,28 @@ def getTerminationCodeFromOutput(f):
             termination_code = "PISN"
             break
     return termination_code
+
+
+
+def mvFolder(runFolder, targetFolder, targetTerminationCode="max_model_number"):
+    """ 
+    checks a MESA work directory and if the termination code is what is wanted
+    moves the relevant content to a target folder
+    """
+    terminationCode = getTerminationCodeFromOutput(runFolder)
+    if terminationCode == targetTerminationCode:
+        if not os.path.isdir(targetFolder):
+            os.system('mkdir -p '+targetFolder)
+        # # copy output
+        os.system("cp -r "+runFolder+"/LOGS "+" "+targetFolder)
+        # copy input
+        os.system("cp -r "+runFolder+"/inlist* "+targetFolder)
+        os.system("cp -r "+runFolder+"/src/run_*_extras* "+targetFolder)
+        # copy models
+        os.system("cp -r "+runFolder+"/*.mod "+targetFolder)
+        print(runFolder, "copied to", targetFolder)
+        # now clean backup files and stuff
+        os.system("rm -rf "+targetFolder+"/*~")
+        os.system("rm -rf "+targetFolder+"/*.back")
+    else:
+        print(runFolder, terminationCode, "not copied")

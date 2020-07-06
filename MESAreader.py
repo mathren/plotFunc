@@ -233,6 +233,7 @@ def sortSingleM(s):
 def getFinalProfileLOGS(LOGfolder):
     indexFile = LOGfolder+"/profiles.index"
     last_line = tail(indexFile,1)[0]
+    # print(last_line)
     last_line = last_line.decode("utf-8")
     # print(type(last_line))
     profNum = "%d"%int(last_line.split()[-1])
