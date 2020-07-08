@@ -125,7 +125,6 @@ def getFinalProfileLOGS(LOGfolder):
     returns the path to the last profile written in the folder, assumes it is a LOGS* folder
     from a MESA run
     """
-
     indexFile = LOGfolder + "/profiles.index"
     last_line = tail(indexFile, 1)[0]
     # print(last_line)
@@ -147,6 +146,8 @@ def mvFolder(runFolder, targetFolder, targetTerminationCode="max_model_number"):
     checks a MESA work directory and if the termination code is what is wanted
     moves the relevant content to a target folder
     """
+    from compare_all_work_dir_inlists import isFolderBinary
+
     terminationCode = getTerminationCodeFromOutput(runFolder)
     if terminationCode == targetTerminationCode:
         ## make the folder if needed
