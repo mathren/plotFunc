@@ -24,20 +24,22 @@ import sys
 import glob
 import time
 import math
+
 ##############################
 # imports below are optional #
 ##############################
 from termcolor import colored
+
 # parallelization stuff
 from joblib import Parallel, delayed
 import multiprocessing
 import subprocess
-sys.path.insert(0, '/mnt/home/mrenzo/codes/python_stuff/')
+sys.path.insert(0, "/mnt/home/mrenzo/codes/python_stuff/")
 import mesaPlot as mp
-mmm=mp.MESA()
-ppp=mp.plot()
+mmm = mp.MESA()
+ppp = mp.plot()
 import re
-from utilsLib import getFinalProfileLOGS
+from utilsLib import getFinalProfileLOGS, getTerminationCode
 
 ## constants -------------------------------------------------------------------------------
 global secyer
@@ -47,9 +49,9 @@ Lsun = 3.8418e33
 global Msun
 Msun = 1.9892e33
 global Rsun_cm
-Rsun_cm = 6.9598e10 # in cm
+Rsun_cm = 6.9598e10  # in cm
 global G_cgs
-G_cgs = 6.67428e-8 # in cgs
+G_cgs = 6.67428e-8  # in cgs
 
 ## load files -------------------------------------------------------------------------------
 
@@ -62,27 +64,27 @@ def reader(myfile, ncols, nhead):
 
     """15.04.2016 Mathieu: modified to fit my needs for binary_c Runaway project"""
 
-    #The new binary file will be stored with the same name but with the extention.npy
-    mybinfile = str(myfile[:-4])+".npy"
+    # The new binary file will be stored with the same name but with the extention.npy
+    mybinfile = str(myfile[:-4]) + ".npy"
     # Just for fun... time the routine
     start_time = time.time()
-    if (not os.path.isfile(mybinfile)): # Check if .databin exists already... 
+    if not os.path.isfile(mybinfile):  # Check if .databin exists already...
         print("...    reading ascii file ", myfile)
         print("...    and storing it for you in binary format")
         print("...    patience please, next time will be way faster ")
         print("...    I promise")
         # If binary does not exist, read the original ascii file:
-        if (not os.path.isfile(myfile)):
+        if not os.path.isfile(myfile):
             print("File does not exist ", myfile)
             return
         # Read the first "ncol" columns of the file after skipping "nhead" lines, store in a numpy.array
-        data = np.genfromtxt(myfile, skip_header=nhead)#, usecols=range(ncols))
+        data = np.genfromtxt(myfile, skip_header=nhead)  # , usecols=range(ncols))
         # Save the numpy array to file in binary format
         np.save(mybinfile, data)
         # print "...    That took ", time.time() - start_time, "second"
     else:
         # print "... Great Binary file exists, reading data directly from ", mybinfile
-        # If binary file exists load it directly. 
+        # If binary file exists load it directly.
         data = np.load(mybinfile)
         # print "   That took ", time.time() - start_time, "second"
     return data
@@ -92,26 +94,25 @@ def scrub(file):
     # this uses the log_scrubber.py script from Bill Wolf
     # which is available here: https://zenodo.org/record/2619282
     print("... let me scrub this for you")
-    os.system('python log_scrubber.py '+file)
+    os.system("python log_scrubber.py " + file)
     print("... done cleaning", file)
-
 
 
 def getSrcCol(f, clean=True, convert=True):
     # TODO: maybe one day I'll update this to be a pandas dataframe
     # should work both for history and profiles
     # read header
-    with open(f, 'r') as P:
+    with open(f, "r") as P:
         for i, line in enumerate(P):
-            if i==5:
+            if i == 5:
                 col = line.split()
                 break
     # check if binary exists
-    mybinfile = str(f[:-4])+".npy"
-    if (os.path.isfile(mybinfile)):
+    mybinfile = str(f[:-4]) + ".npy"
+    if os.path.isfile(mybinfile):
         # read the column and binary
         src = reader(f, len(col), 6)
-    else: # binary file does not exist
+    else:  # binary file does not exist
         print("... Binary file does not yet exist")
         if clean:
             scrub(f)
@@ -121,32 +122,46 @@ def getSrcCol(f, clean=True, convert=True):
             src = np.genfromtxt(f, skip_header=6)
     return src, col
 
+
 ## plotting useful things ---------------------------------------------------------------------
 
+
 def make2Dmap(x, y, z, x1=0, x2=1, y1=0, y2=1, res=20):
-    minx = min(min(x),x1)
-    maxx = min(max(x),x2)
-    miny = min(min(y),y1)
-    maxy = min(max(y),y2)
+    minx = min(min(x), x1)
+    maxx = min(max(x), x2)
+    miny = min(min(y), y1)
+    maxy = min(max(y), y2)
 
-    x_int = np.linspace(minx,maxx,res)
-    y_int = np.linspace(miny,maxy,res)
+    x_int = np.linspace(minx, maxx, res)
+    y_int = np.linspace(miny, maxy, res)
 
-    mat = np.zeros([len(x_int),len(y_int)])
-    for i in range(0,len(x_int)-1):
-        for j in range(0,len(y_int)-1):
-            mat[j,i] = np.sum(z[(x>=x_int[i])*(x<x_int[i+1])*(y>=y_int[j])*(y<y_int[j+1])])
+    mat = np.zeros([len(x_int), len(y_int)])
+    for i in range(0, len(x_int) - 1):
+        for j in range(0, len(y_int) - 1):
+            mat[j, i] = np.sum(
+                z[(x >= x_int[i]) * (x < x_int[i + 1]) * (y >= y_int[j]) * (y < y_int[j + 1])]
+            )
     return x_int, y_int, mat
 
 
 def writePreliminary(ax):
-    ax.text(0.5,0.5,r"{\bf PRELIMINARY}", color="#808080",
-            alpha=0.4, fontsize=74,ha='center', va='center', rotation=45, transform=ax.transAxes)
-
+    ax.text(
+        0.5,
+        0.5,
+        r"{\bf PRELIMINARY}",
+        color="#808080",
+        alpha=0.4,
+        fontsize=74,
+        ha="center",
+        va="center",
+        rotation=45,
+        transform=ax.transAxes,
+    )
 
 
 def my_mark_inset(parent_axes, inset_axes, loc1a=1, loc1b=1, loc2a=2, loc2b=2, **kwargs):
     from mpl_toolkits.axes_grid1.inset_locator import TransformedBbox, BboxPatch, BboxConnector
+
     rect = TransformedBbox(inset_axes.viewLim, parent_axes.transData)
 
     pp = BboxPatch(rect, fill=False, **kwargs)
@@ -164,77 +179,65 @@ def my_mark_inset(parent_axes, inset_axes, loc1a=1, loc1b=1, loc2a=2, loc2b=2, *
 
 ## miscellanea ---------------------------------------------------------------------------------------------
 
-def max_array(a,b):
+
+def max_array(a, b):
     # given two arrays of the same length
     # returns an array containing the max in each element
-    if len(a)==len(b):
+    if len(a) == len(b):
         c = np.zeros(len(a))
         for i in range(len(a)):
-            c[i]=max(a[i],b[i])
+            c[i] = max(a[i], b[i])
         return c
     else:
-        print("you gave me two array of lengths:",len(a),"=/=",len(b))
-        print(colored("can't work with this...going home!","red"))
+        print("you gave me two array of lengths:", len(a), "=/=", len(b))
+        print(colored("can't work with this...going home!", "red"))
 
-def min_array(a,b):
+
+def min_array(a, b):
     # given two arrays of the same length
     # returns an array containing the max in each element
-    if len(a)==len(b):
+    if len(a) == len(b):
         c = np.zeros(len(a))
         for i in range(len(a)):
-            c[i]=min(a[i],b[i])
+            c[i] = min(a[i], b[i])
         return c
     else:
-        print("you gave me two array of lengths:",len(a),"=/=",len(b))
-        print(colored("can't work with this...going home!","red"))
+        print("you gave me two array of lengths:", len(a), "=/=", len(b))
+        print(colored("can't work with this...going home!", "red"))
 
-def SB_law(r,t):
+
+def SB_law(r, t):
     # given radius and temperature in solar radii and kelvin, returns the luminosity in solar units
-    sigma  = 5.67051e-5 #cgs units
-    Rsun = 6.99e10 #cm
-    Lsun = 4e33 #erg/s
-    r *= Rsun #convert to cm
-    l = 4*math.pi*sigma*t**4*r**2
-    l = l/Lsun
+    sigma = 5.67051e-5  # cgs units
+    Rsun = 6.99e10  # cm
+    Lsun = 4e33  # erg/s
+    r *= Rsun  # convert to cm
+    l = 4 * math.pi * sigma * t ** 4 * r ** 2
+    l = l / Lsun
     return l
 
-def tail(f, n): 
-    #read the last n lines of f (modified from somewhere on the internet) 
-    n=str(n)
-    p = subprocess.Popen(["tail","-n",n, f], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+def tail(f, n):
+    # read the last n lines of f (modified from somewhere on the internet)
+    n = str(n)
+    p = subprocess.Popen(["tail", "-n", n, f], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
     lines = stdout.splitlines()
     return lines
 
-def getTerminationCode(outfile):
-    # assumes outfile is written in utf-8 encoding
-    termcode = "dunno"
-    end = tail(outfile, 50)
-    # print(type(end))
-    # print(end[::-1])
-    for l in end[::-1]:
-        # print(l)
-        if "termination code" in str(l):
-            # print(l)
-            l = l.decode("utf-8") 
-            termcode = l.split(":")[-1].rstrip().lstrip()
-            break
-        if "post RLOF found" in str(l):
-            termcode = "post_RLOF"
-    return termcode
 
 def binarySortM1(folder):
-    M1 = float(folder.split('M1_')[-1].split('M2_')[0])
+    M1 = float(folder.split("M1_")[-1].split("M2_")[0])
     return M1
 
+
 def sortSingleM(s):
-    return float(s.split('/')[-2])
+    return float(s.split("/")[-2])
 
 
 def getM(f):
     # use regexp to find mass, will only work if
     # the mass is the first thing in the folder name (after the / of the path)
     m = re.findall("\/[+-]?\d+\.\d+", f)
-    MASS = m[0].lstrip('/')
+    MASS = m[0].lstrip("/")
     return float(MASS)
-        

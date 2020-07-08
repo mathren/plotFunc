@@ -87,7 +87,7 @@ def tail(f, n=1):
     return lines
 
 
-def getTerminationCodeFromOutput(f):
+def getTerminationCode(f):
     """
     Assuming you run MESA piping the output to a file called output
     or out (possibly using tee as in ./rn | tee output), this will scan
@@ -114,6 +114,9 @@ def getTerminationCodeFromOutput(f):
         elif ("star is going PISN!" in line) or ("above the escape velocity, PISN!" in line):
             termination_code = "PISN"
             break
+        elif "post RLOF found" in str(l):
+            termcode = "post_RLOF"
+            break
     return termination_code
 
 
@@ -123,21 +126,22 @@ def getFinalProfileLOGS(LOGfolder):
     from a MESA run
     """
 
-    indexFile = LOGfolder+"/profiles.index"
-    last_line = tail(indexFile,1)[0]
+    indexFile = LOGfolder + "/profiles.index"
+    last_line = tail(indexFile, 1)[0]
     # print(last_line)
     last_line = last_line.decode("utf-8")
     # print(type(last_line))
-    profNum = "%d"%int(last_line.split()[-1])
-    profile = "profile"+str(profNum)+".data"
+    profNum = "%d" % int(last_line.split()[-1])
+    profile = "profile" + str(profNum) + ".data"
     # print(profile)
     return profile
+
 
 # def getLastProfile(folder):
 #     profiles = sorted(glob.glob(folder+"/profile*.data"), key=os.path.getmtime)
 #     print(profiles[-1])
-    
-    
+
+
 def mvFolder(runFolder, targetFolder, targetTerminationCode="max_model_number"):
     """
     checks a MESA work directory and if the termination code is what is wanted
@@ -147,31 +151,71 @@ def mvFolder(runFolder, targetFolder, targetTerminationCode="max_model_number"):
     if terminationCode == targetTerminationCode:
         ## make the folder if needed
         if not os.path.isdir(targetFolder):
-            os.system('mkdir -p '+targetFolder)
-        if not os.path.isdir(targetFolder+"/LOGS/"):
-            os.system('mkdir -p '+targetFolder+"/LOGS/")
+            os.system("mkdir -p " + targetFolder)
+        if not os.path.isdir(targetFolder + "/LOGS/"):
+            os.system("mkdir -p " + targetFolder + "/LOGS/")
         ## these below are not needed for single stars, but whatever
-        if not os.path.isdir(targetFolder+"/LOGS1/"):
-            os.system('mkdir -p '+targetFolder+"/LOGS1/")
-        if not os.path.isdir(targetFolder+"/LOGS2/"):
-            os.system('mkdir -p '+targetFolder+"/LOGS2/")
+        if not os.path.isdir(targetFolder + "/LOGS1/"):
+            os.system("mkdir -p " + targetFolder + "/LOGS1/")
+        if not os.path.isdir(targetFolder + "/LOGS2/"):
+            os.system("mkdir -p " + targetFolder + "/LOGS2/")
         ## copy history output
-        os.system("cp -r "+runFolder+"/LOGS/history.data "+" "+targetFolder+"/LOGS/history.data")
-        os.system("cp -r "+runFolder+"/LOGS1/history.data "+" "+targetFolder+"/LOGS1/history.data")
-        os.system("cp -r "+runFolder+"/LOGS2/history.data "+" "+targetFolder+"/LOGS2/history.data")
-        os.system("cp -r "+runFolder+"/binary_history.data "+targetFolder)
+        os.system(
+            "cp -r " + runFolder + "/LOGS/history.data " + " " + targetFolder + "/LOGS/history.data"
+        )
+        os.system(
+            "cp -r "
+            + runFolder
+            + "/LOGS1/history.data "
+            + " "
+            + targetFolder
+            + "/LOGS1/history.data"
+        )
+        os.system(
+            "cp -r "
+            + runFolder
+            + "/LOGS2/history.data "
+            + " "
+            + targetFolder
+            + "/LOGS2/history.data"
+        )
+        os.system("cp -r " + runFolder + "/binary_history.data " + targetFolder)
         ## copy last profile
-        os.system("cp -r "+runFolder+"/LOGS/"+getFinalProfileLOGS(runFolder+"/LOGS/")+" "+targetFolder+"LOGS/")
-        os.system("cp -r "+runFolder+"/LOGS1/"+getFinalProfileLOGS(runFolder+"/LOGS1/")+" "+targetFolder+"/LOGS1/")
-        os.system("cp -r "+runFolder+"/LOGS2/"+getFinalProfileLOGS(runFolder+"/LOGS2/")+" "+targetFolder+"/LOGS2/")
+        os.system(
+            "cp -r "
+            + runFolder
+            + "/LOGS/"
+            + getFinalProfileLOGS(runFolder + "/LOGS/")
+            + " "
+            + targetFolder
+            + "LOGS/"
+        )
+        os.system(
+            "cp -r "
+            + runFolder
+            + "/LOGS1/"
+            + getFinalProfileLOGS(runFolder + "/LOGS1/")
+            + " "
+            + targetFolder
+            + "/LOGS1/"
+        )
+        os.system(
+            "cp -r "
+            + runFolder
+            + "/LOGS2/"
+            + getFinalProfileLOGS(runFolder + "/LOGS2/")
+            + " "
+            + targetFolder
+            + "/LOGS2/"
+        )
         ## copy models
-        os.system("cp -r "+runFolder+"/*.mod "+targetFolder)        
+        os.system("cp -r " + runFolder + "/*.mod " + targetFolder)
         ## copy input
-        os.system("cp -r "+runFolder+"/inlist* "+targetFolder)
-        os.system("cp -r "+runFolder+"/src/run_*_extras* "+targetFolder)
+        os.system("cp -r " + runFolder + "/inlist* " + targetFolder)
+        os.system("cp -r " + runFolder + "/src/run_*_extras* " + targetFolder)
         print(runFolder, "copied to", targetFolder)
         ## now clean backup files and stuff
-        os.system("rm -rf "+targetFolder+"/*~")
-        os.system("rm -rf "+targetFolder+"/*.back")
+        os.system("rm -rf " + targetFolder + "/*~")
+        os.system("rm -rf " + targetFolder + "/*.back")
     else:
         print(runFolder, terminationCode, "not copied")
