@@ -39,7 +39,7 @@ import mesaPlot as mp
 mmm = mp.MESA()
 ppp = mp.plot()
 import re
-from utilsLib import getFinalProfileLOGS, getTerminationCode
+from utilsLib import getFinalProfileLOGS, getTerminationCode, getM
 
 ## constants -------------------------------------------------------------------------------
 global secyer
@@ -232,12 +232,4 @@ def binarySortM1(folder):
 
 
 def sortSingleM(s):
-    return float(s.split("/")[-2])
-
-
-def getM(f):
-    # use regexp to find mass, will only work if
-    # the mass is the first thing in the folder name (after the / of the path)
-    m = re.findall("\/[+-]?\d+\.\d+", f)
-    MASS = m[0].lstrip("/")
-    return float(MASS)
+    return getM(s)

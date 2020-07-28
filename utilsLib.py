@@ -71,11 +71,33 @@ def MoveIntoFolder(folder, description=""):
 
 
 def getM(f):
-    # use regexp to find mass, will only work if mass is the first number in the path
-    m = re.findall("[+-]?\d+\.\d+", f)
+    """ 
+    get the mass from the folder name
+    assumes that the mass is the first number in the folder name 
+    and that it has a decimal point -- in the regexp
+    """
+    if f[-1] == '/':
+        folder=f.split('/')[-2]
+    elif f[-1] != '/':
+        folder=f.split('/')[-1]
+    # print(folder)
+    m = re.findall("[+-]?\d+\.\d+", folder)
     # print(m)
     return float(m[0])
 
+def getMasses(f):
+    if f[-1] == '/':
+        folder=f.split('/')[-2]
+    elif f[-1] != '/':
+        folder=f.split('/')[-1]
+    # print(folder)
+    m = re.findall("[+-]?\d+\.\d+", folder)
+    m1 = m[0]
+    m2 = m[1]
+    # print(m)
+    return float(m1), float(m2)
+
+    
 
 def tail(f, n=1):
     # read the last n lines of f (modified from somewhere on the internet)
