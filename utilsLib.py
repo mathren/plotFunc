@@ -136,7 +136,7 @@ def getTerminationCode(f):
         elif ("star is going PISN!" in line) or ("above the escape velocity, PISN!" in line):
             termination_code = "PISN"
             break
-        elif "post RLOF found" in str(l):
+        elif "post RLOF found" in str(line):
             termcode = "post_RLOF"
             break
     return termination_code
@@ -170,7 +170,7 @@ def mvFolder(runFolder, targetFolder, targetTerminationCode="max_model_number"):
     """
     from compare_all_work_dir_inlists import isFolderBinary
 
-    terminationCode = getTerminationCodeFromOutput(runFolder)
+    terminationCode = getTerminationCode(runFolder)
     if terminationCode == targetTerminationCode:
         ## make the folder if needed
         if not os.path.isdir(targetFolder):
