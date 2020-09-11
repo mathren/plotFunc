@@ -17,8 +17,6 @@ import sys
 sys.path.append('path/to/folder/plotFunc/')
 from MESAreader import *
 from plotDefaults import *
-from compare_inlists import *
-from compare_all_work_dir_inlists import *
 ```
 
 Of course you can and should import only what you need and not
@@ -37,6 +35,7 @@ cell than the one containing `from plotDefaults import *`. The more
 appropriate way to do this would be to create a matplotlibrc file as
 explained
 [here](https://matplotlib.org/tutorials/introductory/customizing.html).
+<!-- why? -->
 
 # How to use `compare_inlists.py`
 
