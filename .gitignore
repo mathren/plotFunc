@@ -136,3 +136,6 @@ dmypy.json
 \#*
 .\#*
 tail.py
+
+*.bak
+*.back
