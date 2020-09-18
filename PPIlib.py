@@ -31,7 +31,6 @@ import matplotlib.gridspec as gridspec
 import matplotlib.patches as mpatch
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
-# from File_reader import reader
 from termcolor import colored
 # parallelization stuff
 from joblib import Parallel, delayed
