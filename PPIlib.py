@@ -122,8 +122,8 @@ def getPrePulseProfile(f):
 
 # EOS pulse onset
 ## this one instead comes from instability_EOS.ipynb
-def plot_instability_region(ax,c='#f4e109', lw=2, ls='--',zorder=1):
-    folder='/mnt/home/mrenzo/codes/mesa/mesa_11123/mesa11123/data/star_data/plot_info/'
+def plot_instability_region(ax,c='#f4e109', lw=2, ls='--', zorder=1, MESA_DIR='/mnt/home/mrenzo/codes/mesa/mesa_11123/mesa11123/data/star_data/plot_info/'):
+    folder=MESA_DIR
     f = np.genfromtxt(folder+'gamma_4_thirds.data')
     xx = f[:, 0] # log10 density
     yy = f[:, 1] # log10 temperature
