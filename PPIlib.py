@@ -122,7 +122,7 @@ def getPrePulseProfile(f):
 
 # EOS pulse onset
 ## this one instead comes from instability_EOS.ipynb
-def plot_instability_region(ax,c='#f4e109', lw=2, ls='--', zorder=1, MESA_DIR='/home/math/Documents/Research/codes/mesa_12778/mesa12778/data/star_data/plot_info/'):
+def plot_instability_region(ax,c='#f4e109', lw=2, ls='--', alpha=1.0, zorder=1, MESA_DIR='/home/math/Documents/Research/codes/mesa_12778/mesa12778/data/star_data/plot_info/'):
     folder=MESA_DIR
     f = np.genfromtxt(folder+'/gamma_4_thirds.data')
     xx = f[:, 0] # log10 density
@@ -130,7 +130,7 @@ def plot_instability_region(ax,c='#f4e109', lw=2, ls='--', zorder=1, MESA_DIR='/
     #ax.plot(xx,yy,lw=3, ls='--',color=c)
     #ax.scatter(xx,yy)
     ax.plot(xx,yy,ls=ls,c=c,lw=lw, zorder=zorder)
-    ax.fill_between(xx,yy, color=c, alpha=0.5, zorder=0)
+    ax.fill_between(xx,yy, color=c, alpha=alpha, zorder=0)
     ax.set_xlim(2,6.25)
     ax.set_ylim(8.5, 10)
 
