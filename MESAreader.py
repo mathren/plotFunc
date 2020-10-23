@@ -29,13 +29,16 @@ import math
 # imports below are optional #
 ##############################
 from termcolor import colored
+from log_scubber import log_scrubber
 
 # parallelization stuff
 from joblib import Parallel, delayed
 import multiprocessing
 import subprocess
+
 sys.path.insert(0, "/mnt/home/mrenzo/codes/python_stuff/")
 import mesaPlot as mp
+
 mmm = mp.MESA()
 ppp = mp.plot()
 import re
@@ -59,7 +62,7 @@ G_cgs = 6.67428e-8  # in cgs
 def reader(myfile, ncols, nhead):
     """ This example shows how to read a large regular ascii file (consisting of ncolumns), store it in binary format.
 	This provides a great spead up when reading larger files created with binary_c or MESA or whateve
-	SdM  March 12, 2015	
+	SdM  March 12, 2015
     """
 
     """15.04.2016 Mathieu: modified to fit my needs for binary_c Runaway project"""
@@ -94,7 +97,7 @@ def scrub(file):
     # this uses the log_scrubber.py script from Bill Wolf
     # which is available here: https://zenodo.org/record/2619282
     print("... let me scrub this for you")
-    os.system("python log_scrubber.py " + file)
+    log_scribber(file)
     print("... done cleaning", file)
 
 
