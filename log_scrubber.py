@@ -74,4 +74,4 @@ def log_scubber(logName):
         f.write(line)
     f.close()
 
-    print 'Data in', logName, 'has been scrubbed.'
+    print ('Data in', logName, 'has been scrubbed.')

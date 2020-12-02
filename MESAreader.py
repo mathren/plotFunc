@@ -28,8 +28,8 @@ import math
 ##############################
 # imports below are optional #
 ##############################
-# from termcolor import colored
-# from log_scubber import log_scrubber
+from termcolor import colored
+import log_scrubber
 
 # parallelization stuff
 from joblib import Parallel, delayed
