@@ -28,8 +28,8 @@ import math
 ##############################
 # imports below are optional #
 ##############################
-from termcolor import colored
-from log_scubber import log_scrubber
+# from termcolor import colored
+# from log_scubber import log_scrubber
 
 # parallelization stuff
 from joblib import Parallel, delayed
@@ -226,6 +226,8 @@ def tail(f, n):
     p = subprocess.Popen(["tail", "-n", n, f], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
     lines = stdout.splitlines()
+    # convert bytes to strings
+    lines = [l.decode("utf-8") for l in lines]
     return lines
 
 

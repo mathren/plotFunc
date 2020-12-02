@@ -28,16 +28,15 @@ import matplotlib.patches as mpatch
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 
-## define some colors 
+## define some colors
 Yellow = "#DDDD77"
 Green = "#88CCAA"
 Blue = "#77AADD"
 
-
 def set_plotDefaults():
     ## sets rc param that I like
     ## for some reason if you run this function in the same cell containing
-    ##          from plotDefaults import *
+    ##          ``` from plotDefaults import * ```
     ## it will not work as intended. Run it in a separate cell and it works
     ## TODO: understand and fix this behavior.
     rc('text', usetex=True)
@@ -46,12 +45,12 @@ def set_plotDefaults():
     rc('mathtext', default='sf')
     rc("lines", markeredgewidth=2)
     rc("lines", linewidth=3)
-    rc('axes', labelsize=30)  # 24
-    rc("axes", linewidth=2)  # 2)
+    rc('axes', labelsize=30)
+    rc("axes", linewidth=2)
     # set fontsize
     rc('xtick', labelsize=30)
     rc('ytick', labelsize=30)
-    rc('legend', fontsize=30)  # 16
+    rc('legend', fontsize=30)
     # ticks stuff
     rc('xtick', top=True, direction='in')
     rc('ytick', right=True, direction='in')
@@ -66,13 +65,10 @@ def set_plotDefaults():
     rc('axes', facecolor="white", linewidth=2)
     rc('savefig', facecolor="white", bbox="tight")
     rc('image', cmap="viridis")
-    ## error bars
     rc('errorbar', capsize=2)
-    ## legend
     rc('legend', frameon=False)
-    
+
     rcParams['text.latex.preamble'] = [r"\usepackage{color}"]
     rcParams['text.latex.preamble'] = [r"\usepackage{xcolor}"]
     rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}"]
     print("done in plotDefaults.py")
-
