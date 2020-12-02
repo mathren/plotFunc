@@ -31,7 +31,6 @@ import matplotlib.gridspec as gridspec
 import matplotlib.patches as mpatch
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
-from File_reader import reader
 from termcolor import colored
 # parallelization stuff
 from joblib import Parallel, delayed
@@ -123,15 +122,15 @@ def getPrePulseProfile(f):
 
 # EOS pulse onset
 ## this one instead comes from instability_EOS.ipynb
-def plot_instability_region(ax,c='#f4e109', lw=2, ls='--',zorder=1):
-    folder='/mnt/home/mrenzo/codes/mesa/mesa_11123/mesa11123/data/star_data/plot_info/'
-    f = np.genfromtxt(folder+'gamma_4_thirds.data')
+def plot_instability_region(ax,c='#f4e109', lw=2, ls='--', alpha=1.0, zorder=1, MESA_DIR='/home/math/Documents/Research/codes/mesa_12778/mesa12778/data/star_data/plot_info/'):
+    folder=MESA_DIR
+    f = np.genfromtxt(folder+'/gamma_4_thirds.data')
     xx = f[:, 0] # log10 density
     yy = f[:, 1] # log10 temperature
     #ax.plot(xx,yy,lw=3, ls='--',color=c)
     #ax.scatter(xx,yy)
     ax.plot(xx,yy,ls=ls,c=c,lw=lw, zorder=zorder)
-    ax.fill_between(xx,yy, color=c, alpha=0.5, zorder=0)
+    ax.fill_between(xx,yy, color=c, alpha=alpha, zorder=0)
     ax.set_xlim(2,6.25)
     ax.set_ylim(8.5, 10)
 

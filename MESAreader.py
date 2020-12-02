@@ -28,14 +28,17 @@ import math
 ##############################
 # imports below are optional #
 ##############################
-from termcolor import colored
+# from termcolor import colored
+# from log_scubber import log_scrubber
 
 # parallelization stuff
 from joblib import Parallel, delayed
 import multiprocessing
 import subprocess
+
 sys.path.insert(0, "/mnt/home/mrenzo/codes/python_stuff/")
 import mesaPlot as mp
+
 mmm = mp.MESA()
 ppp = mp.plot()
 import re
@@ -94,7 +97,7 @@ def scrub(file):
     # this uses the log_scrubber.py script from Bill Wolf
     # which is available here: https://zenodo.org/record/2619282
     print("... let me scrub this for you")
-    os.system("python log_scrubber.py " + file)
+    log_scribber(file)
     print("... done cleaning", file)
 
 
@@ -223,6 +226,8 @@ def tail(f, n):
     p = subprocess.Popen(["tail", "-n", n, f], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
     lines = stdout.splitlines()
+    # convert bytes to strings
+    lines = [l.decode("utf-8") for l in lines]
     return lines
 
 
