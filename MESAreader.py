@@ -59,7 +59,7 @@ G_cgs = 6.67428e-8  # in cgs
 def reader(myfile, ncols, nhead):
     """ This example shows how to read a large regular ascii file (consisting of ncolumns), store it in binary format.
 	This provides a great spead up when reading larger files created with binary_c or MESA or whateve
-	SdM  March 12, 2015	
+	SdM  March 12, 2015
     """
 
     """15.04.2016 Mathieu: modified to fit my needs for binary_c Runaway project"""
