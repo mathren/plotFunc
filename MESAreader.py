@@ -230,7 +230,7 @@ def sortSingleM(s):
     return getM(s)
 
 
-def scrub(file):
+def scrub(logName):
     # this uses the log_scrubber.py script from Bill Wolf
     # which is available here: https://zenodo.org/record/2619282
     print("... let me scrub this for you")
