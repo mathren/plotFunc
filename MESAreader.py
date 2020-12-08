@@ -107,7 +107,7 @@ def getSrcCol(f, clean=True, convert=True):
         src = reader(f, len(col), 6)
     else:  # binary file does not exist
         print("... Binary file does not yet exist")
-        if clean:
+        if (("history" in f) and clean):
             scrub(f)
         if convert:
             src = reader(f, len(col), 6)
