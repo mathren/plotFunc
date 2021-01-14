@@ -1,22 +1,22 @@
-## author: Mathieu Renzo
+# author: Mathieu Renzo
 
-## Author: Mathieu Renzo <mathren90@gmail.com>
-## Keywords: files
+# Author: Mathieu Renzo <mathren90@gmail.com>
+# Keywords: files
 
-## Copyright (C) 2019-2020 Mathieu Renzo
+# Copyright (C) 2019-2020 Mathieu Renzo
 
-## This program is free software: you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation, either version 3 of the License, or (at
-## your option) any later version.
-##
-## This program is distributed in the hope that it will be useful, but
-## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with this program.  If not, see http://www.gnu.org/licenses/.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or (at
+# your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -28,17 +28,17 @@ import matplotlib.patches as mpatch
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 
-## define some colors
+# define some colors
 Yellow = "#DDDD77"
 Green = "#88CCAA"
 Blue = "#77AADD"
 
 def set_plotDefaults():
-    ## sets rc param that I like
-    ## for some reason if you run this function in the same cell containing
-    ##          ``` from plotDefaults import * ```
-    ## it will not work as intended. Run it in a separate cell and it works
-    ## TODO: understand and fix this behavior.
+    # sets rc param that I like
+    # for some reason if you run this function in the same cell containing
+    #          ``` from plotDefaults import * ```
+    # it will not work as intended. Run it in a separate cell and it works
+    # TODO: understand and fix this behavior.
     rc('text', usetex=True)
     rc('font', serif='palatino')
     rc('font', weight='bold')
