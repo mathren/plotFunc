@@ -1,22 +1,22 @@
-## author: Mathieu Renzo
+# author: Mathieu Renzo
 
-## Author: Mathieu Renzo <mathren90@gmail.com>
-## Keywords: files
+# Author: Mathieu Renzo <mathren90@gmail.com>
+# Keywords: files
 
-## Copyright (C) 2019-2020 Mathieu Renzo
+# Copyright (C) 2019-2020 Mathieu Renzo
 
-## This program is free software: you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation, either version 3 of the License, or (at
-## your option) any later version.
-##
-## This program is distributed in the hope that it will be useful, but
-## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with this program.  If not, see http://www.gnu.org/licenses/.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or (at
+# your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 import glob
@@ -38,7 +38,7 @@ def gitPush(description=""):
 
 
 def checkFolder(folder):
-    # checks if folder exists, if not, it creates it, and returns its content
+    """ checks if folder exists, if not, it creates it, and returns its content """
     found = glob.glob(folder)
     if found:
         print("Found folder:", folder)
@@ -66,30 +66,31 @@ def MoveIntoFolder(folder, description=""):
             print("******************")
             return 0
         else:
-            print("Ok, fix it yourself!Bye!")
+            print("Ok, fix it yourself!")
             return 1
 
 
 def getM(f):
-    """ 
+    """
     get the mass from the folder name
-    assumes that the mass is the first number in the folder name 
+    assumes that the mass is the first number in the folder name
     and that it has a decimal point -- in the regexp
     """
-    if f[-1] == '/':
-        folder=f.split('/')[-2]
-    elif f[-1] != '/':
-        folder=f.split('/')[-1]
+    if f[-1] == "/":
+        folder = f.split("/")[-2]
+    elif f[-1] != "/":
+        folder = f.split("/")[-1]
     # print(folder)
     m = re.findall("[+-]?\d+\.\d+", folder)
     # print(m)
     return float(m[0])
 
+
 def getMasses(f):
-    if f[-1] == '/':
-        folder=f.split('/')[-2]
-    elif f[-1] != '/':
-        folder=f.split('/')[-1]
+    if f[-1] == "/":
+        folder = f.split("/")[-2]
+    elif f[-1] != "/":
+        folder = f.split("/")[-1]
     # print(folder)
     m = re.findall("[+-]?\d+\.\d+", folder)
     m1 = m[0]
@@ -97,7 +98,6 @@ def getMasses(f):
     # print(m)
     return float(m1), float(m2)
 
-    
 
 def tail(f, n=1):
     # read the last n lines of f (modified from somewhere on the internet)
@@ -113,7 +113,7 @@ def getTerminationCode(f):
     """
     Assuming you run MESA piping the output to a file called output
     or out (possibly using tee as in ./rn | tee output), this will scan
-    this file for the termination code string and return it. It looks for 
+    this file for the termination code string and return it. It looks for
     the file in your run folder
     """
     if os.path.isfile(f + "/output"):
@@ -156,11 +156,6 @@ def getFinalProfileLOGS(LOGfolder):
     profile = "profile" + str(profNum) + ".data"
     # print(profile)
     return profile
-
-
-# def getLastProfile(folder):
-#     profiles = sorted(glob.glob(folder+"/profile*.data"), key=os.path.getmtime)
-#     print(profiles[-1])
 
 
 def mvFolder(runFolder, targetFolder, targetTerminationCode="max_model_number"):
