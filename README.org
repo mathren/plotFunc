@@ -27,7 +27,7 @@ that can be called to set some rcParams:
 
 #+BEGIN_SRC python
 >>> set_plotDefaults()
-done in plotDefaults.py
+"done in plotDefaults.py"
 #+END_SRC
 
 If using an ipython notebook, this needs to be done in a different
