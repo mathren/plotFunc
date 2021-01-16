@@ -1,22 +1,22 @@
-## author: Mathieu Renzo
+# author: Mathieu Renzo
 
-## Author: Mathieu Renzo <mathren90@gmail.com>
-## Keywords: files
+# Author: Mathieu Renzo <mathren90@gmail.com>
+# Keywords: files
 
-## Copyright (C) 2019-2020 Mathieu Renzo
+# Copyright (C) 2019-2020 Mathieu Renzo
 
-## This program is free software: you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation, either version 3 of the License, or (at
-## your option) any later version.
-##
-## This program is distributed in the hope that it will be useful, but
-## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with this program.  If not, see http://www.gnu.org/licenses/.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or (at
+# your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
 
 import numpy as np
 import os
@@ -25,9 +25,7 @@ import glob
 import time
 import math
 
-##############################
 # imports below are optional #
-##############################
 from termcolor import colored
 
 # parallelization stuff
@@ -43,22 +41,22 @@ ppp = mp.plot()
 import re
 from utilsLib import getFinalProfileLOGS, getTerminationCode, getM
 
-## constants -------------------------------------------------------------------------------
+# constants -------------------------------------------------------------------------------
 global dayyer
 dayyer = 365.25
 global secyer
-secyer = dayyer*24*60*60
+secyer = dayyer * 24 * 60 * 60
 global G_cgs
 G_cgs = 6.67430e-8  # in cgs
 global Lsun
 mu_sun = 1.3271244e26
 Lsun = 3.828e33
 global Msun
-Msun = mu_sun/G_cgs
+Msun = mu_sun / G_cgs
 global Rsun_cm
 Rsun_cm = 6.957e10  # in cm
 
-## load files -------------------------------------------------------------------------------
+# load files -------------------------------------------------------------------------------
 
 
 def reader(myfile, ncols, nhead):
@@ -94,6 +92,7 @@ def reader(myfile, ncols, nhead):
         # print "   That took ", time.time() - start_time, "second"
     return data
 
+
 def getSrcCol(f, clean=True, convert=True):
     # TODO: maybe one day I'll update this to be a pandas dataframe
     # should work both for history and profiles
@@ -110,7 +109,7 @@ def getSrcCol(f, clean=True, convert=True):
         src = reader(f, len(col), 6)
     else:  # binary file does not exist
         print("... Binary file does not yet exist")
-        if (("history" in f) and clean):
+        if ("history" in f) and clean:
             scrub(f)
         if convert:
             src = reader(f, len(col), 6)
@@ -119,7 +118,7 @@ def getSrcCol(f, clean=True, convert=True):
     return src, col
 
 
-## plotting useful things ---------------------------------------------------------------------
+# plotting useful things ---------------------------------------------------------------------
 
 
 def make2Dmap(x, y, z, x1=0, x2=1, y1=0, y2=1, res=20):
@@ -239,8 +238,9 @@ def scrub(logName):
     print("... let me scrub this for you")
     import sys
     import shlex
+
     # dirty fix for PPI ejecta files
-    if 'ejecta.data' in sys.argv[1]:
+    if "ejecta.data" in sys.argv[1]:
         dataStart = 1
     else:
         dataStart = 6
@@ -248,16 +248,16 @@ def scrub(logName):
     # THIS SHOULDN'T NEED TO BE TOUCHED UNLESS YOU ARE SPEEDING IT UP #
     ###################################################################
     # Pull original data from history file
-    f = open(logName, 'r')
+    f = open(logName, "r")
     fileLines = f.readlines()
     f.close()
     headerLines = fileLines[:dataStart]
     dataLines = fileLines[dataStart:]
     # Determine which column is the model_number column
-    headers = shlex.split(headerLines[dataStart-1])
-    modelNumberCol = headers.index('model_number')
+    headers = shlex.split(headerLines[dataStart - 1])
+    modelNumberCol = headers.index("model_number")
     # Get list of model numbers
-    modelNumbers = [-1]*len(dataLines)
+    modelNumbers = [-1] * len(dataLines)
     for i in range(len(dataLines)):
         data = shlex.split(dataLines[i])
         modelNumbers[i] = int(data[modelNumberCol])
@@ -280,8 +280,8 @@ def scrub(logName):
     dataOut.reverse()
     fileLinesOut = headerLines + dataOut
     # Output ordered data back into history file
-    f = open(logName, 'w')
+    f = open(logName, "w")
     for line in fileLinesOut:
         f.write(line)
     f.close()
-    print ('Data in', logName, 'has been scrubbed.')
+    print("Data in", logName, "has been scrubbed.")
