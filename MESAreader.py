@@ -3,7 +3,7 @@
 # Author: Mathieu Renzo <mathren90@gmail.com>
 # Keywords: files
 
-# Copyright (C) 2019-2020 Mathieu Renzo
+# Copyright (C) 2019-2021 Mathieu Renzo
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ import re
 from utilsLib import getFinalProfileLOGS, getTerminationCode, getM
 
 # constants -------------------------------------------------------------------------------
+# TODO: import these from pyMESA or astropy
 global dayyer
 dayyer = 365.25
 global secyer
@@ -58,14 +59,13 @@ Rsun_cm = 6.957e10  # in cm
 
 # load files -------------------------------------------------------------------------------
 
-
 def reader(myfile, ncols, nhead):
     """ This example shows how to read a large regular ascii file (consisting of ncolumns), store it in binary format.
-	This provides a great spead up when reading larger files created with binary_c or MESA or whateve
-	SdM  March 12, 2015
+    This provides a great speed up when reading larger files created with binary_c or MESA or whateve
+    SdM  March 12, 2015
     """
 
-    """15.04.2016 Mathieu: modified to fit my needs for binary_c Runaway project"""
+    """15.04.2016 Mathieu: modified to fit my needs for binary_c as well"""
 
     # The new binary file will be stored with the same name but with the extention.npy
     mybinfile = str(myfile[:-4]) + ".npy"
@@ -117,10 +117,7 @@ def getSrcCol(f, clean=True, convert=True):
             src = np.genfromtxt(f, skip_header=6)
     return src, col
 
-
 # plotting useful things ---------------------------------------------------------------------
-
-
 def make2Dmap(x, y, z, x1=0, x2=1, y1=0, y2=1, res=20):
     minx = min(min(x), x1)
     maxx = min(max(x), x2)
@@ -168,12 +165,10 @@ def my_mark_inset(parent_axes, inset_axes, loc1a=1, loc1b=1, loc2a=2, loc2b=2, *
     p2 = BboxConnector(inset_axes.bbox, rect, loc1=loc2a, loc2=loc2b, **kwargs)
     inset_axes.add_patch(p2)
     p2.set_clip_on(False)
-
     return pp, p1, p2
 
 
-## miscellanea ---------------------------------------------------------------------------------------------
-
+# miscellanea ---------------------------------------------------------------------------------------------
 
 def max_array(a, b):
     # given two arrays of the same length
