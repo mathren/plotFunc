@@ -75,7 +75,7 @@ def set_plotDefaults():
     rc("errorbar", capsize=2)
     rc("legend", frameon=False)
 
-    rcParams["text.latex.preamble"] = [r"\usepackage{color}"]
-    rcParams["text.latex.preamble"] = [r"\usepackage{xcolor}"]
-    rcParams["text.latex.preamble"] = [r"\usepackage{amsmath}"]
+    # rcParams["text.latex.preamble"] = [r"\usepackage{color}"]
+    # rcParams["text.latex.preamble"] = [r"\usepackage{xcolor}"]
+    # rcParams["text.latex.preamble"] = [r"\usepackage{amsmath}"]
     print("done in plotDefaults.py")
