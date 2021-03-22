@@ -33,12 +33,15 @@ from joblib import Parallel, delayed
 import multiprocessing
 import subprocess
 
-sys.path.insert(0, "/mnt/home/mrenzo/codes/python_stuff/")
-import mesaPlot as mp
-
-mmm = mp.MESA()
-ppp = mp.plot()
+try:
+    sys.path.insert(0, "/mnt/home/mrenzo/codes/python_stuff/")
+    import mesaPlot as mp
+    mmm = mp.MESA()
+    ppp = mp.plot()
+except:
+    print(colored("Failed MESA plot","red"))
 import re
+
 from utilsLib import getFinalProfileLOGS, getTerminationCode, getM
 
 # constants -------------------------------------------------------------------------------
