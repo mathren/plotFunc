@@ -24,6 +24,10 @@ import sys
 import glob
 import time
 import math
+# for log_scrubber
+import sys
+import shlex
+
 
 # imports below are optional #
 from termcolor import colored
@@ -234,9 +238,6 @@ def scrub(logName):
     # this uses the log_scrubber.py script from Bill Wolf
     # which is available here: https://zenodo.org/record/2619282
     print("... let me scrub this for you")
-    import sys
-    import shlex
-
     # dirty fix for PPI ejecta files
     if "ejecta.data" in sys.argv[1]:
         dataStart = 1
