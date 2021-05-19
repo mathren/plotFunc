@@ -25,7 +25,7 @@ def ffmpeg(folder, frame_rate=10, outname='out.avi'):
 if __name__ == "__main__":
     folder = sys.argv[1]
     outname = sys.argv[2]
-    if len(sys.argv>2):
+    if len(sys.argv)>2:
         frame_rate = sys.argv[3]
     print(sorted(glob.glob(folder+"/*.png")))
     mv = input("Does "+folder+" png content need renumbering? [Y/n]")
