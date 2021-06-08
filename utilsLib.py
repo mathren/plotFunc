@@ -112,7 +112,7 @@ def tail(f, n=1):
 def getTerminationCode(f):
     """
     Assuming you run MESA piping the output to a file called output
-    or out (possibly using tee as in ./rn | tee output), this will scan
+    or out or out.txt (possibly using tee as in ./rn | tee output), this will scan
     this file for the termination code string and return it. It looks for
     the file in your run folder
     """
@@ -120,6 +120,8 @@ def getTerminationCode(f):
         outputfile = f + "/output"
     elif os.path.isfile(f + "/out"):
         outputfile = f + "/out"
+    elif os.path.isfile(f + "/out.txt"):
+        outputfile = f + "/out.txt"
     else:
         print("can't find output file")
         print("did you forget to pipe ./rn or ./re to a file?")
