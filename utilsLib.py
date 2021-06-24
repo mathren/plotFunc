@@ -26,11 +26,11 @@ import re  # for getM
 import subprocess  # for tail
 
 
-def gitPush(description=""):
+def gitPush(repo, description=""):
     push = input("should we push to the git repo first? [Y/n]")
     if (push == "Y") or (push == "y"):
         pwd = os.getcwd()  # where am I?
-        os.chdir("/mnt/home/mrenzo/Templates/ppisn/")
+        os.chdir(repo)
         os.system(
             "git add . && git commit -am 'about to start a run:" + description + "' && git push"
         )
