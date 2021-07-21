@@ -16,7 +16,7 @@ def renumber(folder):
 
 def ffmpeg(folder, frame_rate=10, outname='out.avi'):
     # os.system('ffmpeg -r 10 -i '+folder+'/frame%06d.png '+str(outname))
-    os.system('ffmpeg -r '+str(frame_rate)+' -i '+folder+'/mix_%04d.png '+str(outname))
+    os.system('ffmpeg -r '+str(frame_rate)+' -i '+folder+'/frame%06d.png '+str(outname))
     # os.system('ffmpeg -r 10 -i '+folder+'/mix*.png '+str(outname))
     print("done!")
 

@@ -37,13 +37,12 @@ from joblib import Parallel, delayed
 import multiprocessing
 from utilsLib import tail
 from MESAreader import getSrcCol
-## define some colors ----------------------------------------------------------------------
 
+# define some colors ----------------------------------------------------------------------
 Yellow = "#DDDD77"
 Green = "#88CCAA"
 Blue = "#77AADD"
-
-## constants -------------------------------------------------------------------------------
+# constants -------------------------------------------------------------------------------
 global secyer
 secyer = 3.1558149984e7
 global Lsun
@@ -56,7 +55,7 @@ global G_cgs
 G_cgs = 6.67428e-8 # in cgs
 
 
-## File management -------------------------------------------------------------------------
+# File management -------------------------------------------------------------------------
 def getEjectaFile(f):
     fname = f+'ejecta.data'
     F = open(fname, 'r')
