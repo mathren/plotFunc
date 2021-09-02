@@ -25,7 +25,7 @@ import os
 import re  # for getM
 import subprocess  # for tail
 from MESAreader import getSrcCol
-import termcolor
+from termcolor import colored
 
 def gitPush(repo, description=""):
     push = input("should we push to the git repo first? [Y/n]")
