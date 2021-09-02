@@ -24,7 +24,7 @@ import sys
 import os
 import re  # for getM
 import subprocess  # for tail
-
+from MESAreader import getSrcCol
 
 def gitPush(repo, description=""):
     push = input("should we push to the git repo first? [Y/n]")
@@ -109,19 +109,14 @@ def tail(f, n=1):
     return lines
 
 
-def getTerminationCode(f):
+def getTerminationCode(f, terminal_output="out.txt"):
+    """Assuming you run MESA piping the output to a file whose name is in
+    terminal_output (possibly using tee as in ./rn | tee output), this
+    will scan this file for the termination code string and return
+    it. It looks for the file in your run folder f
     """
-    Assuming you run MESA piping the output to a file called output
-    or out or out.txt (possibly using tee as in ./rn | tee output), this will scan
-    this file for the termination code string and return it. It looks for
-    the file in your run folder
-    """
-    if os.path.isfile(f + "/output"):
-        outputfile = f + "/output"
-    elif os.path.isfile(f + "/out"):
-        outputfile = f + "/out"
-    elif os.path.isfile(f + "/out.txt"):
-        outputfile = f + "/out.txt"
+    if os.path.isfile(f + "/"+terminal_output):
+        outputfile = f + "/"+terminal_output
     else:
         print("can't find output file")
         print("did you forget to pipe ./rn or ./re to a file?")
@@ -239,3 +234,20 @@ def mvFolder(runFolder, targetFolder, targetTerminationCode="max_model_number"):
         os.system("rm -rf " + targetFolder + "/*.back")
     else:
         print(runFolder, terminationCode, "not copied")
+
+
+def check_and_convert(f, convert=True, terminal_output="out.txt"):
+    """
+    given a MESA workdir f, check if the run terminated and if so create history.npy
+    Assumes the terminal output was logged in a file in folder/terminal_output
+    """
+    if not os.path.isfile(f+'/'+terminal_output):
+        print("No output file found, you'll have to check manually, sorry!")
+        return
+    termination_code = getTerminationCode(f, terminal_output)
+    if ((termination_code != "") and \
+        (termination_code != "Couldn't find termination code")):
+        print("this run finished!")
+        if convert:
+            src, col = getSrcCol(f+'/LOGS/history.data', convert, convert)
+            print("done converting!")

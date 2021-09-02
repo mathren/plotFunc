@@ -45,7 +45,8 @@ try:
     mmm = mp.MESA()
     ppp = mp.plot()
 except:
-    print(colored("Failed MESA plot","red"))
+    print(colored("Failed loading MESA plot, I'll continue anyways","red"))
+    pass
 import re
 
 from utilsLib import getFinalProfileLOGS, getTerminationCode, getM
