@@ -49,8 +49,6 @@ except:
     pass
 import re
 
-from utilsLib import getFinalProfileLOGS, getTerminationCode, getM
-
 # constants -------------------------------------------------------------------------------
 # TODO: import these from pyMESA or astropy
 global dayyer
@@ -231,10 +229,6 @@ def tail(f, n):
 def binarySortM1(folder):
     M1 = float(folder.split("M1_")[-1].split("M2_")[0])
     return M1
-
-
-def sortSingleM(s):
-    return getM(s)
 
 
 def scrub(logName):
