@@ -25,7 +25,6 @@ import os
 import re  # for getM
 import subprocess  # for tail
 from MESAreader import getSrcCol
-from termcolor import colored
 
 def gitPush(repo, description=""):
     push = input("should we push to the git repo first? [Y/n]")
@@ -248,13 +247,14 @@ def check_and_convert(f, convert=True, terminal_output="out.txt"):
     termination_code = getTerminationCode(f, terminal_output)
     if ((termination_code != "") and \
         (termination_code != "Couldn't find termination code")):
-        print(colored("This run did not finish:","yellow"))
-        print(colored(f,"yellow"))
+        print("This run did not finish:")
+        print(f)
         return
     if ((termination_code != "min_timestep_limit") and \
         (termination_code != "max_model_number")):
-        print(colored("This run failed or reached max_model_number","red"))
-        print(colored(f, "red"))
+        print("This run failed or reached max_model_number")
+        print(f)
+        return
     else:
         print("this run finished!")
         if convert:
