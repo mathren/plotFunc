@@ -246,7 +246,9 @@ def check_and_convert(f, convert=True, terminal_output="out.txt"):
         return
     termination_code = getTerminationCode(f, terminal_output)
     if ((termination_code != "") and \
-        (termination_code != "Couldn't find termination code")):
+        (termination_code != "Couldn't find termination code") and \
+        (termination_code != "min_timestep_limit") and \
+        (termination_code) != "max_model_number"):
         print("this run finished!")
         if convert:
             src, col = getSrcCol(f+'/LOGS/history.data', convert, convert)
