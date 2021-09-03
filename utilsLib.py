@@ -245,13 +245,13 @@ def check_and_convert(f, convert=True, terminal_output="out.txt"):
         print("No output file found, you'll have to check manually, sorry!")
         return
     termination_code = getTerminationCode(f, terminal_output)
-    if ((termination_code != "") and \
-        (termination_code != "Couldn't find termination code")):
+    if ((termination_code == "") and \
+        (termination_code == "Couldn't find termination code")):
         print("This run did not finish:")
         print(f)
         return
-    if ((termination_code != "min_timestep_limit") and \
-        (termination_code != "max_model_number")):
+    if ((termination_code == "min_timestep_limit") and \
+        (termination_code == "max_model_number")):
         print("This run failed or reached max_model_number")
         print(f)
         return
