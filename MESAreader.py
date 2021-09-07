@@ -34,9 +34,6 @@ import shlex
 # imports below are optional #
 from termcolor import colored
 
-# parallelization stuff
-from joblib import Parallel, delayed
-import multiprocessing
 import subprocess
 
 try:

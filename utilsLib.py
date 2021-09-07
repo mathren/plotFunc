@@ -25,6 +25,8 @@ import os
 import re  # for getM
 import subprocess  # for tail
 from MESAreader import getSrcCol
+from joblib import Parallel, delayed
+
 
 def gitPush(repo, description=""):
     push = input("should we push to the git repo first? [Y/n]")
@@ -258,5 +260,10 @@ def check_and_convert(f, convert=True, terminal_output="out.txt"):
     else:
         print("this run finished!")
         if convert:
-            src, col = getSrcCol(f+'/LOGS/history.data', convert, convert)
+            try:
+                src, col = getSrcCol(f+'/LOGS/history.data', convert, convert)
+            except:
+                print("I think this is a binary?")
+                history_files = [f+'/LOGS1/history.data', f+'/LOGS2/history.data', f+'/binary_history.data']
+                Parallel(n_jobs=3)(delayed(getSrcCol)(h) for h in history_files)
             print("done converting!")
