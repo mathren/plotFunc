@@ -265,5 +265,5 @@ def check_and_convert(f, convert=True, terminal_output="out.txt"):
             except:
                 print("I think this is a binary?")
                 history_files = [f+'/LOGS1/history.data', f+'/LOGS2/history.data', f+'/binary_history.data']
-                Parallel(n_jobs=3)(delayed(getSrcCol)(h) for h in history_files)
+                Parallel(n_jobs=3)(delayed(getSrcCol)(h, convert, convert) for h in history_files)
             print("done converting!")
