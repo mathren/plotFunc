@@ -36,6 +36,7 @@ Blue = "#77AADD"
 
 def set_plotDefaults():
     # sets rc param that I like
+    # these are also in ./matplotlibrc
     # for some reason if you run this function in the same cell containing
     #          ``` from plotDefaults import * ```
     # it will not work as intended. Run it in a separate cell and it works
@@ -55,8 +56,6 @@ def set_plotDefaults():
     # ticks stuff
     rc("xtick", top=True, direction="in")
     rc("ytick", right=True, direction="in")
-    rc("xtick", direction="in")
-    rc("ytick", direction="in")
     rc("xtick.major", width=2, size=12, pad=12)
     rc("ytick.major", width=2, size=12, pad=12)
     rc("xtick.minor", width=2, size=6, visible=True)
