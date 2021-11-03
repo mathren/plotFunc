@@ -195,10 +195,10 @@ lines.markeredgewidth  : 2.0     ## the line width around the marker symbol
 ## The font.size property is the default font size for text, given in pts.
 ## 10 pt is the standard value.
 
-#font.family         : sans-serif
+font.family         : serif
 #font.style          : normal
 #font.variant        : normal
-font.weight          : bold
+# font.weight          : normal
 #font.stretch        : normal
 ## note that font.size controls default text sizes.  To configure
 ## special text sizes tick labels, axes, labels, title, etc, see the rc
@@ -206,8 +206,8 @@ font.weight          : bold
 ## relative to font.size, using the following values: xx-small, x-small,
 ## small, medium, large, x-large, xx-large, larger, or smaller
 #font.size           : 10.0
-font.serif          : Palatino # DejaVu Serif, Bitstream Vera Serif, Computer Modern Roman, New Century Schoolbook, Century Schoolbook L, Utopia, ITC Bookman, Bookman, Nimbus Roman No9 L, Times New Roman, Times, Palatino, Charter, serif
-#font.sans-serif     : DejaVu Sans, Bitstream Vera Sans, Computer Modern Sans Serif, Lucida Grande, Verdana, Geneva, Lucid, Arial, Helvetica, Avant Garde, sans-serif
+font.serif          : cmr10 # DejaVu Serif, Bitstream Vera Serif, Computer Modern Roman, New Century Schoolbook, Century Schoolbook L, Utopia, ITC Bookman, Bookman, Nimbus Roman No9 L, Times New Roman, Times, Palatino, Charter, serif
+font.sans-serif     : cmr10 # DejaVu Sans, Bitstream Vera Sans, Computer Modern Sans Serif, Lucida Grande, Verdana, Geneva, Lucid, Arial, Helvetica, Avant Garde, sans-serif
 #font.cursive        : Apple Chancery, Textile, Zapf Chancery, Sand, Script MT, Felipa, cursive
 #font.fantasy        : Comic Sans MS, Chicago, Charcoal, ImpactWestern, Humor Sans, xkcd, fantasy
 #font.monospace      : DejaVu Sans Mono, Bitstream Vera Sans Mono, Computer Modern Typewriter, Andale Mono, Nimbus Mono L, Courier New, Courier, Fixed, Terminal, monospace
@@ -219,7 +219,7 @@ font.serif          : Palatino # DejaVu Serif, Bitstream Vera Serif, Computer Mo
 #text.color          : black
 
 #### LaTeX customizations. See http://wiki.scipy.org/Cookbook/Matplotlib/UsingTex
-text.usetex         : True    ## use latex for all text handling. The following fonts
+text.usetex         : False    ## use latex for all text handling. The following fonts
                               ## are supported through the usual rc parameter settings:
                               ## new century schoolbook, bookman, times, palatino,
                               ## zapf chancery, charter, serif, sans-serif, helvetica,
@@ -272,13 +272,13 @@ text.usetex         : True    ## use latex for all text handling. The following 
 #mathtext.it  : sans:italic
 #mathtext.bf  : sans:bold
 #mathtext.sf  : sans
-#mathtext.fontset : dejavusans ## Should be 'dejavusans' (default),
+mathtext.fontset : cm #dejavusans ## Should be 'dejavusans' (default),
                                ## 'dejavuserif', 'cm' (Computer Modern), 'stix',
                                ## 'stixsans' or 'custom'
-#mathtext.fallback_to_cm : True  ## When True, use symbols from the Computer Modern
+# mathtext.fallback_to_cm : True  ## When True, use symbols from the Computer Modern
                                  ## fonts when a symbol can not be found in one of
                                  ## the custom math fonts.
-mathtext.default : sf  ## The default font to use for math.
+mathtext.default : regular  ## The default font to use for math.
                        ## Can be any of the LaTeX font names, including
                        ## the special name "regular" for the same font
                        ## used in regular text.
