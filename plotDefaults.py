@@ -46,6 +46,10 @@ def set_plot_defaults_from_matplotlibrc(root="../src/figures/"):
     it assumes the folder where matplotlibrc is to be ../src/data for
     a showyourwork workflow where notebooks are outside of src.
     """
+    # for some reason if you run this function in the same cell containing
+    #          ``` from plotDefaults import * ```
+    # it will not work as intended. Run it in a separate cell and it works.
+    # TODO: understand and fix this behavior.
     from matplotlib import rcParams
     with open(root+"/matplotlibrc", "r") as f:
         for i, line in enumerate(f):
