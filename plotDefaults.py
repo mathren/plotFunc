@@ -52,20 +52,15 @@ def set_plot_defaults_from_matplotlibrc(root="../src/figures/"):
             L = line.rstrip().lstrip()
             if not L: continue # skip empty lines
             if L[0] != "#": # skip commented lines
-                # print(L)
                 # read the line
                 uncommented_line = L.split("#")[0].rstrip().lstrip()
                 group_param = uncommented_line.split(":")[0].rstrip().lstrip()
                 val = uncommented_line.split(":")[-1].rstrip().lstrip()
-                # print(group)
-                # print(param)
-                # print(val)
-                # print("==============")
-                # now set up the rc parameter corresponding to this line
-                # mpl.rc(group, param=val)
+                # fix figsize
+                if "figsize" in group_param:
+                    length = tuple(val.split(','))
                 rcParams[group_param] = val
     print("done reading matplotlibrc")
-
 
 def set_plotDefaults():
     """ old way of setting up defaults, maintained for legacy """
