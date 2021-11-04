@@ -40,9 +40,12 @@ def is_number(x):
     except ValueError:
         return False
 
-def set_plot_defaults_from_matplotlibrc(root="./src/figures/"):
-    """ given the path of the folder containing the matplotlibrc
-    parses the matplotlibrc and set the non-commented parameters """
+def set_plot_defaults_from_matplotlibrc(root="../src/figures/"):
+    """given the path of the folder containing the matplotlibrc parses
+    the matplotlibrc and set the non-commented parameters.  By default
+    it assumes the folder where matplotlibrc is to be ../src/data for
+    a showyourwork workflow where notebooks are outside of src.
+    """
     from matplotlib import rcParams
     with open(root+"/matplotlibrc", "r") as f:
         for i, line in enumerate(f):
