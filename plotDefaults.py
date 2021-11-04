@@ -33,48 +33,81 @@ Yellow = "#DDDD77"
 Green = "#88CCAA"
 Blue = "#77AADD"
 
+def is_number(x):
+    try:
+        float(x)
+        return True
+    except ValueError:
+        return False
+
+def set_plot_defaults_from_matplotlibrc(root="./src/figures/"):
+    """ given the path of the folder containing the matplotlibrc
+    parses the matplotlibrc and set the non-commented parameters """
+    from matplotlib import rcParams
+    with open(root+"/matplotlibrc", "r") as f:
+        for i, line in enumerate(f):
+            L = line.rstrip().lstrip()
+            if not L: continue # skip empty lines
+            if L[0] != "#": # skip commented lines
+                # print(L)
+                # read the line
+                uncommented_line = L.split("#")[0].rstrip().lstrip()
+                group_param = uncommented_line.split(":")[0].rstrip().lstrip()
+                val = uncommented_line.split(":")[-1].rstrip().lstrip()
+                # print(group)
+                # print(param)
+                # print(val)
+                # print("==============")
+                # now set up the rc parameter corresponding to this line
+                # mpl.rc(group, param=val)
+                rcParams[group_param] = val
+    print("done reading matplotlibrc")
+
 
 def set_plotDefaults():
-    # sets rc param that I like
-    # these are also in ./matplotlibrc
-    # for some reason if you run this function in the same cell containing
-    #          ``` from plotDefaults import * ```
-    # it will not work as intended. Run it in a separate cell and it works
-    # TODO: understand and fix this behavior.
-    rc("text", usetex=True)
-    rc("font", serif="palatino")
-    rc("font", weight="bold")
-    rc("mathtext", default="sf")
-    rc("lines", markeredgewidth=2)
-    rc("lines", linewidth=3)
-    rc("axes", labelsize=30)
-    rc("axes", linewidth=2)
-    # set fontsize
-    rc("xtick", labelsize=30)
-    rc("ytick", labelsize=30)
-    rc("legend", fontsize=30)
-    # ticks stuff
-    rc("xtick", top=True, direction="in")
-    rc("ytick", right=True, direction="in")
-    rc("xtick.major", width=2, size=12, pad=12)
-    rc("ytick.major", width=2, size=12, pad=12)
-    rc("xtick.minor", width=2, size=6, visible=True)
-    rc("ytick.minor", width=2, size=6, visible=True)
-    rc(
-        "figure",
-        figsize=(8.0, 8.0),
-        facecolor="white",
-        edgecolor="white",
-        autolayout=True,
-        frameon=False,
-    )
-    rc("axes", facecolor="white", linewidth=2)
-    rc("savefig", facecolor="white", bbox="tight")
-    rc("image", cmap="viridis")
-    rc("errorbar", capsize=2)
-    rc("legend", frameon=False)
-
-    # rcParams["text.latex.preamble"] = [r"\usepackage{color}"]
-    # rcParams["text.latex.preamble"] = [r"\usepackage{xcolor}"]
-    # rcParams["text.latex.preamble"] = [r"\usepackage{amsmath}"]
-    print("done in plotDefaults.py")
+    """ old way of setting up defaults, maintained for legacy """
+    try:
+        set_plot_defaults_from_matplotlibrc(".")
+        return
+    except:
+        print("No local matplotlibrc")
+        # sets rc param that I like
+        # these are also in ./matplotlibrc
+        # for some reason if you run this function in the same cell containing
+        #          ``` from plotDefaults import * ```
+        # it will not work as intended. Run it in a separate cell and it works
+        # TODO: understand and fix this behavior.
+        rc("text", usetex=True)
+        rc("font", serif="palatino")
+        rc("font", weight="bold")
+        rc("mathtext", default="sf")
+        rc("lines", markeredgewidth=2)
+        rc("lines", linewidth=3)
+        rc("axes", labelsize=30)
+        rc("axes", linewidth=2)
+        # set fontsize
+        rc("xtick", labelsize=30)
+        rc("ytick", labelsize=30)
+        rc("legend", fontsize=30)
+        # ticks stuff
+        rc("xtick", top=True, direction="in")
+        rc("ytick", right=True, direction="in")
+        rc("xtick.major", width=2, size=12, pad=12)
+        rc("ytick.major", width=2, size=12, pad=12)
+        rc("xtick.minor", width=2, size=6, visible=True)
+        rc("ytick.minor", width=2, size=6, visible=True)
+        rc(
+            "figure",
+            figsize=(8.0, 8.0),
+            facecolor="white",
+            edgecolor="white",
+            autolayout=True,
+            frameon=False,
+        )
+        rc("axes", facecolor="white", linewidth=2)
+        rc("savefig", facecolor="white", bbox="tight")
+        rc("image", cmap="viridis")
+        rc("errorbar", capsize=2)
+        rc("legend", frameon=False)
+        rc("legend", fontsize=30)
+        print("done in plotDefaults.py")
