@@ -297,7 +297,7 @@ axes.linewidth       : 2     ## edge linewidth
 #axes.titleweight    : normal  ## font weight of title
 #axes.titlepad       : 6.0     ## pad between axes and title in points
 axes.labelsize       : 30  ## fontsize of the x any y labels
-#axes.labelpad       : 4.0     ## space between label and axis
+axes.labelpad        : 2	        ## space between label and axis
 #axes.labelweight    : normal  ## weight of the x and y labels
 #axes.labelcolor     : black
 #axes.axisbelow      : line    ## draw axis gridlines and ticks below
@@ -434,8 +434,8 @@ legend.title_fontsize : 30 ## None sets to the same as the default axes.
 ## See http://matplotlib.org/api/figure_api.html#matplotlib.figure.Figure
 figure.titlesize : 30     ## size of the figure title (Figure.suptitle())
 #figure.titleweight : normal   ## weight of the figure title
-figure.figsize   : 5, 5   ## figure size in inches
-figure.dpi       : 100        ## figure dots per inch
+figure.figsize   : 8, 8   ## figure size in inches
+# figure.dpi       : 100        ## figure dots per inch
 figure.facecolor : white      ## figure facecolor
 figure.edgecolor : white      ## figure edgecolor
 figure.frameon : True         ## enable figure frame
