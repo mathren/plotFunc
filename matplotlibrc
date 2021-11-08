@@ -326,7 +326,7 @@ axes.labelpad        : 2	        ## space between label and axis
 #axes.spines.bottom : True
 #axes.spines.top    : True
 #axes.spines.right  : True
-#axes.unicode_minus  : True    ## use unicode for the minus symbol
+axes.unicode_minus  : False    ## use unicode for the minus symbol
                                ## rather than hyphen.  See
                                ## http://en.wikipedia.org/wiki/Plus_and_minus_signs#Character_codes
 #axes.prop_cycle    : cycler('color', ['1f77b4', 'ff7f0e', '2ca02c', 'd62728', '9467bd', '8c564b', 'e377c2', '7f7f7f', 'bcbd22', '17becf'])
