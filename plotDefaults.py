@@ -22,9 +22,9 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib import rc
 from matplotlib import rcParams
-from matplotlib.ticker import MultipleLocator, FormatStrFormatter, FuncFormatter, MaxNLocator
+# from matplotlib.ticker import MultipleLocator, FormatStrFormatter, FuncFormatter, MaxNLocator
 import matplotlib.gridspec as gridspec
-import matplotlib.patches as mpatch
+# import matplotlib.patches as mpatch
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 
