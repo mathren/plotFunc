@@ -16,14 +16,26 @@ this folder to path, like:
 import sys
 sys.path.append('path/to/folder/plotFunc/')
 from MESAreader import *
-from plotDefaults import set_plotDefaults
+from plotDefaults import *
 #+END_SRC
 
 Of course you can and should import only what you need and not
 necessarily everything.
 
-To setup matplotlib the way I like it I define in =plotDefaults.py=
-that can be called to set some rcParams:
+To setup matplotlib the way I like it, I use the =matplotlibrc=
+in this repository. This can be copied in the folder of your scripts
+and will be used automatically by python. To use this in notebooks, I
+define in =plotDefaults.py= a function
+=set_plot_defaults_from_matplotlibrc= which reads =matplotlibrc= from a
+path as an argument, and sets the corresponding values.
+
+
+In =plotDefaults.py= there is also a function =set_plotDefaults=
+for legacy purposes. In this one rc parameter values are hard-coded,
+and it is likely that in the future they will diverge from the
+=matplotlibrc= values. This function will first try to read a
+=matplotlibrc= from the local folder, and use the hard-coded value as a
+backup only:
 
 #+BEGIN_SRC python
 >>> set_plotDefaults()
