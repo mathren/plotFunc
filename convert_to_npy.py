@@ -23,4 +23,7 @@ __author__ = "Mathieu Renzo"
 from MESAreader import getSrcCol
 import sys
 
-getSrcCol(sys.argv[1], True, True)
+
+if __name__ == "__main__":
+    """convert to npy binary file the command line argument """
+    getSrcCol(sys.argv[1], True, True)

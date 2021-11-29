@@ -99,6 +99,14 @@ def reader(myfile, ncols, nhead):
 
 
 def getSrcCol(f, clean=True, convert=True):
+    """Returns the header of a MESA output file `f` as a list, and the
+    data in that file as a numpy array of shape (number of timesteps,
+    number of columns).  If convert is True the file f is saved to
+    binary format for faster reading in the future, If clean is True
+    use log_scrubber to remove retry steps before converting to binary
+    and parsing the output
+
+    """
     # TODO: maybe one day I'll update this to be a pandas dataframe
     # should work both for history and profiles
     # read header
