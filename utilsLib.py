@@ -31,10 +31,12 @@ from joblib import Parallel, delayed
 def gitPush(repo, description=""):
     push = input("should we push to the git repo first? [Y/n]")
     if (push == "Y") or (push == "y"):
+        if description != "":
+            description = input("commit message:")
         pwd = os.getcwd()  # where am I?
         os.chdir(repo)
         os.system(
-            "git add . && git commit -am 'about to start a run:" + description + "' && git push"
+            "git add . && git commit -am 'about to start a run: " + description + " ' && git push"
         )
         os.chdir(pwd)  # go back to previous folder
 
