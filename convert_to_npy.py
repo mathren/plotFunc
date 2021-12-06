@@ -21,7 +21,26 @@
 __author__ = "Mathieu Renzo"
 
 from MESAreader import getSrcCol
+from utilsLib import getTerminationCode
 import sys
+
+
+def convert_if_terminated(folder, outfname="out.txt", termcode="extras_finish_step"):
+    """given a MESA work directory `folder`, looks for the terminal
+    output `folder+/outfname` and if the desired termination code
+    `termcode` is found, convert the history file to npy"""
+    termination_code = getTerminationCode(folder)
+    if termination_code == term_code:
+        try:
+            hfile = folder+'/LOGS/history.data'
+            src, col = getSrcCol(hfile, True, True)
+        except: #maybe binary?
+            hfile1 = folder+'/LOGS1/history.data'
+            src, col = getSrcCol(hfile1, True, True)
+            hfile2 = folder+'/LOGS2/history.data'
+            src, col = getSrcCol(hfile2, True, True)
+    else:
+        print(folder.split('/')[-2], termination_code)
 
 
 if __name__ == "__main__":
