@@ -53,10 +53,10 @@ dayyer = 365.25
 global secyer
 secyer = dayyer * 24 * 60 * 60
 global G_cgs
-G_cgs = 6.67430e-8  # in cgs
+G_cgs =  6.67430e-8  # in cgs
 global Lsun
 mu_sun = 1.3271244e26
-Lsun = 3.828e33
+Lsun = 3.828d33
 global Msun
 Msun = mu_sun / G_cgs
 global Rsun_cm
