@@ -31,7 +31,7 @@ from joblib import Parallel, delayed
 def gitPush(repo, description=""):
     push = input("should we push to the git repo first? [Y/n]")
     if (push == "Y") or (push == "y"):
-        if description != "":
+        if not description:
             description = input("commit message:")
         pwd = os.getcwd()  # where am I?
         os.chdir(repo)
