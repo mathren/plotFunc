@@ -261,7 +261,7 @@ def scrub(logName):
     modelNumbers = [-1] * len(dataLines)
     for i in range(len(dataLines)):
         data = shlex.split(dataLines[i])
-        modelNumbers[i] = int(data[modelNumberCol])
+        modelNumbers[i] = int(float(data[modelNumberCol]))
     # Pick "good" data points from the end to the beginning
     modelNumbers.reverse()
     dataLines.reverse()
