@@ -111,6 +111,28 @@ def tail(f, n=1):
     lines = stdout.splitlines()
     return lines
 
+def getFinalProfileLOGS(LOGfolder):
+    """
+    returns the path to the last profile written in the folder, assumes it is a LOGS* folder
+    from a MESA run
+    Parameter
+    ---------
+    LOGfolder : `string` absolute path to the MESA LOGS folder
+
+    Returns
+    -------
+    profile: `string` filename of the last profile
+
+    """
+    indexFile = LOGfolder + "/profiles.index"
+    last_line = tail(indexFile, 1)
+    # print(last_line)
+    last_line = last_line.decode("utf-8")
+    # print(type(last_line))
+    profNum = "%d" % int(last_line.split()[-1])
+    profile = "profile" + str(profNum) + ".data"
+    # print(profile)
+    return profile
 
 def getTerminationCode(f, terminal_output="out.txt"):
     """Assuming you run MESA piping the output to a file whose name is in
@@ -142,20 +164,6 @@ def getTerminationCode(f, terminal_output="out.txt"):
     return termination_code
 
 
-def getFinalProfileLOGS(LOGfolder):
-    """
-    returns the path to the last profile written in the folder, assumes it is a LOGS* folder
-    from a MESA run
-    """
-    indexFile = LOGfolder + "/profiles.index"
-    last_line = tail(indexFile, 1)[0]
-    # print(last_line)
-    last_line = last_line.decode("utf-8")
-    # print(type(last_line))
-    profNum = "%d" % int(last_line.split()[-1])
-    profile = "profile" + str(profNum) + ".data"
-    # print(profile)
-    return profile
 
 
 def mvFolder(runFolder, targetFolder, targetTerminationCode="max_model_number"):
