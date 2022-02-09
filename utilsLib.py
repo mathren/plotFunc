@@ -104,10 +104,18 @@ def getMasses(f):
 
 
 def tail(f, n=1):
-    # read the last n lines of f (modified from somewhere on the internet)
+    """
+    read the last n lines of f
+    Parameters:
+    ----------
+        f : `string` path to the file
+        n : `int`, optional number of lines we want from the bottom
+    Returns:
+    -------
+        lines : `list` list of length n of the lines
+    """
     p = subprocess.Popen(["tail", "-n", str(n), f], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
-    # print stdout
     lines = stdout.splitlines()
     return lines
 
@@ -125,7 +133,7 @@ def getFinalProfileLOGS(LOGfolder):
 
     """
     indexFile = LOGfolder + "/profiles.index"
-    last_line = tail(indexFile, 1)
+    last_line = tail(indexFile, 1)[0]
     # print(last_line)
     last_line = last_line.decode("utf-8")
     # print(type(last_line))
