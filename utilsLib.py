@@ -105,8 +105,7 @@ def getMasses(f):
 
 def tail(f, n=1):
     # read the last n lines of f (modified from somewhere on the internet)
-    n = str(n)
-    p = subprocess.Popen(["tail", "-n", n, f], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen(["tail", "-n", str(n), f], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
     # print stdout
     lines = stdout.splitlines()
