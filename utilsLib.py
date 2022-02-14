@@ -135,7 +135,19 @@ def getFinalProfileLOGS(LOGfolder):
     return profile
 
 def getTerminationCode(f, terminal_output="out.txt"):
-    """Assuming you run MESA piping the output to a file whose name is in
+    """
+    Returns the termination code string.
+
+    Parameters:
+    ----------
+    f : `string` path to the MESA work directory of the run
+    terminal_output: `string` optional, file name for the terminal output
+    Returns:
+    -------
+    termination_code: `string`, define in run_star_extras.f90, run_binary_extras.f90, or MESA defaults.
+
+
+    Assuming you run MESA piping the output to a file whose name is in
     terminal_output (possibly using tee as in ./rn | tee output), this
     will scan this file for the termination code string and return
     it. It looks for the file in your run folder f

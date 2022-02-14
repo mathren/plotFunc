@@ -41,10 +41,15 @@ def is_number(x):
         return False
 
 def set_plot_defaults_from_matplotlibrc(root="../src/figures/"):
-    """given the path of the folder containing the matplotlibrc parses
+    """
+    given the path of the folder containing the matplotlibrc parses
     the matplotlibrc and set the non-commented parameters.  By default
     it assumes the folder where matplotlibrc is to be ../src/data for
     a showyourwork workflow where notebooks are outside of src.
+
+    Parameters:
+    ----------
+    root: `string` absolute path to the folder containing the matplotlibrc file to read.
     """
     # for some reason if you run this function in the same cell containing
     #          ``` from plotDefaults import * ```
