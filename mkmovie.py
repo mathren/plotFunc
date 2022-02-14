@@ -9,8 +9,8 @@ def renumber(folder):
     files = glob.glob(folder+"*.png")
     i = 0
     for f in files[::-1]:
-        # os.system('mv '+f+' '+folder+'/frame%06d' % i+'.png')
-        print('mv '+f+' '+folder+'/frame%06d' % i+'.png')
+        os.system('mv '+f+' '+folder+'/frame%06d' % i+'.png')
+        # print('mv '+f+' '+folder+'/frame%06d' % i+'.png')
         i += 1
     print("done renumbering!")
 
