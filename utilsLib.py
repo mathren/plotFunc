@@ -119,7 +119,7 @@ def tail(f, n=1):
     lines = stdout.splitlines()
     return lines
 
-def getFinalProfileLOGS(LOGfolder: str): -> str
+def getFinalProfileLOGS(LOGfolder):
     """
     returns the path to the last profile written in the folder, assumes it is a LOGS* folder
     from a MESA run
