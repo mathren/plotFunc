@@ -61,7 +61,8 @@ global Msun
 Msun = mu_sun / G_cgs
 global Rsun_cm
 Rsun_cm = 6.957e10  # in cm
-
+global clight
+clight = 2.99792458e10 # cm/s
 # load files -------------------------------------------------------------------------------
 
 def reader(myfile, ncols, nhead):
@@ -179,6 +180,25 @@ def my_mark_inset(parent_axes, inset_axes, loc1a=1, loc1b=1, loc2a=2, loc2b=2, *
     inset_axes.add_patch(p2)
     p2.set_clip_on(False)
     return pp, p1, p2
+
+
+def read_MESA_header(fname):
+    """ reader for the header of MESA profile or history files.
+    Parameters:
+    ----------
+    fname : `string`, path to the file to open
+    Returns:
+    src : `list` values, some cannot be converted to float
+    col : `list`, columns names
+    """
+    with open(fname, "r") as f:
+        for i, line in enumerate(f):
+            if i==1:
+                col = line.split()
+            if i==2:
+                src = line.split()
+                break
+    return src, col
 
 
 # miscellanea ---------------------------------------------------------------------------------------------
