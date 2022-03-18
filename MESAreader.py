@@ -55,41 +55,41 @@ except ModuleNotFoundError:
 
 # constants -------------------------------------------------------------------------------
 # TODO: import these from pyMESA or astropy
-try:
-    """read constants from MESA, requires pyMESA and MESA """
-    print(colored("reading constants from pyMesa", "blue"))
-    const_lib,const_def = pym.loadMod("const")
-    global dayyer
-    dayyer = const_def.dayer.value
-    global secyer
-    secyer = const_def.secyer.value
-    global G_cgs
-    G_cgs = const_def.standard_cgrav.value
-    global Lsun
-    Lsun = const_def.Lsun.value
-    global Msun
-    Msun = const_def.Msun.value
-    global Rsun_cm
-    Rsun_cm = const_def.Rsun.value
-    global clight
-    clight = const_def.clight.value
-except:
-    # if pyMESA not available, define by hand
-    global dayyer
-    dayyer = 365.25
-    global secyer
-    secyer = dayyer * 24 * 60 * 60
-    global G_cgs
-    G_cgs =  6.67430e-8  # in cgs
-    global Lsun
-    mu_sun = 1.3271244e26
-    Lsun = 3.828e33
-    global Msun
-    Msun = mu_sun / G_cgs
-    global Rsun_cm
-    Rsun_cm = 6.957e10  # in cm
-    global clight
-    clight = 2.99792458e10 # cm/s
+#try:
+"""read constants from MESA, requires pyMESA and MESA """
+print(colored("reading constants from pyMesa", "blue"))
+const_lib,const_def = pym.loadMod("const")
+global dayyer
+dayyer = const_def.dayer.value
+global secyer
+secyer = const_def.secyer.value
+global G_cgs
+G_cgs = const_def.standard_cgrav.value
+global Lsun
+Lsun = const_def.Lsun.value
+global Msun
+Msun = const_def.Msun.value
+global Rsun_cm
+Rsun_cm = const_def.Rsun.value
+global clight
+clight = const_def.clight.value
+# except:
+    # # if pyMESA not available, define by hand
+    # global dayyer
+    # dayyer = 365.25
+    # global secyer
+    # secyer = dayyer * 24 * 60 * 60
+    # global G_cgs
+    # G_cgs =  6.67430e-8  # in cgs
+    # global Lsun
+    # mu_sun = 1.3271244e26
+    # Lsun = 3.828e33
+    # global Msun
+    # Msun = mu_sun / G_cgs
+    # global Rsun_cm
+    # Rsun_cm = 6.957e10  # in cm
+    # global clight
+    # clight = 2.99792458e10 # cm/s
 # load files -------------------------------------------------------------------------------
 
 def reader(myfile, ncols, nhead):
