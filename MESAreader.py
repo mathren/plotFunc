@@ -57,6 +57,7 @@ except ModuleNotFoundError:
 # TODO: import these from pyMESA or astropy
 try:
     """read constants from MESA, requires pyMESA and MESA """
+    print(colored("reading constants from pyMesa", "blue"))
     const_lib,const_def = pym.loadMod("const")
     global dayyer
     dayyer = const_def.dayer.value
