@@ -40,7 +40,9 @@ except ModuleNotFoundError:
     def colored(string, color):
         print(string)
 try:
-    sys.path.insert(0, "/mnt/home/mrenzo/codes/python_stuff/")
+    import socket
+    if socket.gethostname() == "ccalin010.flatironinstitute.org":
+        sys.path.insert(0, "/mnt/home/mrenzo/codes/python_stuff/")
     import mesaPlot as mp
     mmm = mp.MESA()
     ppp = mp.plot()
@@ -48,6 +50,9 @@ except ModuleNotFoundError:
     print(colored("Failed loading MESA plot, I'll continue anyways","red"))
     pass
 try:
+    import socket
+    if socket.gethostname() == "ccalin010.flatironinstitute.org":
+        sys.path.insert(0, "/mnt/home/mrenzo/codes/python_stuff/pyMESA")
     import pyMESA as pym
 except ModuleNotFoundError:
     print("pyMESA not found, available at https://github.com/rjfarmer/pyMesa")
@@ -58,7 +63,7 @@ except ModuleNotFoundError:
 #try:
 """read constants from MESA, requires pyMESA and MESA """
 print(colored("reading constants from pyMesa", "blue"))
-const_lib,const_def = pym.loadMod("const")
+const_lib, const_def = pym.loadMod("const")
 global dayyer
 dayyer = const_def.dayer.value
 global secyer
