@@ -52,49 +52,34 @@ except ModuleNotFoundError:
 try:
     import socket
     if socket.gethostname() == "ccalin010.flatironinstitute.org":
-        sys.path.insert(0, "/mnt/home/mrenzo/codes/python_stuff/pyMESA")
-    import pyMESA as pym
+        sys.path.insert(0, "/mnt/home/mrenzo/codes/python_stuff/pyMesa/")
+    import pyMesaUtils as pym
 except ModuleNotFoundError:
     print("pyMESA not found, available at https://github.com/rjfarmer/pyMesa")
     pass
 
 # constants -------------------------------------------------------------------------------
-# TODO: import these from pyMESA or astropy
-#try:
-"""read constants from MESA, requires pyMESA and MESA """
-print(colored("reading constants from pyMesa", "blue"))
-const_lib, const_def = pym.loadMod("const")
-global dayyer
-dayyer = const_def.dayer.value
-global secyer
-secyer = const_def.secyer.value
-global G_cgs
-G_cgs = const_def.standard_cgrav.value
-global Lsun
-Lsun = const_def.Lsun.value
-global Msun
-Msun = const_def.Msun.value
-global Rsun_cm
-Rsun_cm = const_def.Rsun.value
-global clight
-clight = const_def.clight.value
-# except:
-    # # if pyMESA not available, define by hand
-    # global dayyer
-    # dayyer = 365.25
-    # global secyer
-    # secyer = dayyer * 24 * 60 * 60
-    # global G_cgs
-    # G_cgs =  6.67430e-8  # in cgs
-    # global Lsun
-    # mu_sun = 1.3271244e26
-    # Lsun = 3.828e33
-    # global Msun
-    # Msun = mu_sun / G_cgs
-    # global Rsun_cm
-    # Rsun_cm = 6.957e10  # in cm
-    # global clight
-    # clight = 2.99792458e10 # cm/s
+global secyer, G_cgs, Lsun, Msun, Rsun_cm, clight
+try:
+    """read constants from MESA, requires pyMESA and MESA installed"""
+    const_lib, const_def = pym.loadMod("const")
+    secyer = const_def.secyer.value
+    G_cgs = const_def.standard_cgrav.value
+    Lsun = const_def.Lsun.value
+    Msun = const_def.Msun.value
+    Rsun_cm = const_def.Rsun.value
+    clight = const_def.clight.value
+    print(colored("successfully read constants from pyMesa", "blue"))
+except:
+    # if pyMESA not available, define by hand
+    dayyer = 365.25
+    secyer = dayyer * 24 * 60 * 60
+    G_cgs =  6.67430e-8  # in cgs
+    mu_sun = 1.3271244e26
+    Lsun = 3.828e33
+    Msun = mu_sun / G_cgs
+    Rsun_cm = 6.957e10  # in cm
+    clight = 2.99792458e10 # cm/s
 # load files -------------------------------------------------------------------------------
 
 def reader(myfile, ncols, nhead):
