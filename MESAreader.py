@@ -26,43 +26,69 @@ import sys
 import glob
 import time
 import math
+import subprocess
+# import re
 # for log_scrubber
 import sys
 import shlex
 
-
 # imports below are optional #
-from termcolor import colored
-
-import subprocess
-
+try:
+    from termcolor import colored
+except ModuleNotFoundError:
+    print("no pretty colors, install termcolor for that")
+    def colored(string, color):
+        print(string)
 try:
     sys.path.insert(0, "/mnt/home/mrenzo/codes/python_stuff/")
     import mesaPlot as mp
     mmm = mp.MESA()
     ppp = mp.plot()
-except:
+except ModuleNotFoundError:
     print(colored("Failed loading MESA plot, I'll continue anyways","red"))
     pass
-import re
+try:
+    import pyMESA as pym
+except ModuleNotFoundError:
+    print("pyMESA not found, available at https://github.com/rjfarmer/pyMesa")
+    pass
 
 # constants -------------------------------------------------------------------------------
 # TODO: import these from pyMESA or astropy
-global dayyer
-dayyer = 365.25
-global secyer
-secyer = dayyer * 24 * 60 * 60
-global G_cgs
-G_cgs =  6.67430e-8  # in cgs
-global Lsun
-mu_sun = 1.3271244e26
-Lsun = 3.828e33
-global Msun
-Msun = mu_sun / G_cgs
-global Rsun_cm
-Rsun_cm = 6.957e10  # in cm
-global clight
-clight = 2.99792458e10 # cm/s
+try:
+    """read constants from MESA, requires pyMESA and MESA """
+    const_lib,const_def = pym.loadMod("const")
+    global dayyer
+    dayyer = const_def.dayer.value
+    global secyer
+    secyer = const_def.secyer.value
+    global G_cgs
+    G_cgs = const_def.standard_cgrav.value
+    global Lsun
+    Lsun = const_def.Lsun.value
+    global Msun
+    Msun = const_def.Msun.value
+    global Rsun_cm
+    Rsun_cm = const_def.Rsun.value
+    global clight
+    clight = const_def.clight.value
+except:
+    # if pyMESA not available, define by hand
+    global dayyer
+    dayyer = 365.25
+    global secyer
+    secyer = dayyer * 24 * 60 * 60
+    global G_cgs
+    G_cgs =  6.67430e-8  # in cgs
+    global Lsun
+    mu_sun = 1.3271244e26
+    Lsun = 3.828e33
+    global Msun
+    Msun = mu_sun / G_cgs
+    global Rsun_cm
+    Rsun_cm = 6.957e10  # in cm
+    global clight
+    clight = 2.99792458e10 # cm/s
 # load files -------------------------------------------------------------------------------
 
 def reader(myfile, ncols, nhead):
