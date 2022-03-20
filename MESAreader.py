@@ -55,7 +55,7 @@ try:
         sys.path.insert(0, "/mnt/home/mrenzo/codes/python_stuff/pyMesa/")
     import pyMesaUtils as pym
 except ModuleNotFoundError:
-    print("pyMESA not found, available at https://github.com/rjfarmer/pyMesa")
+    print("pyMESA not found, install from https://github.com/rjfarmer/pyMesa")
     pass
 
 # constants -------------------------------------------------------------------------------
