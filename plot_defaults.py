@@ -128,6 +128,11 @@ def make2Dmap(x, y, z, x1=0, x2=1, y1=0, y2=1, res=20):
 
 
 def writePreliminary(ax):
+    """
+    Parameters:
+    ----------
+    ax: `maplotlib.axes`
+    """
     ax.text(0.5,0.5,r"{\bf PRELIMINARY}", color="#808080",
             alpha=0.4, fontsize=74,ha='center', va='center', rotation=45, transform=ax.transAxes)
 

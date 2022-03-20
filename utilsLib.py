@@ -73,7 +73,6 @@ def MoveIntoFolder(folder, description=""):
             print("Ok, fix it yourself!")
             return 1
 
-
 def getM(f):
     """
     get the mass from the folder name
@@ -266,33 +265,32 @@ def mvFolder(runFolder, targetFolder, targetTerminationCode="max_model_number"):
     else:
         print(runFolder, terminationCode, "not copied")
 
-
-def check_and_convert(f, convert=True, terminal_output="out.txt"):
-    """
-    given a MESA workdir f, check if the run terminated and if so create history.npy
-    Assumes the terminal output was logged in a file in folder/terminal_output
-    """
-    if not os.path.isfile(f+'/'+terminal_output):
-        print("No output file found, you'll have to check manually, sorry!")
-        return
-    termination_code = getTerminationCode(f, terminal_output)
-    if ((termination_code == "") and \
-        (termination_code == "Couldn't find termination code")):
-        print("This run did not finish:")
-        print(f)
-        return
-    if ((termination_code == "min_timestep_limit") and \
-        (termination_code == "max_model_number")):
-        print("This run failed or reached max_model_number")
-        print(f)
-        return
-    else:
-        print("this run finished!")
-        if convert:
-            try:
-                src, col = getSrcCol(f+'/LOGS/history.data', convert, convert)
-            except:
-                print("I think this is a binary?")
-                history_files = [f+'/LOGS1/history.data', f+'/LOGS2/history.data', f+'/binary_history.data']
-                Parallel(n_jobs=3)(delayed(getSrcCol)(h, convert, convert) for h in history_files)
-            print("done converting!")
+# def check_and_convert(f, convert=True, terminal_output="out.txt"):
+#     """
+#     given a MESA workdir f, check if the run terminated and if so create history.npy
+#     Assumes the terminal output was logged in a file in folder/terminal_output
+#     """
+#     if not os.path.isfile(f+'/'+terminal_output):
+#         print("No output file found, you'll have to check manually, sorry!")
+#         return
+#     termination_code = getTerminationCode(f, terminal_output)
+#     if ((termination_code == "") and \
+#         (termination_code == "Couldn't find termination code")):
+#         print("This run did not finish:")
+#         print(f)
+#         return
+#     if ((termination_code == "min_timestep_limit") and \
+#         (termination_code == "max_model_number")):
+#         print("This run failed or reached max_model_number")
+#         print(f)
+#         return
+#     else:
+#         print("this run finished!")
+#         if convert:
+#             try:
+#                 src, col = getSrcCol(f+'/LOGS/history.data', convert, convert)
+#             except:
+#                 print("I think this is a binary?")
+#                 history_files = [f+'/LOGS1/history.data', f+'/LOGS2/history.data', f+'/binary_history.data']
+#                 Parallel(n_jobs=3)(delayed(getSrcCol)(h, convert, convert) for h in history_files)
+#             print("done converting!")

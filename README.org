@@ -1,48 +1,53 @@
 * My python setup to plot and analyze MESA output
 
-I use these mostly to analyze data produced with [[http://mesa.sourceforge.net/][MESA]].
-If you are interested in something more sophisticated and powerful, check out [[https://github.com/rjfarmer/mesaplot][mesaplot]].
+  I use these mostly to analyze data produced with [[http://mesa.sourceforge.net/][MESA]].
+  If you are interested in something more sophisticated and powerful, check out [[https://github.com/rjfarmer/mesaplot][mesaplot]].
 
 ** How to use
 
-*Disclaimer* This should _not_ be considered an example of the way
-things are supposed to be done. Quite the contrary, in case of doubt.
+   *Disclaimer:* This should _not_ be considered an example of the way
+   things are supposed to be done. Quite the contrary, in case of doubt.
 
-Import the files that you are interested in using. I usually have these
-files saved in a folder =path/to/folder= and use the sys module to add
-this folder to path, like:
+   Import the files that you are interested in using. I usually have these
+   files saved in a folder =path/to/folder= and use the sys module to add
+   this folder to path, like:
 
-#+BEGIN_SRC python
-import sys
-sys.path.append('path/to/folder/plotFunc/')
-from MESAreader import *
-from plotDefaults import *
-#+END_SRC
+   #+BEGIN_SRC python
+   import sys
+   sys.path.append('path/to/folder/plotFunc/')
+   from MESAreader import *
+   from plot_defaults import *
+   #+END_SRC
 
-Of course you can and should import only what you need and not
-necessarily everything.
+   Of course you can and should import only what you need and not
+   necessarily everything.
 
-To setup matplotlib the way I like it, I use the =matplotlibrc=
-in this repository. This can be copied in the folder of your scripts
-and will be used automatically by python. To use this in notebooks, I
-define in =plotDefaults.py= a function
-=set_plot_defaults_from_matplotlibrc= which reads =matplotlibrc= from a
-path as an argument, and sets the corresponding values.
+** Plot aesthetics
 
+  To setup ticks, fonts, line widths, etc. the way I like, I use the
+  =matplotlibrc= in this repository. This can be copied in the folder
+  of your scripts and will be used automatically by python.
 
-In =plotDefaults.py= there is also a function =set_plotDefaults=
-for legacy purposes. In this one rc parameter values are hard-coded,
-and it is likely that in the future they will diverge from the
-=matplotlibrc= values. This function will first try to read a
-=matplotlibrc= from the local folder, and use the hard-coded value as a
-backup only:
+  To use this in notebooks, I define in =plot_defaults.py= a function
+  =set_plot_defaults_from_matplotlibrc= which reads =matplotlibrc= from
+  a path as an argument, and sets the corresponding values.
 
-#+BEGIN_SRC python
->>> set_plotDefaults()
-"done in plotDefaults.py"
-#+END_SRC
+  #+BEGIN_SRC python
+  >>> set_plot_defaults_from_matplotlibrc("path/to/matplotlibrc")
+  "done reading matplotlibrc"
+  #+END_SRC
 
-If using an ipython notebook, this needs to be done in a different
-cell than the one containing =from plotDefaults import set_plotDefaults=. The more
-appropriate way to do this would be to create a matplotlibrc file as
-explained [[https://matplotlib.org/tutorials/introductory/customizing.html][here]].
+  In =plot_defaults.py= there is also a function =set_plot_defaults=
+  for legacy purposes. In this one rc parameter values are hard-coded,
+  and it is likely that in the future they will diverge from the
+  =matplotlibrc= values. This function will first try to read a
+  =matplotlibrc= from the local folder, and use the hard-coded value as a
+  backup only:
+
+  #+BEGIN_SRC python
+  >>> set_plot_defaults()
+  "done in plot_defaults.py"
+  #+END_SRC
+
+  If using an ipython notebook, this needs to be done in a different
+  cell than the one containing =from plot_defaults import set_plot_defaults=.

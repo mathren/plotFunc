@@ -37,6 +37,7 @@ from joblib import Parallel, delayed
 import multiprocessing
 from utilsLib import tail
 from MESAreader import getSrcCol, secyer, G_cgs, Lsun, Msun, Rsun_cm, clight
+from plot_defaults import my_mark_inset, make2Dmap
 
 # File management -------------------------------------------------------------------------
 def getEjectaFile(f):
