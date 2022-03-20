@@ -36,24 +36,7 @@ from termcolor import colored
 from joblib import Parallel, delayed
 import multiprocessing
 from utilsLib import tail
-from MESAreader import getSrcCol
-
-# define some colors ----------------------------------------------------------------------
-Yellow = "#DDDD77"
-Green = "#88CCAA"
-Blue = "#77AADD"
-# constants -------------------------------------------------------------------------------
-global secyer
-secyer = 3.1558149984e7
-global Lsun
-Lsun = 3.8418e33
-global Msun
-Msun = 1.9892e33
-global Rsun_cm
-Rsun_cm = 6.9598e10 # in cm
-global G_cgs
-G_cgs = 6.67428e-8 # in cgs
-
+from MESAreader import getSrcCol, secyer, G_cgs, Lsun, Msun, Rsun_cm, clight
 
 # File management -------------------------------------------------------------------------
 def getEjectaFile(f):
@@ -117,10 +100,8 @@ def getPrePulseProfile(f):
         return ''
 
 
-### Plotting --------------------------------------------------------------------------------------------------------------------
-
+### Plotting ---------------------------------------------------------------------------------
 # EOS pulse onset
-## this one instead comes from instability_EOS.ipynb
 def plot_instability_region(ax,c='#f4e109', lw=2, ls='--', alpha=1.0, zorder=1, MESA_DIR='/home/math/Documents/Research/codes/mesa_12778/mesa12778/data/star_data/plot_info/'):
     folder=MESA_DIR
     f = np.genfromtxt(folder+'/gamma_4_thirds.data')
@@ -132,47 +113,6 @@ def plot_instability_region(ax,c='#f4e109', lw=2, ls='--', alpha=1.0, zorder=1, 
     ax.fill_between(xx,yy, color=c, alpha=alpha, zorder=0)
     ax.set_xlim(2,6.25)
     ax.set_ylim(8.5, 10)
-
-
-
-def make2Dmap(x, y, z, x1=0, x2=1, y1=0, y2=1, res=20):
-    minx = min(min(x),x1)
-    maxx = min(max(x),x2)
-    miny = min(min(y),y1)
-    maxy = min(max(y),y2)
-
-    x_int = np.linspace(minx,maxx,res)
-    y_int = np.linspace(miny,maxy,res)
-
-    mat = np.zeros([len(x_int),len(y_int)])
-    for i in range(0,len(x_int)-1):
-        for j in range(0,len(y_int)-1):
-            mat[j,i] = np.sum(z[(x>=x_int[i])*(x<x_int[i+1])*(y>=y_int[j])*(y<y_int[j+1])])
-    return x_int, y_int, mat
-
-
-def writePreliminary(ax):
-    ax.text(0.5,0.5,r"{\bf PRELIMINARY}", color="#808080",
-            alpha=0.4, fontsize=74,ha='center', va='center', rotation=45, transform=ax.transAxes)
-
-
-
-def my_mark_inset(parent_axes, inset_axes, loc1a=1, loc1b=1, loc2a=2, loc2b=2, **kwargs):
-    from mpl_toolkits.axes_grid1.inset_locator import TransformedBbox, BboxPatch, BboxConnector
-    rect = TransformedBbox(inset_axes.viewLim, parent_axes.transData)
-
-    pp = BboxPatch(rect, fill=False, **kwargs)
-    parent_axes.add_patch(pp)
-
-    p1 = BboxConnector(inset_axes.bbox, rect, loc1=loc1a, loc2=loc1b, **kwargs)
-    inset_axes.add_patch(p1)
-    p1.set_clip_on(False)
-    p2 = BboxConnector(inset_axes.bbox, rect, loc1=loc2a, loc2=loc2b, **kwargs)
-    inset_axes.add_patch(p2)
-    p2.set_clip_on(False)
-
-    return pp, p1, p2
-
 
 
 ## Pulses -------------------------------------------------------------------------------------
@@ -477,12 +417,10 @@ def getTthermal(M,R,L,Lnu):
     maxL = max_array(L,Lnu)
     return (G_cgs*M*M*Msun*Msun/(R*Rsun_cm*maxL*Lsun))/secyer
 
-
-## find BH mass using MESA IV criterion
-## BH mass is the mass at which the binding energy integrated from the surface exceeds 10^48 erg/s
-## checks also that matter is actually bound to the star.
-
 def getBHmassfromprofile(pfile):
+    # find BH mass using MESA IV criterion
+    # BH mass is the mass at which the binding energy integrated from the surface exceeds 10^48 erg/s
+    # checks also that matter is actually bound to the star.
     global Rsun_cm, Msun, G_cgs
 
     src,col = getSrcCol(pfile)
