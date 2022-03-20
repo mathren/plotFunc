@@ -3,7 +3,7 @@
 # Author: Mathieu Renzo <mathren90@gmail.com>
 # Keywords: files
 
-# Copyright (C) 2019-2021 Mathieu Renzo
+# Copyright (C) 2019-2022 Mathieu Renzo
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,7 +28,14 @@ import sys
 def convert_if_terminated(folder, outfname="out.txt", termcode="extras_finish_step"):
     """given a MESA work directory `folder`, looks for the terminal
     output `folder+/outfname` and if the desired termination code
-    `termcode` is found, convert the history file to npy"""
+    `termcode` is found, convert the history file to npy
+
+    Parameters:
+    ----------
+    `folder` : `string`, path to MESA work directory
+    `outfname`: `string`, terminal output of MESA run filename
+    `term_code`: `string`, termination code to look for, see MESA docs
+    """
     termination_code = getTerminationCode(folder)
     if termination_code == term_code:
         try:
