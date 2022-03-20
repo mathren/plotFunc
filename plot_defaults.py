@@ -3,7 +3,7 @@
 # Author: Mathieu Renzo <mathren90@gmail.com>
 # Keywords: files
 
-# Copyright (C) 2019-2020 Mathieu Renzo
+# Copyright (C) 2019-2022 Mathieu Renzo
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,18 +27,6 @@ import matplotlib.gridspec as gridspec
 # import matplotlib.patches as mpatch
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
-
-# define some colors
-Yellow = "#DDDD77"
-Green = "#88CCAA"
-Blue = "#77AADD"
-
-def is_number(x):
-    try:
-        float(x)
-        return True
-    except ValueError:
-        return False
 
 def set_plot_defaults_from_matplotlibrc(root="../src/figures/"):
     """
@@ -71,7 +59,7 @@ def set_plot_defaults_from_matplotlibrc(root="../src/figures/"):
                 rcParams[group_param] = val
     print("done reading matplotlibrc")
 
-def set_plotDefaults():
+def set_plot_defaults():
     """ old way of setting up defaults, maintained for legacy """
     try:
         set_plot_defaults_from_matplotlibrc(".")
@@ -117,4 +105,45 @@ def set_plotDefaults():
         rc("errorbar", capsize=2)
         rc("legend", frameon=False)
         rc("legend", fontsize=30)
-        print("done in plotDefaults.py")
+        print("done in plot_defaults.py")
+
+
+# ---------------------------------------------------------------------
+# auxiliary functions for plotting
+
+def make2Dmap(x, y, z, x1=0, x2=1, y1=0, y2=1, res=20):
+    minx = min(min(x),x1)
+    maxx = min(max(x),x2)
+    miny = min(min(y),y1)
+    maxy = min(max(y),y2)
+
+    x_int = np.linspace(minx,maxx,res)
+    y_int = np.linspace(miny,maxy,res)
+
+    mat = np.zeros([len(x_int),len(y_int)])
+    for i in range(0,len(x_int)-1):
+        for j in range(0,len(y_int)-1):
+            mat[j,i] = np.sum(z[(x>=x_int[i])*(x<x_int[i+1])*(y>=y_int[j])*(y<y_int[j+1])])
+    return x_int, y_int, mat
+
+
+def writePreliminary(ax):
+    ax.text(0.5,0.5,r"{\bf PRELIMINARY}", color="#808080",
+            alpha=0.4, fontsize=74,ha='center', va='center', rotation=45, transform=ax.transAxes)
+
+
+def my_mark_inset(parent_axes, inset_axes, loc1a=1, loc1b=1, loc2a=2, loc2b=2, **kwargs):
+    from mpl_toolkits.axes_grid1.inset_locator import TransformedBbox, BboxPatch, BboxConnector
+    rect = TransformedBbox(inset_axes.viewLim, parent_axes.transData)
+
+    pp = BboxPatch(rect, fill=False, **kwargs)
+    parent_axes.add_patch(pp)
+
+    p1 = BboxConnector(inset_axes.bbox, rect, loc1=loc1a, loc2=loc1b, **kwargs)
+    inset_axes.add_patch(p1)
+    p1.set_clip_on(False)
+    p2 = BboxConnector(inset_axes.bbox, rect, loc1=loc2a, loc2=loc2b, **kwargs)
+    inset_axes.add_patch(p2)
+    p2.set_clip_on(False)
+
+    return pp, p1, p2
